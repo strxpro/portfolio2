@@ -38,22 +38,28 @@ export default function Leaf({ tone = 'paper', z = 1, children }) {
    * porusza się to, co w środku.
    */
   /**
-   * Na telefonie sekcja **nie mija kamery**.
+   * Na telefonie sekcja **nie rusza się w głąb wcale**.
    *
-   * Wyjście na dodatnie Z powiększa cały plan (perspektywa: około 1.16×)
-   * i na szerokim ekranie to działa — plan odjeżdża w stronę widza.
-   * Przy 424 px ten sam ruch rozpycha tekst poza kadr i nasuwa go na
-   * sąsiednią sekcję; z bliska wygląda to po prostu jak psujący się
-   * układ. Zostaje więc samo nadlatywanie z głębi, bez przelotu.
+   * Ruch po osi Z skaluje cały plan, a skalowany plan to skalowany
+   * tekst: przy 390 px akapit wjeżdżał zmniejszony do 87% i mimo
+   * poprawnych marginesów wyglądał na wciśnięty w przypadkowe miejsce.
+   * Wyjście na dodatnie Z było jeszcze gorsze — powiększało plan o 16%
+   * i wypychało treść na sąsiednią sekcję.
+   *
+   * Zamiast tego jest to, co na wąskim ekranie zawsze czyta się dobrze:
+   * **krycie plus krótki dojazd w pionie**. Litery mają przez cały czas
+   * swój docelowy rozmiar, więc nie ma czego wyrównywać.
    */
-  const waski = useNarrow(760)
-  const zPos = useTransform(
+  const waski = useNarrow(900)
+  const zPos = useTransform(p, [0, 0.42, 0.62, 1], waski ? [0, 0, 0, 0] : [-540, 0, 0, 300])
+  const depth = useTransform(zPos, (v) => `${v}px`)
+  /* Na telefonie dojazd w pionie zastępuje ruch w głąb, więc jest
+     wyraźniejszy — ale wciąż krótki, żeby nie rozjeżdżał rytmu. */
+  const drift = useTransform(
     p,
     [0, 0.42, 0.62, 1],
-    waski ? [-330, 0, 0, 0] : [-540, 0, 0, 300],
+    waski ? [44, 0, 0, -14] : [26, 0, 0, -20],
   )
-  const depth = useTransform(zPos, (v) => `${v}px`)
-  const drift = useTransform(p, [0, 0.42, 0.62, 1], [26, 0, 0, -20])
   const seam = useTransform(p, [0.06, 0.3], [0, 1])
   const dim = useTransform(p, [0.68, 1], [0, 0.3])
 

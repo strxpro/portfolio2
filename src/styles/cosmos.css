@@ -287,15 +287,9 @@ main { padding: 0 var(--float); }
     0 2px 30px rgba(11, 13, 20, 0.6);
 }
 
-/* Finał i echo jadą razem ze stroną, dopóki próg nie puści — stąd
-   wrażenie oporu na samym końcu. `--drag` ustawia `Loop.jsx` na
-   korzeniu dokumentu, żeby obie sekcje trzymały ten sam kadr. */
-.finale,
-.echo { transform: translateY(var(--drag, 0px)); will-change: transform; }
-
-/* powrót po przełamaniu progu: płynnie, bo szew musi się zgadzać */
-.drag-wraca .finale,
-.drag-wraca .echo { transition: transform 0.34s cubic-bezier(0.22, 0.61, 0.36, 1); }
+/* Finał i echo stoją nieruchomo. Były tu przesuwane przez `--drag`,
+   żeby dać wrażenie oporu przed pętlą — ale to było dokładnie
+   przesunięcie układu w chwili przejścia, a pętla ma być niewidoczna. */
 
 /* ── łańcuch nakładania ──────────────────────────────────
    Nachodzić ma tylko to, co ma czym przykryć. `.handoff` jest papierowy,
@@ -377,69 +371,39 @@ main > .leaf:has(+ .handoff) { padding-bottom: clamp(30px, 4vw, 60px); }
   .space-card { width: clamp(190px, 62vw, 300px); }
 }
 
+/* ── tunel na pełną szerokość ─────────────────────────────
+   Sekcja siedziała w tym samym „pudełku" co papierowe panele, więc
+   karty rozjeżdżające się na boki obcinała krawędź marginesu. Tunel
+   to jedyne miejsce, które ma być bez ram — wychodzi więc poza
+   `padding` `main` i zajmuje cały ekran. */
+.space {
+  margin-left: calc(var(--float) * -1);
+  margin-right: calc(var(--float) * -1);
+  border-radius: 0;
+  box-shadow: none;
+}
+.space::before { left: 0; right: 0; }
+
+/* Karty bardziej poziome: to podglądy stron, a strony są szersze niż
+   wyższe. Przy 16/10 i wąskim kaflu nie było widać, co to za witryna. */
+.space-card { width: clamp(210px, 27vw, 380px); }
+.space-card .cover { aspect-ratio: 16 / 9; }
+
+@media (max-width: 760px) {
+  .space-card { width: clamp(190px, 62vw, 300px); }
+}
+
 /* ═════════════════════════════════════════════════════════
    Prace na telefonie: koło zamiast tunelu.
    ═════════════════════════════════════════════════════════ */
 
-.rad { margin-left: calc(var(--float) * -1); margin-right: calc(var(--float) * -1); }
-.rad-stage { background: transparent; }
-
 /* Okno pokazuje tylko górę koła; maska zjada dolną krawędź, więc karty
    nie „kończą się" ostrą linią, tylko wtapiają w przestrzeń. */
-.rad-okno {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  -webkit-mask-image: linear-gradient(to top, transparent 4%, #000 34%, #000 100%);
-  mask-image: linear-gradient(to top, transparent 4%, #000 34%, #000 100%);
-}
 
-.rad-kolo {
-  position: absolute;
-  left: 50%;
-  transform-origin: 50% 50%;
-  translate: -50% 0;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  will-change: transform;
-}
-.rad-kolo > li { position: absolute; top: 50%; left: 50%; }
-
-.rad-karta {
-  display: block;
-  width: clamp(150px, 44vw, 230px);
-  padding: 0;
-  border: 1px solid rgba(243, 239, 230, 0.14);
-  border-radius: 14px;
-  overflow: hidden;
-  background: var(--card);
-  box-shadow: 0 18px 40px -22px rgba(0, 0, 0, 0.9);
-  transition: transform 0.32s var(--ease), box-shadow 0.32s var(--ease);
-}
 /* Dociśnięcie musi być natychmiast widoczne — na dotyku nie ma hovera,
    który uprzedzałby, że w coś się trafiło. */
-.rad-karta.on { transform: scale(1.06); box-shadow: 0 24px 54px -20px rgba(0, 0, 0, 0.95); }
-.rad-karta .cover { aspect-ratio: 16 / 10; height: auto; }
-
-.rad-pasek {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 8px 10px 9px;
-  border-top: 1px solid var(--rule);
-  font-family: var(--f-mono);
-  font-size: 9px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--ink-3);
-}
-.rad-pasek b { font-weight: 600; color: var(--ink); letter-spacing: 0.06em; }
 
 /* Napisy nad kołem, tak jak nad tunelem. */
-.rad .space-ui,
-.rad .space-meter { z-index: 6; pointer-events: none; }
 
 /* Doklejony róg następnej sekcji — patrz komentarz w `App.jsx`.
    Wysokość daje przy okazji zapas za szwem, w którym mieści się
@@ -549,7 +513,7 @@ main > .leaf:has(+ .handoff) { padding-bottom: clamp(30px, 4vw, 60px); }
 
 /* Póki teczka jest zamknięta, scena za nią stoi przygaszona. */
 .space.zamkniete .space-field,
-.space.zamkniete .rad-okno { opacity: 0; pointer-events: none; }
+
 .space.zamkniete .space-meter { opacity: 0; }
 
 /* ── telefon: dopasowanie elementów, które były robione pod szeroki kadr ──
@@ -567,7 +531,6 @@ main > .leaf:has(+ .handoff) { padding-bottom: clamp(30px, 4vw, 60px); }
   .plate-no { left: 14px; }
 
   /* Karty na kole też idą w górę — to one są tu treścią. */
-  .rad-karta { width: clamp(200px, 58vw, 280px); }
 
   /* Gigantyczny napis i tak nie mieści się w jednej linii na telefonie;
      mniejsza interlinia zbiera go w zwarty blok zamiast rozlewać. */
@@ -636,4 +599,123 @@ main > .leaf:has(+ .handoff) { padding-bottom: clamp(30px, 4vw, 60px); }
   .chain-rail,
   .chain-spark,
   .chain-drop { display: none; }
+}
+
+/* ═════════════════════════════════════════════════════════
+   Prace na telefonie: pozioma szyna przewijana palcem.
+   ═════════════════════════════════════════════════════════ */
+
+.rail {
+  margin-left: calc(var(--float) * -1);
+  margin-right: calc(var(--float) * -1);
+  border-radius: 0;
+  box-shadow: none;
+  /* Sekcja ma NORMALNĄ wysokość, bez przyklejonej sceny — to ona
+     decyduje, że można ją opuścić w dowolnym momencie. */
+  min-height: 0;
+  height: auto;
+  padding: clamp(52px, 12vw, 92px) 0 clamp(40px, 9vw, 72px);
+}
+.rail-in { position: relative; }
+.rail-ui { position: static; margin-bottom: clamp(22px, 6vw, 38px); }
+
+/* Szyna: natywne przewijanie w poziomie z doskakiwaniem do kart. */
+.rail-tor {
+  display: flex;
+  gap: clamp(12px, 3.4vw, 20px);
+  margin: 0;
+  padding: 4px var(--gap) 18px;
+  list-style: none;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-padding-left: var(--gap);
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  /* Pasek przewijania schodzi — kartki same mówią, że jest ich więcej. */
+  scrollbar-width: none;
+}
+.rail-tor::-webkit-scrollbar { display: none; }
+.rail-tor > li { flex: 0 0 auto; scroll-snap-align: start; }
+
+.rail-karta {
+  display: block;
+  width: min(78vw, 340px);
+  padding: 0;
+  border: 1px solid rgba(243, 239, 230, 0.14);
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--card);
+  box-shadow: 0 20px 44px -24px rgba(0, 0, 0, 0.9);
+  transition: transform var(--tap) var(--ease);
+}
+.rail-karta:active { transform: scale(0.975); }
+.rail-karta .cover { aspect-ratio: 16 / 10; height: auto; }
+
+.rail-pasek {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px 11px;
+  border-top: 1px solid var(--rule);
+  font-family: var(--f-mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.rail-pasek b {
+  font-family: var(--f-sans);
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink);
+}
+
+.rail-hint {
+  margin: 4px 0 0;
+  padding: 0 var(--gap);
+  font-family: var(--f-mono);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(243, 239, 230, 0.45);
+}
+
+/* Teczka w szynie leży w zwykłym rytmie, nie na całą wysokość ekranu. */
+.rail .fold { position: relative; inset: auto; padding: 8px var(--gap) 0; }
+
+/* ── sekcja „Cześć, tu Claudio" na telefonie ──────────────
+   Zdjęcia leżały jedno na drugim: mniejsze wisiało absolutnie przy
+   prawej krawędzi i przy 390 px zakrywało róg większego, co czytało
+   się jak przypadek, nie jak kompozycja. Na wąskim ekranie stoją
+   obok siebie, każde na swoim miejscu. */
+@media (max-width: 760px) {
+  .me-shots {
+    display: grid;
+    grid-template-columns: 1.35fr 1fr;
+    align-items: end;
+    gap: 10px;
+    padding-bottom: 0;
+  }
+  .me-shot.b {
+    position: static;
+    right: auto;
+    bottom: auto;
+    width: 100%;
+    border-width: 3px;
+  }
+  /* Plakietka wraca do wnętrza kadru — przy `left: -10px` na wąskim
+     ekranie wychodziła na margines sekcji. */
+  .me-stamp { left: 4px; top: -12px; }
+
+  /* Metryczka: dwie kolumny robiły z „szkoła informatyczna" trzy
+     wiersze po pół słowa. Jedna kolumna czyta się od razu. */
+  .me-creds { grid-template-columns: 1fr; }
+  .me-creds > div:nth-child(2n) { padding-left: 0; border-left: 0; }
+
+  /* Skala tekstu z szerokości kadru, nie ze stałych pikseli. */
+  .me-p { font-size: clamp(14.5px, 4.1vw, 16.5px); }
 }

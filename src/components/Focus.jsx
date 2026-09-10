@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { motion } from 'framer-motion'
-import SitePreview from './SitePreview'
+import LivePreview from './LivePreview'
 import { useT } from '../lib/lang-ctx'
 import { textOf } from '../lib/projects'
 import { EASE, SPRING } from '../lib/motion'
@@ -34,10 +34,22 @@ export default function Focus({ item, from, index, total, onPrev, onNext, onClos
       if (e.key === 'ArrowRight') { if (isOn()) tick(); onNext?.() }
     }
     window.addEventListener('keydown', klawisz)
+
+    /**
+     * Strona za modalem stoi.
+     *
+     * `lenis.stop()` wystarcza dla kółka, ale **nie dla dotyku** —
+     * palec dalej przewijałby dokument pod panelem. Klasa na `body`
+     * blokuje to natywnie; bez niej na telefonie tło uciekało w tle
+     * otwartego podglądu.
+     */
     window.__lenis?.stop()
+    document.body.classList.add('locked')
+
     return () => {
       window.removeEventListener('keydown', klawisz)
       window.__lenis?.start()
+      document.body.classList.remove('locked')
     }
   }, [onClose, onPrev, onNext])
 
@@ -152,8 +164,11 @@ export default function Focus({ item, from, index, total, onPrev, onNext, onClos
               <p className="focus-kind">{info.kind}</p>
             </div>
 
+            {/* Prawdziwa strona pracy, przewijalna w środku jak mała
+                przeglądarka. Gdy witryna nie pozwala się osadzić,
+                `LivePreview` sam podmienia się na podgląd rysowany. */}
             <div className="focus-art">
-              <SitePreview id={item.id} tint={item.tint} name={item.name} host={item.host} hint={t.tour.stop} />
+              <LivePreview item={item} hint={t.tour.stop} />
             </div>
 
             <div className="focus-used">

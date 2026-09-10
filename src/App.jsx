@@ -7,7 +7,7 @@ import Topbar from './components/Topbar'
 import Hero from './components/Hero'
 import Me from './components/Me'
 import Space from './components/Space'
-import Radial from './components/Radial'
+import Rail from './components/Rail'
 import { useNarrow } from './lib/useNarrow'
 import Giant from './components/Giant'
 import Handoff from './components/Handoff'
@@ -31,7 +31,7 @@ import { SPRING } from './lib/motion'
 
 export default function App() {
   const [loading, setLoading] = useState(true)
-  const waski = useNarrow(760)
+  const waski = useNarrow(900)
 
   // panel prac otwiera się adresem z `#admin` na końcu
   const [admin, setAdmin] = useState(() => window.location.hash === '#admin')
@@ -109,13 +109,16 @@ export default function App() {
         <Hero />
         <Leaf tone="white" z={1}><Me /></Leaf>
         {/**
-          * Prace: tunel na szerokim ekranie, koło na telefonie.
+          * Prace: tunel na szerokim ekranie, pozioma szyna na telefonie.
           *
-          * To nie jest ta sama sekcja w innych stylach — na pionowym
-          * ekranie tunel 3D albo daje mikroskopijne karty, albo wypycha
-          * je bokami. Kolo trzyma kartę zawsze u góry, duzą i na wprost.
+          * To nie jest ta sama sekcja w innych stylach. Tunel 3D wymaga
+          * szerokiego kadru i **pionowego** przewijania przez całą
+          * sekcję — na telefonie oznaczało to, że nie da się jej
+          * opuścić, dopóki nie przejedzie się wszystkich prac. Szyna
+          * przewija się palcem w poziomie, a gest pionowy zostaje dla
+          * strony.
           */}
-        {waski ? <Radial /> : <Space />}
+        {waski ? <Rail /> : <Space />}
         <Giant />
         <Handoff />
         <Leaf tone="white" z={6}><Lab /></Leaf>

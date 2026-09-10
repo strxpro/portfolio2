@@ -48,6 +48,7 @@ export const extra = {
       title: 'Przewijaj.',
       morph: ['Lecisz przez nie', 'Każde jest online', 'Każde ma klienta', 'Kliknij dowolne'],
       hint: 'rusz myszą albo przechyl telefon',
+      swipe: 'przesuń palcem →',
       gyro: 'Włącz czujnik ruchu',
     },
     giant: {
@@ -140,6 +141,7 @@ export const extra = {
       title: 'Keep scrolling.',
       morph: ['You fly past them', 'Every one is live', 'Every one has an owner', 'Click any of them'],
       hint: 'move the mouse or tilt your phone',
+      swipe: 'swipe →',
       gyro: 'Enable motion sensor',
     },
     giant: {
@@ -232,6 +234,7 @@ export const extra = {
       title: 'Continua a scorrere.',
       morph: ['Ci passi attraverso', 'Sono tutti online', 'Ognuno ha un cliente', 'Clicca quello che vuoi'],
       hint: 'muovi il mouse o inclina il telefono',
+      swipe: 'scorri →',
       gyro: 'Attiva il sensore di movimento',
     },
     giant: {

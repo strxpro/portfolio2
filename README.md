@@ -497,6 +497,92 @@ nie ma dla nich miejsca, odkad siedzi tam przyklejony guzik. Odsuniete
 sa tak, zeby minac krzyzyk: przy pierwszym ustawieniu prawa strzalka
 nachodzila na niego o 5 px (zmierzone na 375 px).
 
+## Petla: jeden ciagly dokument
+
+Za finalem stoi echo pierwszej sekcji plus doklejony gorny rog sekcji
+„o mnie" (`.echo` + `.echo-lip`). Na gornej krawedzi echa kadr jest
+**co do piksela taki sam jak na gorze strony** — i wtedy cofamy pozycje
+o dlugosc petli. Sprawdzone: przejscie przy trzech offsetach daje kadr
+identyczny z tym samym miejscem osiagnietym od gory.
+
+Trzy rzeczy, bez ktorych to nie jest plynne:
+
+1. **Rozped przezywa cofniecie.** Zapamietujemy dystans, jaki zostal do
+   dojechania (`targetScroll - animatedScroll`), i odtwarzamy go w nowym
+   miejscu. `scrollTo` ustawiloby obie liczby na nowo i dojazd stanalby
+   w miejscu — predkosc za szwem jest teraz dokladnie taka jak przed nim.
+2. **Pozycja przycieta do zakresu dokumentu.** Lenis przy rozpedzie
+   wyjezdza poza koniec strony (zmierzone: 995 px), a petla cofa o stala
+   dlugosc — z takiego licznika ladowala w srodku strony.
+3. **Petla dziala w dwie strony i na dotyku.** W gore nie ma zapasu
+   przewijania, wiec zdarzenie `scroll` nie przyjdzie; lapiemy intencje
+   z kolka **oraz z `touchmove`** (palec w dol = strona w gore, prog 8 px
+   odsiewa drgniecia). Wszystko w jednym efekcie z pelnym `cleanup`.
+
+### Czego tu celowo nie ma
+
+Byl prog z oporem: za finalem ruch robil sie ciezki, a widok wracal,
+jesli nie napieralo sie dalej. **Usuniete** — realizowal go `transform`
+na finale i echu, czyli dokladnie przesuniecie ukladu w chwili
+przejscia, a do tego zmienial odczuwana predkosc przewijania. Pętla ma
+wygladac jak swiadomy efekt, nie jak szarpniecie; jedno wykluczalo
+drugie.
+
+## Prace na telefonie: pozioma szyna
+
+`Rail.jsx` zastapil kolo obracane pionowym przewijaniem. Kolo wygladalo
+dobrze, ale **wiezilo**: sekcja byla wysoka i przyklejona, wiec zeby ja
+opuscic, trzeba bylo przejechac przez wszystkie prace.
+
+Teraz sekcja ma normalna wysokosc (zmierzone: 725 px przy kadrze 780),
+a prace leza na szynie z **natywnym przewijaniem** i `scroll-snap`.
+To nie wybor z lenistwa — natywne przewijanie daje za darmo wszystko,
+o co tu chodzi: gest palcem z systemowym rozpedem, zatrzymanie w
+dowolnym miejscu, a **gest pionowy przechodzi do strony**, wiec sekcje
+mozna opuscic w kazdej chwili. Zero nasluchow gestow w JS, wiec nie ma
+czego czyscic.
+
+`data-lenis-prevent` na torze jest konieczne: bez niego Lenis
+przechwytuje ruch nad szyna i przewija strone zamiast prac. Sprawdzone,
+ze osie sa niezalezne: poziomo tor 0 -> 635 przy stronie bez ruchu,
+pionowo strona +500 przy torze bez ruchu.
+
+Granica to 900 px, wiec tablet w pionie tez dostaje szyne — tunel 3D
+jest robiony pod mysz i szeroki kadr.
+
+## Modal: prawdziwa strona projektu
+
+`LivePreview.jsx` wstawia w modal zwykly `iframe` z adresem pracy,
+przewijalny palcem i kolkiem jak mala przegladarka. Pod nim leca
+**kafelki technologii z pola `stack`** w danych pracy — nie z sufitu.
+
+Nie ma tu zadnej sztuczki wokol `X-Frame-Options` ani CSP i **nie ma
+jej byc**. Zamiast tego wykrywamy odmowe i podmieniamy sie na rysowany
+podglad (`SitePreview`) plus wejscie na strone. Wykrycie jest z
+koniecznosci posrednie: przy innej domenie nie da sie zajrzec do ramki,
+a przegladarki **nie zglaszaja bledu** przy zablokowanym osadzeniu —
+`onError` nigdy nie przychodzi. Zostaje czas: jesli `onLoad` nie padnie
+w 6 s, uznajemy, ze nie wejdzie. Tam, gdzie z gory wiadomo, dane maja
+`embed: false`.
+
+Strona za modalem stoi na `lenis.stop()` **oraz** klasie `locked` na
+`body` — samo `stop()` wystarcza dla kolka, ale nie dla dotyku.
+
+## Sekcja „Claudio Taras" na telefonie
+
+Sekcje nie ruszaja sie w glab na waskim ekranie. Ruch po osi Z skaluje
+caly plan, a skalowany plan to **skalowany tekst**: przy 390 px akapit
+wjezdzal zmniejszony do 87% i mimo poprawnych marginesow wygladal na
+wcisniety w przypadkowe miejsce. Wyjscie na dodatnie Z bylo jeszcze
+gorsze — powiekszalo plan o 16% i wypychalo tresc na sasiednia sekcje.
+Zostaje krycie plus krotki dojazd w pionie; litery maja przez caly czas
+swoj docelowy rozmiar, wiec nie ma czego wyrownywac.
+
+Do tego: zdjecia stoja obok siebie zamiast jedno na drugim, metryczka
+w jednej kolumnie, plakietka wrocila do wnetrza kadru, a rozmiar tekstu
+idzie z szerokosci kadru. Sprawdzone na **360, 390, 424 i 768 px**:
+zero nachodzen, zero elementow poza kadrem, zero przewijania w poziomie.
+
 ## Panel prac
 
 Wchodzi sie **linkiem „Panel" w stopce** albo adresem z `#admin` na
