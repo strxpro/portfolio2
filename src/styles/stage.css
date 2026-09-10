@@ -1,0 +1,279 @@
+/* ═════════════════════════════════════════════════════════
+   Arkusze (przejścia między sekcjami), maskotka 3D i brief.
+   ═════════════════════════════════════════════════════════ */
+
+:root {
+  --leaf-r: clamp(22px, 3.6vw, 44px);
+  --leaf-over: clamp(52px, 8vw, 132px);
+}
+
+/* ── arkusz: sekcje kładą się jedna na drugiej ───────── */
+.leaf {
+  position: relative;
+  background: var(--paper);
+  border-radius: var(--leaf-r) var(--leaf-r) 0 0;
+  /* wjeżdża pod poprzednią sekcję i przykrywa jej dolny pas */
+  margin-top: calc(var(--leaf-over) * -1);
+  padding-bottom: var(--leaf-over);
+  transform-origin: top center;
+  border-top: 1px solid var(--rule);
+  box-shadow: 0 -34px 64px -30px rgba(23, 24, 26, 0.22);
+  will-change: transform;
+}
+.leaf.white { background: var(--card); }
+
+/* Tu była podkładka wystająca 52 px pod płachtę — dosypywała tła, żeby
+   dryf płachty nie odsłonił szczeliny między sekcjami. Miała sens, gdy
+   tło strony też było papierowe. Odkąd panele pływają w kosmosie, ta
+   sama podkładka sterczała spod zaokrąglonego rogu jako biały prostokąt
+   z ostrymi narożnikami. Szczelina jest dziś zamierzona, więc podkładki
+   nie ma. */
+
+/* Przestrzeń, w której leżą plany.
+   Plan mijający kamerę rośnie (perspektywa: 1400/(1400-300) ≈ 1.27), więc
+   wychodzi poza szerokość ekranu i robi poziomy pasek przewijania —
+   zmierzone 173 px. `clip` przycina go bez zakładania kontenera
+   przewijania, dzięki czemu `position: sticky` w środku dalej działa. */
+main {
+  perspective: 1400px;
+  perspective-origin: 50% 42%;
+  overflow-x: clip;
+  overflow-y: visible;
+}
+.leaf-inner { will-change: transform, opacity; }
+
+/* Telefon: ta sama zasada, słabszy efekt. Większa perspektywa to
+   łagodniejsze mijanie kamery (1.16× zamiast 1.27×) — na 375 px co
+   czwarty piksel szerokości poza kadrem to dużo. */
+@media (max-width: 700px) {
+  main { perspective: 2200px; }
+}
+
+/* Wyłączony ruch: plany stoją, treść jest po prostu widoczna. */
+@media (prefers-reduced-motion: reduce) {
+  main { perspective: none; }
+  .leaf-inner { opacity: 1 !important; transform: none !important; }
+  .leaf { transform: none !important; }
+  .leaf-dim { opacity: 0 !important; }
+}
+.leaf > section { padding-top: clamp(76px, 9vw, 132px); }
+
+/* przygaszenie arkusza, który został pod spodem */
+.leaf-dim {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: #241F19;
+  pointer-events: none;
+  opacity: 0;
+  /* własna warstwa: przy scrollu tylko się komponuje, nie przemalowuje
+     (bez tego p95 klatki rósł z ~62 ms do ~76 ms) */
+  transform: translateZ(0);
+  will-change: opacity;
+}
+
+.leaf-seam {
+  position: absolute;
+  left: 50%;
+  top: 15px;
+  width: 58px;
+  height: 3px;
+  margin-left: -29px;
+  border-radius: 3px;
+  background: var(--rule);
+  transform-origin: center;
+  pointer-events: none;
+}
+
+/* finał też jest arkuszem */
+.finale { margin-top: calc(var(--leaf-over) * -1); z-index: 10; }
+.stage {
+  border-radius: var(--leaf-r) var(--leaf-r) 0 0;
+  box-shadow: 0 -28px 56px -34px rgba(28, 27, 25, 0.26);
+}
+
+/* ── maskotka 3D ─────────────────────────────────────── */
+.pk3 { position: relative; }
+.pk3 canvas { width: 100%; height: 100%; display: block; }
+
+/* maskotka: duża, żeby było widać, że jest w 3D */
+.piksel {
+  width: clamp(132px, 17vw, 248px);
+}
+.piksel .pk3 { width: 100% !important; height: auto !important; aspect-ratio: 1 / 1.2; }
+@media (max-width: 700px) {
+  .piksel { width: 124px; --edge: 10px; }
+}
+
+/* ── szybkie linki obok briefu ───────────────────────── */
+.quick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  margin-top: 22px;
+}
+.quick a {
+  position: relative;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  padding-bottom: 3px;
+  transition: color var(--tap) var(--ease);
+}
+.quick a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--fast) var(--ease);
+}
+.quick a:hover { color: var(--ink); }
+.quick a:hover::after { transform: scaleX(1); }
+
+/* ── brief: rozmowa zamiast formularza ───────────────── */
+.brief { perspective: 1200px; }
+.brief-card {
+  position: relative;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-lg);
+  padding: 20px 22px 22px;
+  box-shadow: var(--sh-2);
+  transform-style: preserve-3d;
+}
+.leaf.white .brief-card,
+.panel .brief-card { background: var(--paper); }
+
+/* klapka koperty — leży odchylona, domyka się przy pieczętowaniu */
+.flap {
+  position: absolute;
+  left: -1px;
+  right: -1px;
+  top: -1px;
+  height: 152px;
+  transform-origin: top center;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  background: linear-gradient(180deg, #1E1E23, #16161A);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-lg) var(--r-lg) 0 0;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.brief-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.brief-face { flex: none; }
+.brief-dots { display: flex; gap: 7px; }
+.brief-dots .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--rule);
+}
+.brief-dots .dot.on { background: var(--accent); }
+
+.brief-stage { min-height: 186px; display: flex; flex-direction: column; justify-content: center; }
+.brief-q {
+  margin: 0 0 14px;
+  font-family: var(--f-serif);
+  font-weight: 400;
+  font-size: clamp(19px, 2.1vw, 24px);
+  line-height: 1.25;
+  letter-spacing: -0.012em;
+}
+
+.brief-input {
+  width: 100%;
+  padding: 12px 2px;
+  border: 0;
+  border-bottom: 1.5px solid var(--rule);
+  background: transparent;
+  font-family: var(--f-sans);
+  font-size: 17px;
+  color: var(--ink);
+  outline: none;
+  transition: border-color var(--fast) var(--ease);
+}
+.brief-input::placeholder { color: var(--ink-3); }
+.brief-input:focus { border-color: var(--accent); }
+.brief-input.area { resize: none; line-height: 1.5; font-size: 15.5px; }
+
+.brief-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.brief-chip {
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--rule);
+  background: var(--card);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-2);
+  transition: border-color var(--tap) var(--ease), color var(--tap) var(--ease);
+}
+.brief-chip:hover { border-color: var(--ink-3); color: var(--ink); }
+.brief-chip.on { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+
+.brief-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  margin-top: 20px;
+}
+.brief-next { margin-left: auto; }
+.brief-back {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-3);
+  transition: color var(--fast) var(--ease);
+}
+.brief-back:hover { color: var(--ink); }
+
+.brief-sealed { text-align: left; padding-top: 74px; }
+.brief-sum {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+.wax {
+  position: absolute;
+  left: 50%;
+  top: 152px;
+  width: 62px;
+  height: 62px;
+  margin: -31px 0 0 -31px;
+  z-index: 6;
+  filter: drop-shadow(0 6px 14px rgba(28, 27, 25, 0.28));
+  pointer-events: none;
+}
+
+/* panel kontaktowy: brief obok nagłówka */
+.panel .contact { align-items: center; }
+@media (max-width: 860px) {
+  .panel .contact { grid-template-columns: 1fr; }
+  .panel .quick { margin-top: 14px; }
+}
+@media (max-height: 780px) {
+  .panel .contact .lead { display: none; }
+  .brief-stage { min-height: 158px; }
+}
+@media (max-width: 620px) {
+  .panel .quick { display: none; }
+  .brief-card { padding: 16px 16px 18px; }
+  .brief-stage { min-height: 168px; }
+}

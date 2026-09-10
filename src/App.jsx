@@ -1,0 +1,153 @@
+import { useEffect, useState } from 'react'
+import { AnimatePresence, MotionConfig, motion, useScroll, useSpring } from 'framer-motion'
+import Lenis from 'lenis'
+
+import Loader from './components/Loader'
+import Topbar from './components/Topbar'
+import Hero from './components/Hero'
+import Me from './components/Me'
+import Space from './components/Space'
+import Radial from './components/Radial'
+import { useNarrow } from './lib/useNarrow'
+import Giant from './components/Giant'
+import Handoff from './components/Handoff'
+import Lab from './components/Lab'
+import Services from './components/Services'
+import Process from './components/Process'
+import Trust from './components/Trust'
+import StickyCta from './components/StickyCta'
+import Finale from './components/Finale'
+import Leaf from './components/Leaf'
+import Guide from './components/Guide'
+import Cursor from './components/Cursor'
+import Jump from './components/Jump'
+import Loop from './components/Loop'
+import Admin from './components/Admin'
+import Grain from './components/Grain'
+import Cosmos from './components/Cosmos'
+import { MascotProvider } from './lib/mascot'
+import { LangProvider } from './lib/lang'
+import { SPRING } from './lib/motion'
+
+export default function App() {
+  const [loading, setLoading] = useState(true)
+  const waski = useNarrow(760)
+
+  // panel prac otwiera się adresem z `#admin` na końcu
+  const [admin, setAdmin] = useState(() => window.location.hash === '#admin')
+  useEffect(() => {
+    const onHash = () => setAdmin(window.location.hash === '#admin')
+    window.addEventListener('hashchange', onHash)
+    return () => window.removeEventListener('hashchange', onHash)
+  }, [])
+  const { scrollYProgress } = useScroll()
+  const bar = useSpring(scrollYProgress, SPRING.scroll)
+
+  /**
+   * Pasek postępu przy domknięciu pętli.
+   *
+   * Sprężyna wygładza każdą zmianę, więc po cofnięciu pozycji
+   * przejechałaby przez cały pasek z powrotem — jedyna rzecz na ekranie,
+   * która zdradzałaby, że coś się stało. `jump()` ustawia wartość bez
+   * dojazdu, dokładnie w tej samej klatce co przesunięcie widoku.
+   */
+  useEffect(() => {
+    const snap = () => bar.jump(scrollYProgress.get())
+    window.addEventListener('strx:loop', snap)
+    return () => window.removeEventListener('strx:loop', snap)
+  }, [bar, scrollYProgress])
+
+  // strona zawsze startuje od gory, nawet po odswiezeniu w polowie
+  useEffect(() => {
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
+    window.scrollTo(0, 0)
+  }, [])
+
+  useEffect(() => {
+    document.body.classList.toggle('locked', loading)
+  }, [loading])
+
+  useEffect(() => {
+    if (loading) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    /* Dłuższy dobieg i łagodniejsza krzywa — koniec gestu ma wybrzmieć,
+       a nie uciąć się w miejscu, w którym puściłeś kółko. */
+    const lenis = new Lenis({
+      duration: 1.25,
+      easing: (t) => 1 - Math.pow(1 - t, 3.2),
+      smoothWheel: true,
+      touchMultiplier: 1.6,
+    })
+    window.__lenis = lenis
+    let raf
+    const loop = (time) => {
+      lenis.raf(time)
+      raf = requestAnimationFrame(loop)
+    }
+    raf = requestAnimationFrame(loop)
+    return () => { cancelAnimationFrame(raf); lenis.destroy(); delete window.__lenis }
+  }, [loading])
+
+  return (
+    <LangProvider>
+    {/* `reducedMotion="user"` wycina ruch (przesunięcia, obroty, głębię),
+        ale zostawia zmiany przezroczystości — więc przy wyłączonych
+        animacjach w systemie treść wchodzi, zamiast zostać niewidoczna. */}
+    <MotionConfig reducedMotion="user">
+    <MascotProvider>
+      <Cosmos />
+      <motion.div className="progress" style={{ scaleX: bar }} />
+
+      <AnimatePresence>
+        {loading && <Loader key="loader" onDone={() => setLoading(false)} />}
+      </AnimatePresence>
+
+      <Topbar />
+
+      <main>
+        <Hero />
+        <Leaf tone="white" z={1}><Me /></Leaf>
+        {/**
+          * Prace: tunel na szerokim ekranie, koło na telefonie.
+          *
+          * To nie jest ta sama sekcja w innych stylach — na pionowym
+          * ekranie tunel 3D albo daje mikroskopijne karty, albo wypycha
+          * je bokami. Kolo trzyma kartę zawsze u góry, duzą i na wprost.
+          */}
+        {waski ? <Radial /> : <Space />}
+        <Giant />
+        <Handoff />
+        <Leaf tone="white" z={6}><Lab /></Leaf>
+        <Leaf tone="paper" z={7}><Services /></Leaf>
+        <Leaf tone="white" z={8}><Process /></Leaf>
+        <Leaf tone="paper" z={9}><Trust /></Leaf>
+      </main>
+
+      <Finale />
+
+      {/* Szew pętli: to samo, co na górze strony. Kiedy tu dojedziesz,
+          kadr jest identyczny jak na starcie — i wtedy `Loop` po cichu
+          cofa pozycję przewijania. */}
+      <div className="echo" aria-hidden="true">
+        <Hero ghost />
+      </div>
+      <Guide />
+      <Cursor />
+      <Jump />
+      <Loop />
+      {admin && (
+        <Admin
+          onClose={() => {
+            window.location.hash = ''
+            setAdmin(false)
+          }}
+        />
+      )}
+      <StickyCta />
+      <Grain />
+    </MascotProvider>
+    </MotionConfig>
+    </LangProvider>
+  )
+}

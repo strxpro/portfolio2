@@ -1,0 +1,442 @@
+/* ═════════════════════════════════════════════════════════
+   Kosmos: przestrzeń, w której unoszą się panele strony.
+   ═════════════════════════════════════════════════════════ */
+
+:root {
+  /* głębia jest granatowa, nie czarna — czerń przy ciepłym papierze
+     wygląda jak dziura, granat jak noc */
+  --void:   #0B0D14;
+  --void-2: #141827;
+  /* Ile przestrzeni widać dookoła paneli.
+     Było 4.6vw i przy 961 px dawało 44 px — technicznie działało, ale
+     na oko nie dało się stwierdzić, że panel w czymkolwiek pływa.
+     Teraz zaczyna się od 12 px nawet na telefonie i dochodzi do 110. */
+  --float:  clamp(12px, 6vw, 110px);
+  --float-r: clamp(20px, 2.6vw, 40px);
+}
+
+body { background: var(--void); }
+
+.cosmos {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 80% at 50% -10%, var(--void-2) 0%, var(--void) 62%);
+}
+
+.cos-plan {
+  position: absolute;
+  left: 0;
+  /* kafel wychodzi nad kadr, żeby przy przesuwaniu w dół nie odsłonić
+     górnej krawędzi płótna */
+  top: -480px;
+  display: block;
+  will-change: transform;
+}
+
+/* dwie mgławice: ciepła u góry, chłodna niżej — dają kierunek światła */
+.cos-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.5;
+}
+.cos-glow.a {
+  width: 60vw;
+  height: 42vw;
+  left: -12vw;
+  top: -14vw;
+  background: radial-gradient(circle, rgba(120, 96, 74, 0.5), transparent 68%);
+}
+.cos-glow.b {
+  width: 52vw;
+  height: 40vw;
+  right: -14vw;
+  bottom: -10vw;
+  background: radial-gradient(circle, rgba(27, 77, 245, 0.28), transparent 70%);
+}
+
+/* Smuga: jasna główka i gasnący ogon, całość obrócona pod kątem lotu.
+   Szerokość, grubość i krycie ustawia `Cosmos.jsx` — zależą od tego,
+   jak głęboko dana gwiazda leci. */
+.cos-shot {
+  position: absolute;
+  border-radius: 2px;
+  transform-origin: left center;
+  background: linear-gradient(90deg, rgba(255, 251, 242, 0) 0%, rgba(255, 251, 242, 0.75) 72%, #FFFBF2 100%);
+  box-shadow: 0 0 8px rgba(255, 251, 242, 0.5);
+  pointer-events: none;
+}
+
+.cos-vign {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(115% 90% at 50% 45%, transparent 52%, rgba(4, 5, 9, 0.72) 100%);
+}
+
+/* ── panele unoszą się w tej przestrzeni ─────────────────── */
+/* Bez marginesu po bokach nie widać, że cokolwiek jest za stroną —
+   płachty stykały się z krawędziami ekranu i kosmos był zasłonięty
+   w stu procentach. */
+main,
+.finale,
+.echo { position: relative; z-index: 1; }
+
+/* Odsunięcie od krawędzi jest teraz na każdej szerokości — na telefonie
+   te 12 px wystarczy, żeby było widać, że strona leży w czymś, a nie
+   jest naklejona na ekran. */
+main { padding: 0 var(--float); }
+.leaf,
+.hero,
+.space,
+.giant,
+.handoff { border-radius: var(--float-r); }
+.finale { margin-left: var(--float); margin-right: var(--float); border-radius: var(--float-r); }
+.echo { padding: 0 var(--float); }
+
+/* Sekcje same w sobie są nieprzezroczyste; cień z ciemnej strony daje
+   im grubość, żeby nie wyglądały jak naklejone na tapetę. Promień jest
+   umiarkowany — 90 px rozmycia na płachcie wielkości ekranu to kilka
+   milisekund na klatkę za coś, czego i tak nie widać. */
+.leaf,
+.hero,
+.space,
+.giant,
+.handoff {
+  box-shadow: 0 22px 44px -28px rgba(0, 0, 0, 0.85);
+}
+
+/* Cienka jasna krawędź na górze panelu: papier styka się z granatem,
+   a bez niej ten styk wygląda na wycięty nożyczkami, nie na oświetlony. */
+.leaf::after,
+.handoff::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 1px;
+  border-radius: inherit;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
+  pointer-events: none;
+}
+
+/* Telefon: przestrzeń widać u góry i u dołu ekranu, nie po bokach —
+   przy 375 px każdy zabrany piksel szerokości boli. */
+@media (max-width: 859px) {
+  .cos-glow { opacity: 0.4; }
+}
+
+/* ═════════════════════════════════════════════════════════
+   Hero jako kadr w przestrzeni.
+
+   Reszta strony to papierowe panele unoszące się w kosmosie, ale
+   pierwszy ekran jest samą przestrzenią — nie ma pod nim płachty,
+   więc widać gwiazdy aż po krawędzie. Stąd odwrócone kolory: atrament
+   na papierze zamienia się na papier na granacie.
+   ═════════════════════════════════════════════════════════ */
+
+.hero {
+  background: transparent;
+  box-shadow: none;
+  color: #F3EFE6;
+}
+.hero .display,
+.hero .lead,
+.hero .label { color: #F3EFE6; }
+.hero .lead { color: rgba(243, 239, 230, 0.76); }
+
+.hero .avail {
+  color: rgba(243, 239, 230, 0.9);
+  background: rgba(243, 239, 230, 0.07);
+  box-shadow: inset 0 0 0 1px rgba(243, 239, 230, 0.16);
+}
+
+/* Guzik główny odwraca się razem z tłem: na granacie to jasna plama
+   jest tą mocniejszą, a nie ciemna. */
+.hero .btn {
+  background: #F3EFE6;
+  color: var(--void);
+}
+.hero .btn.ghost {
+  background: transparent;
+  color: #F3EFE6;
+  box-shadow: inset 0 0 0 1px rgba(243, 239, 230, 0.3);
+}
+.hero .btn.ghost:hover { box-shadow: inset 0 0 0 1px rgba(243, 239, 230, 0.62); }
+
+/* Wizytówka zostaje papierowa, więc musi wyjść spod jasnego koloru
+   hero — inaczej dziedziczy go i nazwisko robi się białe na białym. */
+.hero .hero-card { color: var(--ink); }
+.hero .hero-card strong { color: var(--ink); }
+.hero .hero-card span,
+.hero .hero-card figcaption { color: var(--ink-2); }
+.hero .hero-card .shot-gap code { color: var(--ink-3); }
+
+.hero .hero-scroll { color: rgba(243, 239, 230, 0.72); }
+.hero .hero-scroll i { background: rgba(243, 239, 230, 0.72); }
+
+/* Rysunki wokół hero: cienka jasna kreska zamiast atramentowej. */
+.hero .hmark { color: rgba(243, 239, 230, 0.26); }
+
+/* Pasek na górze jest przezroczysty, dopóki nie wjedzie na papier —
+   nad ciemnym kadrem musi więc świecić, inaczej znika. */
+.topbar:not(.stuck) { color: #F3EFE6; }
+.topbar:not(.stuck) .brand { color: #F3EFE6; }
+.topbar:not(.stuck) .topnav a { color: rgba(243, 239, 230, 0.66); }
+.topbar:not(.stuck) .topnav a:hover,
+.topbar:not(.stuck) .topnav a.on { color: #F3EFE6; background: rgba(243, 239, 230, 0.1); }
+.topbar:not(.stuck) .btn { background: #F3EFE6; color: var(--void); }
+/* Przełącznik języka i dźwięku to jasne pigułki — nad granatem robią
+   się dwiema białymi plamami, więc tu są ze szkła zamiast z papieru. */
+.topbar:not(.stuck) .langs,
+.topbar:not(.stuck) .snd {
+  background: rgba(243, 239, 230, 0.08);
+  border-color: rgba(243, 239, 230, 0.2);
+  color: rgba(243, 239, 230, 0.72);
+  backdrop-filter: blur(6px);
+}
+.topbar:not(.stuck) .langs button { color: rgba(243, 239, 230, 0.6); }
+.topbar:not(.stuck) .langs button.on,
+.topbar:not(.stuck) .langs button.on > span { color: var(--void); }
+.topbar:not(.stuck) .lang-pill { background: #F3EFE6; }
+.topbar:not(.stuck) .snd-bars i { background: rgba(243, 239, 230, 0.6); }
+.topbar:not(.stuck) .snd.on .snd-bars i { background: #F3EFE6; }
+
+/* ═════════════════════════════════════════════════════════
+   Tunel prac też leży w przestrzeni.
+
+   Na papierze karty jadące w głąb czytały się jak naklejki na białej
+   kartce — głębia była w kodzie, ale nie było jej widać. Na granacie
+   ta sama scena od razu ma dystans, bo ciemność za obiektem to
+   najprostszy sygnał „tu jest daleko".
+   ═════════════════════════════════════════════════════════ */
+
+.space {
+  background: transparent;
+  box-shadow: none;
+  color: #F3EFE6;
+}
+.space .space-stage { background: transparent; }
+.space .space-title,
+.space .space-count,
+.space .space-name { color: #F3EFE6; }
+.space .label,
+.space .space-hint { color: rgba(243, 239, 230, 0.5); }
+.space .space-meter,
+.space .space-ui { color: rgba(243, 239, 230, 0.72); }
+
+.space .space-gyro {
+  color: #F3EFE6;
+  background: rgba(243, 239, 230, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(243, 239, 230, 0.22);
+}
+
+/**
+ * Mgła wolumetryczna z tunelu **znika**.
+ *
+ * Trzy wielkie gradienty radialne malowane nad przezroczystą sekcją
+ * kosztowały **70 ms na klatkę** — zmierzone: 106 ms z nimi, 42 ms bez,
+ * czyli 9 fps kontra 24. To nie ruch był problemem (zatrzymanie mgły nic
+ * nie dało) ani warstwa kompozytora (`will-change` też nie), tylko samo
+ * mieszanie tych płacht z tym, co jest pod spodem: gwiazdami, poświatą
+ * i winietą.
+ *
+ * Nic na tym nie tracimy. Mgła miała robić powietrze między kartami,
+ * a w kosmosie robi to ciemność i winieta — dystans widać nawet lepiej
+ * niż wcześniej.
+ */
+.space .space-fog { display: none; }
+.space .space-vign {
+  background: radial-gradient(110% 85% at 50% 45%, transparent 46%, rgba(6, 8, 14, 0.9) 100%);
+}
+
+/* Karty zostają jasne — to one mają być tym, co świeci w ciemności.
+   Cień jest ciasny: dziesięć kart z szerokim rozmyciem to kolejne
+   kilka milisekund na klatkę, a i tak widać z niego tylko styk. */
+.space .space-card { box-shadow: 0 14px 30px -18px rgba(0, 0, 0, 0.8); }
+
+/* Karty są jasne, więc muszą wyjść spod jasnego koloru sekcji —
+   inaczej ich podpisy robią się białe na białym. */
+.space .space-card,
+.space .space-card * { color: var(--ink); }
+
+/* …ale reset jest tępy i zabierał też kolory, które są na karcie
+   celowo: napis na ciemnej pigułce robił się ciemny na ciemnym,
+   a plakietka traciła akcent. Stąd te trzy wyjątki. */
+.space .space-card .invite-badge { color: var(--accent); }
+.space .space-card .invite-go,
+.space .space-card .invite-go svg { color: var(--card); }
+
+/* Napisy tunelu nad mgłą, nie pod nią — mgła przyciemnia teraz kadr,
+   więc tytuł pod nią gasł razem z tłem.
+   Samo `z-index`, bez ruszania `position`: przestawienie na `relative`
+   wyrzuciło licznik z dołu sceny na środek i lądował wprost na tytule. */
+.space .space-ui,
+.space .space-meter { z-index: 6; }
+
+/* Halo tytułu było w kolorze papieru — na granacie świeciło jak lampa
+   i rozmazywało litery. Tutaj ma odcinać napis od kart, nie świecić. */
+.space .space-title {
+  text-shadow:
+    0 0 16px rgba(11, 13, 20, 0.9),
+    0 0 38px rgba(11, 13, 20, 0.75),
+    0 2px 30px rgba(11, 13, 20, 0.6);
+}
+
+/* Finał i echo jadą razem ze stroną, dopóki próg nie puści — stąd
+   wrażenie oporu na samym końcu. `--drag` ustawia `Loop.jsx` na
+   korzeniu dokumentu, żeby obie sekcje trzymały ten sam kadr. */
+.finale,
+.echo { transform: translateY(var(--drag, 0px)); will-change: transform; }
+
+/* powrót po przełamaniu progu: płynnie, bo szew musi się zgadzać */
+.drag-wraca .finale,
+.drag-wraca .echo { transition: transform 0.34s cubic-bezier(0.22, 0.61, 0.36, 1); }
+
+/* ── łańcuch nakładania ──────────────────────────────────
+   Nachodzić ma tylko to, co ma czym przykryć. `.handoff` jest papierowy,
+   więc wchodzi na poprzednią sekcję jak zwykła płachta. Tunel i gigant
+   są przezroczyste — wsunięte pod papier nie zakrywały niczego, za to
+   odsłaniały dolny zapas płachty jako goły pas pustego papieru. */
+.space,
+.giant,
+.handoff { position: relative; }
+.space { z-index: 2; }
+.giant { z-index: 3; }
+.handoff {
+  z-index: 4;
+  margin-top: calc(var(--leaf-over) * -1);
+}
+
+/* Płachta, po której idzie sekcja w próżni, nie potrzebuje zapasu na
+   nachodzenie — kończy się tam, gdzie kończy się jej treść. */
+main > .leaf:has(+ .space),
+main > .leaf:has(+ .giant),
+main > .leaf:has(+ .handoff) { padding-bottom: clamp(30px, 4vw, 60px); }
+
+/* Sekcje papierowe muszą rzucać cień na to, co pod nimi — bez tego
+   nakładanie widać dopiero, gdy kolory się różnią. */
+.handoff { box-shadow: 0 -30px 60px -34px rgba(0, 0, 0, 0.85); }
+
+/* Przezroczyste sekcje (tunel, gigant) nie mają czym przykryć
+   poprzedniej, więc ich górna krawędź jest tylko cienką kreską —
+   tyle wystarczy, żeby oko widziało, że zaczyna się nowy plan. */
+.space::before,
+.giant::before {
+  content: '';
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(243, 239, 230, 0.16), transparent);
+  pointer-events: none;
+}
+
+/* ── tunel na WebGL-u ─────────────────────────────────────
+   Kanwa wypełnia przyklejoną scenę i leży pod napisami: tytuł i
+   podpowiedź to zwykły HTML, bo tekst w teksturze jest nie do
+   zaznaczenia, nie do przeczytania czytnikiem i nie do zindeksowania. */
+.spg-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+.spg-canvas canvas { display: block; width: 100% !important; height: 100% !important; }
+
+/* Kliknięcia obsługuje scena, ale napisy nad nią nie mogą ich łapać —
+   inaczej tytuł zasłaniałby karty przelatujące pod nim. */
+.spg .space-ui,
+.spg .space-meter { pointer-events: none; }
+.spg .space-meter a,
+.spg .space-meter button { pointer-events: auto; }
+
+/* ── tunel na pełną szerokość ─────────────────────────────
+   Sekcja siedziała w tym samym „pudełku" co papierowe panele, więc
+   karty rozjeżdżające się na boki obcinała krawędź marginesu. Tunel
+   to jedyne miejsce, które ma być bez ram — wychodzi więc poza
+   `padding` `main` i zajmuje cały ekran. */
+.space {
+  margin-left: calc(var(--float) * -1);
+  margin-right: calc(var(--float) * -1);
+  border-radius: 0;
+  box-shadow: none;
+}
+.space::before { left: 0; right: 0; }
+
+/* Karty bardziej poziome: to podglądy stron, a strony są szersze niż
+   wyższe. Przy 16/10 i wąskim kaflu nie było widać, co to za witryna. */
+.space-card { width: clamp(210px, 27vw, 380px); }
+.space-card .cover { aspect-ratio: 16 / 9; }
+
+@media (max-width: 760px) {
+  .space-card { width: clamp(190px, 62vw, 300px); }
+}
+
+/* ═════════════════════════════════════════════════════════
+   Prace na telefonie: koło zamiast tunelu.
+   ═════════════════════════════════════════════════════════ */
+
+.rad { margin-left: calc(var(--float) * -1); margin-right: calc(var(--float) * -1); }
+.rad-stage { background: transparent; }
+
+/* Okno pokazuje tylko górę koła; maska zjada dolną krawędź, więc karty
+   nie „kończą się" ostrą linią, tylko wtapiają w przestrzeń. */
+.rad-okno {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to top, transparent 4%, #000 34%, #000 100%);
+  mask-image: linear-gradient(to top, transparent 4%, #000 34%, #000 100%);
+}
+
+.rad-kolo {
+  position: absolute;
+  left: 50%;
+  transform-origin: 50% 50%;
+  translate: -50% 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  will-change: transform;
+}
+.rad-kolo > li { position: absolute; top: 50%; left: 50%; }
+
+.rad-karta {
+  display: block;
+  width: clamp(150px, 44vw, 230px);
+  padding: 0;
+  border: 1px solid rgba(243, 239, 230, 0.14);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--card);
+  box-shadow: 0 18px 40px -22px rgba(0, 0, 0, 0.9);
+  transition: transform 0.32s var(--ease), box-shadow 0.32s var(--ease);
+}
+/* Dociśnięcie musi być natychmiast widoczne — na dotyku nie ma hovera,
+   który uprzedzałby, że w coś się trafiło. */
+.rad-karta.on { transform: scale(1.06); box-shadow: 0 24px 54px -20px rgba(0, 0, 0, 0.95); }
+.rad-karta .cover { aspect-ratio: 16 / 10; height: auto; }
+
+.rad-pasek {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px 9px;
+  border-top: 1px solid var(--rule);
+  font-family: var(--f-mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.rad-pasek b { font-weight: 600; color: var(--ink); letter-spacing: 0.06em; }
+
+/* Napisy nad kołem, tak jak nad tunelem. */
+.rad .space-ui,
+.rad .space-meter { z-index: 6; pointer-events: none; }

@@ -1,0 +1,322 @@
+/* ═════════════════════════════════════════════════════════
+   Autorskie okładki projektów, mocniejszy hero,
+   kalkulator zakresu i poprawione stany aktywne.
+   ═════════════════════════════════════════════════════════ */
+
+/* ── okładka projektu ────────────────────────────────── */
+.cover {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--wash);
+}
+.cover svg { width: 100%; height: 100%; display: block; }
+.cover-tag,
+.cover-name {
+  position: absolute;
+  font-family: var(--f-mono);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink);
+  opacity: 0.55;
+}
+/* podkładka, żeby podpis nigdy nie wpadał w rysunek */
+.cover-tag,
+.cover-name {
+  padding: 3px 7px;
+  border-radius: 5px;
+  background: rgba(252, 251, 247, 0.72);
+}
+.cover-tag { left: 9px; top: 9px; }
+.cover-name {
+  right: 9px;
+  bottom: 9px;
+  font-family: var(--f-serif);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: -0.01em;
+  text-transform: none;
+  opacity: 0.85;
+}
+.pv-page { padding: 0 !important; display: block !important; height: 100%; }
+
+/* ── hero ────────────────────────────────────────────── */
+.hero-status {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: clamp(20px, 3vw, 34px);
+}
+.hero-facts {
+  display: inline-flex;
+  gap: 10px;
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.hero-facts b { font-weight: 400; color: var(--rule); margin-right: 10px; }
+
+.hero-scroll {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: clamp(22px, 3.4vw, 40px);
+  font-family: var(--f-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.hero-scroll i {
+  display: block;
+  width: 1px;
+  height: 22px;
+  background: linear-gradient(to bottom, var(--ink-3), transparent);
+}
+
+/* ── kalkulator zakresu ──────────────────────────────── */
+.calc {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: clamp(20px, 3.4vw, 46px);
+  align-items: start;
+}
+@media (max-width: 820px) { .calc { grid-template-columns: 1fr; gap: 24px; } }
+
+.calc-chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 12px; }
+.calc-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 15px;
+  border-radius: 999px;
+  border: 1px solid var(--rule);
+  background: var(--paper);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink-2);
+  transition: border-color var(--tap) var(--ease), color var(--tap) var(--ease), background var(--tap) var(--ease);
+}
+.calc-chip:hover { border-color: var(--ink-3); color: var(--ink); }
+.calc-chip.on { background: var(--ink); border-color: var(--ink); color: var(--card); }
+.calc-box {
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1px solid currentColor;
+  font-size: 11px;
+  line-height: 1;
+  opacity: 0.65;
+}
+
+.calc-out {
+  padding: clamp(18px, 2.4vw, 26px);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-lg);
+  background: var(--paper);
+}
+.calc-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 10px 0;
+}
+.calc-row strong {
+  font-family: var(--f-serif);
+  font-weight: 800;
+  font-size: clamp(24px, 3vw, 34px);
+  letter-spacing: -0.032em;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.calc-row small { font-size: 0.5em; color: var(--ink-3); font-weight: 600; }
+.calc-bar {
+  height: 3px;
+  border-radius: 3px;
+  background: var(--rule);
+  overflow: hidden;
+  margin: 4px 0 8px;
+}
+.calc-bar i { display: block; height: 100%; background: var(--accent); }
+.calc-go { width: 100%; justify-content: center; margin-top: 14px; }
+.calc-note { margin: 12px 0 0; font-size: 11.5px; color: var(--ink-3); line-height: 1.5; }
+
+/* ── stany aktywne: tekst nigdy biały na białym ──────── */
+.lab-tabs button.on,
+.lg-switch button.on,
+.langs button.on {
+  background: var(--ink);
+  color: var(--card);
+}
+.lab-pill,
+.lg-pill,
+.lang-pill { background: var(--ink); }
+.lab-tabs button.on > span,
+.lg-switch button.on > span,
+.langs button.on > span { color: var(--card); }
+.svc-list li.on button { color: var(--ink); }
+.gantt-row.on .gantt-name { color: var(--accent); }
+
+/* ═════════════════════════════════════════════════════════
+   Pionowy podgląd strony w pop-oucie.
+   ═════════════════════════════════════════════════════════ */
+
+.sp {
+  border: 1px solid var(--rule);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  background: var(--card);
+  box-shadow: 0 18px 40px -26px rgba(23, 24, 26, 0.4);
+}
+
+/* pasek okna: trzy kropki i adres */
+.sp-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--rule);
+  background: var(--paper);
+  font-family: var(--f-mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.sp-bar i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--rule);
+}
+.sp-bar span {
+  margin-left: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Okno na sztorc. To ono robi całą różnicę: strona jest wyższa niż
+   szkło, więc przejeżdża przez nie zamiast stać. */
+.sp-glass {
+  position: relative;
+  aspect-ratio: 10 / 15;
+  overflow: hidden;
+  background: var(--card);
+}
+/* Przejazd strony. W klatkach CSS, a nie w Framerze, bo tylko wtedy
+   `animation-play-state` pozwala **zatrzymać podgląd najechaniem** —
+   a to najbardziej odruchowy gest, jaki się tu nasuwa. */
+.sp-page {
+  will-change: transform;
+  animation: sp-jedzie 17s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}
+@keyframes sp-jedzie {
+  0%, 5%   { transform: translateY(0); }
+  62%      { transform: translateY(-62%); }
+  95%, 100% { transform: translateY(0); }
+}
+.sp:hover .sp-page,
+.sp:hover .sp-scroll { animation-play-state: paused; }
+
+/* Okno lekko się unosi pod kursorem — sygnał, że da się z nim coś zrobić. */
+.sp {
+  transition: transform var(--fast) var(--ease), box-shadow var(--fast) var(--ease);
+}
+.sp:hover { transform: translateY(-2px); box-shadow: 0 26px 54px -28px rgba(23, 24, 26, 0.5); }
+.sp:hover .sp-bar i:nth-child(1) { background: #E2685B; }
+.sp:hover .sp-bar i:nth-child(2) { background: #E2B45B; }
+.sp:hover .sp-bar i:nth-child(3) { background: #6FBE7A; }
+.sp-bar i { transition: background var(--fast) var(--ease); }
+
+/* Podpowiedź: jest, dopóki nie zrobisz tego, o czym mówi. */
+.sp-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  transform: translateX(-50%);
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: rgba(23, 24, 26, 0.82);
+  color: var(--paper);
+  font-family: var(--f-mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0.9;
+  transition: opacity var(--fast) var(--ease), transform var(--fast) var(--ease);
+}
+.sp:hover .sp-hint { opacity: 0; transform: translateX(-50%) translateY(6px); }
+
+.sp-hero { aspect-ratio: 16 / 10; }
+.sp-hero .cover { height: 100%; }
+
+.sp-blok { padding: 16px 14px; }
+.sp-blok.tekst { display: grid; gap: 7px; }
+.sp-h {
+  width: 54%;
+  height: 11px;
+  border-radius: 3px;
+  background: var(--ink);
+  opacity: 0.72;
+}
+.sp-l {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--ink);
+  opacity: 0.16;
+}
+.sp-siatka { display: grid; gap: 8px; }
+.sp-siatka span {
+  aspect-ratio: 4 / 3;
+  border-radius: 8px;
+  background: var(--wash);
+  box-shadow: inset 0 0 0 1px var(--rule);
+}
+.sp-plama {
+  display: block;
+  border-radius: 10px;
+  background: var(--wash);
+  box-shadow: inset 0 0 0 1px var(--rule);
+}
+.sp-stopka {
+  display: grid;
+  gap: 6px;
+  padding: 18px 14px 26px;
+  border-top: 1px solid var(--rule);
+}
+.sp-stopka span {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--ink);
+  opacity: 0.13;
+}
+.sp-stopka span:last-child { width: 40%; }
+
+/* pasek przewijania: dowód, że to strona, a nie animowany obrazek */
+.sp-scroll {
+  position: absolute;
+  right: 4px;
+  top: 6px;
+  width: 3px;
+  height: 16%;
+  border-radius: 3px;
+  background: var(--ink);
+  opacity: 0.2;
+  animation: sp-suwak 17s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}
+@keyframes sp-suwak {
+  0%, 5%   { transform: translateY(0); }
+  62%      { transform: translateY(430%); }
+  95%, 100% { transform: translateY(0); }
+}

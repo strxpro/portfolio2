@@ -1,0 +1,339 @@
+/* ═════════════════════════════════════════════════════════
+   Faktura, kursor, głębia kafli i sekcja „na żywo".
+   Dokładka do global.css.
+   ═════════════════════════════════════════════════════════ */
+
+/* ── akapit rozjaśniany scrollem ─────────────────────── */
+.reveal {
+  margin: 0 0 18px;
+  font-size: 17px;
+  color: var(--ink);
+}
+
+/* ── sekcja „na żywo" ────────────────────────────────── */
+.lab {
+  background: var(--card);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-2);
+  overflow: hidden;
+}
+.lab-tabs {
+  display: flex;
+  gap: 2px;
+  padding: 10px;
+  border-bottom: 1px solid var(--rule);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.lab-tabs::-webkit-scrollbar { display: none; }
+.lab-tabs button {
+  position: relative;
+  padding: 9px 16px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-2);
+  white-space: nowrap;
+  transition: color var(--tap) var(--ease);
+}
+.lab-tabs button > span { position: relative; z-index: 2; }
+.lab-tabs button.on { color: var(--paper); }
+.lab-pill {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: 999px;
+  background: var(--ink);
+}
+.lab-stage {
+  padding: clamp(18px, 3vw, 34px);
+  min-height: clamp(340px, 46vh, 450px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.lab-stage > div { width: 100%; }
+.lab-hint {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 13px clamp(18px, 3vw, 34px);
+  border-top: 1px solid var(--rule);
+  background: var(--wash);
+}
+.lab-hint p { margin: 0; font-size: 13.5px; color: var(--ink-2); }
+.lab-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+.lab-live i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #5E9E6B;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.28; }
+}
+
+/* ── demo 1: węzeł 3D ────────────────────────────────── */
+.knot {
+  position: relative;
+  height: clamp(280px, 40vh, 400px);
+}
+.knot canvas { position: absolute; inset: 0; }
+.knot-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 2px;
+  translate: -50% 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  pointer-events: none;
+  animation: fade 2.6s ease-in-out infinite;
+}
+@keyframes fade {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.85; }
+}
+
+/* ── demo 2: rezerwacja ──────────────────────────────── */
+.bk {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(18px, 3vw, 40px);
+  align-items: start;
+}
+@media (max-width: 720px) { .bk { grid-template-columns: 1fr; } }
+
+.bk-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.bk-head strong { font-size: 15px; font-weight: 600; text-transform: capitalize; }
+.bk-head button {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  font-size: 17px;
+  line-height: 1;
+  color: var(--ink-2);
+  background: var(--wash);
+}
+.bk-dow, .bk-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.bk-dow {
+  margin-bottom: 6px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  text-align: center;
+}
+.bk-day {
+  aspect-ratio: 1;
+  border-radius: 10px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--ink);
+  background: var(--wash);
+}
+.bk-day.off { color: var(--ink-3); background: transparent; opacity: 0.45; cursor: default; }
+.bk-day.on { background: var(--ink); color: var(--paper); }
+
+.bk-side { min-height: 250px; }
+.bk-empty { margin: 10px 0 0; font-size: 14.5px; color: var(--ink-2); }
+.bk-slots {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin: 12px 0 18px;
+}
+@media (max-width: 420px) { .bk-slots { grid-template-columns: repeat(3, 1fr); } }
+.bk-slot {
+  padding: 9px 4px;
+  border-radius: 10px;
+  background: var(--wash);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+.bk-slot.on { background: var(--accent); color: #fff; }
+.bk-go { width: 100%; justify-content: center; }
+
+.bk-done { text-align: center; padding-top: 6px; }
+.bk-tick { width: 54px; height: 54px; margin: 0 auto 12px; }
+.bk-done strong {
+  display: block;
+  font-family: var(--f-serif);
+  font-weight: 400;
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+.bk-done p { margin: 0 auto; max-width: 34ch; font-size: 14px; color: var(--ink-2); }
+.bk-again {
+  margin-top: 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-3);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ── demo 3: języki ──────────────────────────────────── */
+.lg-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 20px;
+}
+.lg-switch button {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  color: var(--ink-2);
+  transition: color var(--tap) var(--ease);
+}
+.lg-switch button.on { color: var(--paper); }
+.lg-pill {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: var(--ink);
+}
+.lg-code { position: relative; z-index: 2; font-size: 11.5px; font-weight: 700; letter-spacing: 0.08em; }
+.lg-name { position: relative; z-index: 2; font-size: 13px; }
+@media (max-width: 620px) { .lg-name { display: none; } }
+
+.lg-card {
+  border: 1px solid var(--rule);
+  border-radius: var(--r-md);
+  padding: clamp(16px, 2.4vw, 26px);
+}
+.lg-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 6px;
+}
+.lg-head h4 {
+  font-family: var(--f-serif);
+  font-weight: 400;
+  font-size: clamp(20px, 2.4vw, 27px);
+  letter-spacing: -0.015em;
+}
+.lg-head span { font-size: 12px; color: var(--ink-3); }
+.lg-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.lg-row:last-child { border-bottom: 0; padding-bottom: 0; }
+.lg-row strong { font-weight: 600; font-size: 15.5px; }
+.lg-row p { margin: 3px 0 0; font-size: 13.5px; color: var(--ink-2); }
+.lg-price { font-family: var(--f-serif); font-size: 19px; white-space: nowrap; }
+
+/* ── demo 4: automatyzacja ───────────────────────────── */
+.fl-track { position: relative; padding: 8px 0 4px; }
+.fl-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 26px;
+  height: 2px;
+  background: var(--rule);
+  border-radius: 2px;
+}
+.fl-line.fill { right: auto; width: 0; background: var(--accent); }
+.fl-dot {
+  position: absolute;
+  top: 27px;
+  width: 10px;
+  height: 10px;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 4px rgba(194, 100, 58, 0.18);
+  z-index: 3;
+}
+.fl-nodes {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+}
+.fl-node { text-align: center; }
+.fl-ring {
+  width: 38px;
+  height: 38px;
+  margin: 0 auto 10px;
+  border-radius: 50%;
+  border: 2px solid var(--rule);
+  background: var(--card);
+  display: grid;
+  place-items: center;
+  color: var(--accent);
+  transition: border-color var(--fast) var(--ease);
+}
+.fl-ring.on { border-color: var(--accent); }
+.fl-ring svg { width: 17px; height: 17px; }
+.fl-node strong { display: block; font-size: 13px; font-weight: 600; }
+.fl-sub { display: block; font-size: 11.5px; color: var(--ink-3); margin-top: 2px; }
+@media (max-width: 620px) {
+  .fl-node strong { font-size: 11px; }
+  .fl-sub { display: none; }
+  .fl-ring { width: 30px; height: 30px; }
+  .fl-line { top: 22px; }
+  .fl-dot { top: 23px; }
+}
+
+.fl-foot {
+  margin-top: 26px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+@media (max-width: 620px) { .fl-foot { grid-template-columns: 1fr; gap: 14px; } }
+.fl-log {
+  min-height: 100px;
+  border-left: 2px solid var(--rule);
+  padding-left: 16px;
+}
+.fl-log-row {
+  display: flex;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--ink-2);
+  padding: 3px 0;
+}
+.fl-time { color: var(--ink-3); font-variant-numeric: tabular-nums; }
