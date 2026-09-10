@@ -41,7 +41,9 @@ export default function Process() {
           <div className="gantt-axis">
             {Array.from({ length: WEEKS }).map((_, w) => (
               <span key={w} className="gantt-week">
-                <i>{t.sched.week} {w + 1}</i>
+                {/* Nagłówki kolumn są wąskie — „tydzień 3" nie mieści się
+                    i ucinało je w połowie. Pełna nazwa zostaje w opisie. */}
+                <i>{t.sched.weekShort} {w + 1}</i>
               </span>
             ))}
           </div>

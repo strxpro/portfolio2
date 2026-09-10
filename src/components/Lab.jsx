@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import Knot3D from './lab/Knot3D'
 import Booking from './lab/Booking'
 import Langs from './lab/Langs'
@@ -74,17 +74,28 @@ export default function Lab() {
           </div>
 
           <div className="lab-stage">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={tab}
-                initial={{ opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.35, ease: EASE }}
-              >
-                <Panel />
-              </motion.div>
-            </AnimatePresence>
+            {/**
+              * Podmiana zakładki **bez** `AnimatePresence mode="wait"`.
+              *
+              * Tryb „wait" każe czekać, aż stara zawartość zniknie —
+              * i jeśli ta animacja nie dobiegnie (karta w tle, wstrzymany
+              * `requestAnimationFrame`, przycięcie przy wczytywaniu),
+              * zakładka zapala się na aktywną, a na scenie zostaje stara
+              * treść. Zmierzone: zakładka „Automatyzacja" zaznaczona,
+              * a w środku wciąż bryła z „Trójwymiaru".
+              *
+              * Zmiana `key` wymienia panel natychmiast, a wejście odgrywa
+              * się samo. To ta sama zasada, co przy nawigacji i pracach:
+              * animacja może być ozdobą kroku, nigdy jego warunkiem.
+              */}
+            <motion.div
+              key={tab}
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, ease: EASE }}
+            >
+              <Panel />
+            </motion.div>
           </div>
 
           <div className="lab-hint">
@@ -92,17 +103,14 @@ export default function Lab() {
               <i />
               {t.lab.live}
             </span>
-            <AnimatePresence mode="wait">
-              <motion.p
-                key={tab}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.25 }}
-              >
-                {t.lab.hints[tab] ?? t.scope.hint}
-              </motion.p>
-            </AnimatePresence>
+            <motion.p
+              key={tab}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.25 }}
+            >
+              {t.lab.hints[tab] ?? t.scope.hint}
+            </motion.p>
           </div>
         </div>
       </div>

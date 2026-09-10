@@ -8,7 +8,6 @@ import Focus from './Focus'
 import Pixels from './Pixels'
 import Tour from './Tour'
 import { textOf, useProjects } from '../lib/projects'
-import { useBrama } from '../lib/useBrama'
 import { useT } from '../lib/lang-ctx'
 import { useTilt } from '../lib/useTilt'
 import { goToEnd } from '../lib/scroll'
@@ -297,11 +296,11 @@ export default function Space() {
   /**
    * Teczka: brama do sekcji.
    *
-   * Otwiera się kliknięciem albo **sama**, gdy ktoś po prostu przewija
-   * dalej. Zamknięta brama, której trzeba się domyślić, kosztowałaby
-   * więcej, niż daje — a przewijanie jest tu podstawowym gestem.
+   * Otwiera się **wyłącznie kliknięciem**. Wcześniej rozsuwała się też
+   * sama po kawałku przewinięcia, ale wtedy wachlarz kart rozlatywał
+   * się, zanim ktokolwiek zdążył go zobaczyć — gest gubił swój moment.
    */
-  const [otwarte, setOtwarte] = useBrama(ref, 0.1)
+  const [otwarte, setOtwarte] = useState(false)
 
   const camRaw = useTransform(scrollYProgress, [0, 1], [0, deepest + 120])
   const cam = useLoopSpring(camRaw, { stiffness: 120, damping: 30, restDelta: 0.5 })

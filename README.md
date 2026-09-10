@@ -300,6 +300,51 @@ osobno; przy fallbacku nie pobiera sie w ogole.
 `react >=19 <19.3`. Projekt jest wiec przypiety do React 19.2 —
 sprzegniecie R3F z `react-reconciler` to nie miejsce na `--legacy-peer-deps`.
 
+## Telefon: sekcje robione pod szeroki kadr
+
+Kilka rzeczy dzialalo na desktopie i rozsypywalo sie na pionowym
+ekranie. Wszystkie zmierzone i poprawione osobno.
+
+**Sekcje przestaly rosnac przy przewijaniu.** `Leaf` wypuszczal tresc na
+dodatnie Z, wiec plan mijal kamere i powiekszal sie o okolo 16%. Na
+szerokim ekranie to dziala; przy 424 px ten sam ruch rozpychal tekst
+poza kadr i nasuwal go na sasiednia sekcje — wygladalo to po prostu jak
+psujacy sie uklad. Na telefonie zostaje samo nadlatywanie z glebi.
+Zmierzone po zmianie: szerokosc tresci stala, nigdy ponad kadr.
+
+**Hero czyta sie w kolejnosci czytania.** Wizytowka miala `order: -1`,
+wiec pierwsza rzecza na ekranie byl splaszczony pasek 300 x 116 z
+zastepczym zdjeciem, a dopiero pod nim to, po co ktos tu przyszedl.
+Calosc miala 815 px przy kadrze 754. Teraz: plakietka, zdanie, guziki,
+a wizytowka na koncu jako podpis z miniatura — i wszystko miesci sie
+na jednym ekranie.
+
+**Lancuch etapow to pionowa lista.** W siatce 3+2 piec krokow ukladalo
+sie w przypadkowy blok, a rysunek pojawial sie w pustym miejscu obok.
+
+**Kolumny harmonogramu skrocone** do „tyg. 3" — „tydzien 3" nie miescil
+sie w naglowku i ucinalo go w polowie.
+
+## Przeplyw automatyzacji: kropka poza torem
+
+Postep byl liczony na pelne 0–100% szerokosci toru, a srodki kolek
+wypadaja w 10%, 30%, 50%, 70% i 90% (piec rownych kolumn). Kropka
+konczyla wiec bieg **poza ostatnim kolkiem**. Teraz linia laczy pierwsze
+kolko z ostatnim, a kropka staje dokladnie na srodkach — zmierzone:
+linia 116–308 przy srodkach 115 i 309.
+
+## Czwarty raz ten sam blad
+
+`AnimatePresence mode="wait"` w zakladkach `Lab` robil dokladnie to,
+co wczesniej w panelu prac: zakladka zapalala sie na aktywna,
+a na scenie zostawala **stara tresc**. Zmierzone: „Automatyzacja"
+zaznaczona, a w srodku wciaz brylla z „Trojwymiaru".
+
+To juz czwarte miejsce w tym projekcie, gdzie oparcie logiki
+o zakonczenie animacji okazalo sie pulapka — po nawigacji, petli
+i przelaczaniu prac. **Animacja moze byc ozdoba kroku, nigdy jego
+warunkiem.**
+
 ## Teczka: brama do prac
 
 Zanim prace rozjada sie po przestrzeni, leza tam, gdzie lezalyby
@@ -312,14 +357,10 @@ naraz**. Najpierw rusza kieszen, karty wychodza z opoznieniem rosnacym
 od srodka wachlarza, a kazda ma wlasna sprezyne — dzieki temu calosc
 czyta sie jako jeden gest, a nie jako piec animacji odpalonych razem.
 
-Teczka **nie jest pulapka**: otwiera sie tez sama, gdy ktos po prostu
-przewija dalej. Brama, ktorej trzeba sie domyslic, kosztowalaby wiecej,
-niz daje — a przewijanie jest tu podstawowym gestem.
-
-Warunek otwarcia liczy `useBrama` **ze zwyklego nasluchu przewijania**,
-nie z wartosci ruchu Framera. Wartosci ruchu odswiezaja sie w rytmie
-klatek, wiec gdy klatki stoja, brama nigdy by sie nie otworzyla.
-To ta sama zasada, ktora uratowala nawigacje i przelaczanie prac.
+Teczka otwiera sie **wylacznie klikiem**. Probowalem tez otwierac ja
+samym przewinieciem, zeby nie byla pulapka, ale wtedy wachlarz kart
+rozlatywal sie, zanim ktokolwiek zdazyl go zobaczyc — gest gubil swoj
+moment.
 
 ## Nieskonczone przewijanie: trzy rzeczy naraz
 

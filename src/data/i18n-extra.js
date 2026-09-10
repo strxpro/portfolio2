@@ -30,6 +30,7 @@ export const extra = {
       title: 'Pięć kroków|rozpisanych na tygodnie.',
       lead: 'Wiesz, co dzieje się kiedy i co masz na koniec każdego etapu.',
       week: 'tydzień',
+      weekShort: 'tyg.',
       gives: 'Dostajesz',
       steps: [
         ['Rozmowa', 'dzień 1–2', 'Pytam o Twoich klientów i o to, co strona ma naprawdę robić.', 'wycenę i termin na piśmie'],
@@ -121,6 +122,7 @@ export const extra = {
       title: 'Five steps|laid out in weeks.',
       lead: 'You know up front what happens when, and what you hold at the end of each stage.',
       week: 'week',
+      weekShort: 'wk',
       gives: 'You get',
       steps: [
         ['Conversation', 'day 1–2', 'I ask about your customers and what the site actually has to do.', 'a written quote and a date'],
@@ -212,6 +214,7 @@ export const extra = {
       title: 'Cinque passi|distribuiti sulle settimane.',
       lead: 'Sai in anticipo cosa succede quando e cosa hai in mano alla fine di ogni fase.',
       week: 'settimana',
+      weekShort: 'sett.',
       gives: 'Ricevi',
       steps: [
         ['Colloquio', 'giorno 1–2', 'Chiedo dei tuoi clienti e di cosa deve fare davvero il sito.', 'preventivo e data per iscritto'],

@@ -573,3 +573,67 @@ main > .leaf:has(+ .handoff) { padding-bottom: clamp(30px, 4vw, 60px); }
      mniejsza interlinia zbiera go w zwarty blok zamiast rozlewać. */
   .giant-row { line-height: 0.94; }
 }
+
+/* ── hero na telefonie: najpierw zdanie, potem twarz ──────
+   Wizytówka miała `order: -1`, więc pierwszą rzeczą na ekranie był
+   spłaszczony pasek 300 × 116 z zastępczym zdjęciem — a dopiero pod nim
+   to, po co ktoś tu przyszedł. Do tego całość miała 815 px przy kadrze
+   754 i podpowiedź „przewiń" wypadała poza ekran.
+
+   Teraz kolejność jest taka, jak kolejność czytania: plakietka, zdanie,
+   guziki, a wizytówka na końcu jako podpis. */
+@media (max-width: 900px) {
+  .hero-grid { gap: 20px; }
+  .hero-card { order: 1; max-width: 100%; }
+
+  /* Wizytówka schodzi do roli podpisu: miniatura, nazwisko, rola. */
+  .hero-card .shot { width: 46px; height: 46px; flex: 0 0 46px; border-radius: 10px; }
+  .hero-card .shot-gap svg { width: 16px; height: 16px; }
+  .hero-card .shot-gap code { display: none; }
+  .hero-card-foot { gap: 2px; }
+
+  /* Rytm w pionie: mniej powietrza między blokami, żeby zdanie, guziki
+     i podpowiedź zmieściły się na jednym ekranie. */
+  .hero-grid .lead { margin-top: 14px; }
+  .hero-actions { gap: 10px; margin-top: 18px; }
+
+  /* Podpowiedź „przewiń" jest poza siatką hero, więc wizytówka wchodziła
+     na nią (zmierzone: nakładka 15 px). Odsuwamy ją pod spód. */
+  .hero .hero-scroll { margin-top: 26px; }
+}
+
+/* Podpowiedź „przewiń" znika na telefonie.
+   Siedzi poza siatką hero, więc wizytówka i tak na nią wchodziła
+   (zmierzone: 5 px), a na dotyku przewijanie nie wymaga zachęty. */
+@media (max-width: 900px) {
+  .hero .hero-scroll { display: none; }
+}
+
+/* ── łańcuch etapów na telefonie: pionowa lista ───────────
+   W siatce 3+2 pięć kroków układało się w przypadkowy blok, a rysunek
+   pojawiał się w pustym miejscu obok. Pionowa lista czyta się jak to,
+   czym jest: kolejnością etapów. Rysunek stoi po prawej, przy tym
+   kroku, którego akurat dotyczy. */
+@media (max-width: 560px) {
+  .chain-row {
+    grid-template-columns: 1fr;
+    row-gap: 0;
+  }
+  .chain-node {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    column-gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .chain-node:last-of-type { border-bottom: 0; }
+  .chain-dot { position: static; }
+  .chain-name { margin: 0; }
+  .chain-icon { margin: 0; width: 26px; height: 26px; }
+
+  /* Szyna i impuls są poziome — w pionowej liście nie mają sensu. */
+  .chain-rail,
+  .chain-spark,
+  .chain-drop { display: none; }
+}

@@ -6,7 +6,6 @@ import Focus from './Focus'
 import Tour from './Tour'
 import Morph from './Morph'
 import { textOf, useProjects } from '../lib/projects'
-import { useBrama } from '../lib/useBrama'
 import { useT } from '../lib/lang-ctx'
 import { useGuide } from '../lib/mascot'
 import { useLoopSpring } from '../lib/useLoopSpring'
@@ -54,11 +53,11 @@ export default function Radial() {
   /**
    * Teczka: brama do sekcji.
    *
-   * Otwiera się kliknięciem albo **sama**, gdy ktoś po prostu przewija
-   * dalej. Zamknięta brama, której trzeba się domyślić, kosztowałaby
-   * więcej, niż daje — a przewijanie jest tu podstawowym gestem.
+   * Otwiera się **wyłącznie kliknięciem**. Wcześniej rozsuwała się też
+   * sama po kawałku przewinięcia, ale wtedy wachlarz kart rozlatywał
+   * się, zanim ktokolwiek zdążył go zobaczyć — gest gubił swój moment.
    */
-  const [otwarte, setOtwarte] = useBrama(ref, 0.1)
+  const [otwarte, setOtwarte] = useState(false)
 
 
   const idx = panel ? prace.findIndex((x) => x.id === panel) : -1

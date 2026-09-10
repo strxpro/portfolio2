@@ -28,17 +28,28 @@ export default function Flow() {
     }, 800)
   }
 
-  const pct = (i) => (i / (flowNodes.length - 1)) * 100
+  /**
+   * Pozycja kroku liczona na **środki kółek**, nie na krawędzie toru.
+   *
+   * Węzły stoją w pięciu równych kolumnach, więc ich środki wypadają
+   * w 10%, 30%, 50%, 70% i 90% szerokości. Rozciąganie postępu na pełne
+   * 0–100% przesuwało kropkę poza ostatnie kółko — na telefonie było to
+   * najlepiej widać, bo tor jest wąski.
+   */
+  const pct = (i) => ((i + 0.5) / flowNodes.length) * 100
+  const START = 100 / flowNodes.length / 2
   const active = step >= 0
   const finished = step === flowNodes.length - 1
 
   return (
     <div className="fl">
       <div className="fl-track">
-        <div className="fl-line" />
+        {/* Linia łączy pierwsze kółko z ostatnim, a nie krawędzie toru. */}
+        <div className="fl-line" style={{ left: `${START}%`, right: `${START}%` }} />
         <motion.div
           className="fl-line fill"
-          animate={{ width: active ? `${pct(step)}%` : '0%' }}
+          style={{ left: `${START}%` }}
+          animate={{ width: active ? `${pct(step) - START}%` : '0%' }}
           transition={{ duration: 0.55, ease: EASE }}
         />
 

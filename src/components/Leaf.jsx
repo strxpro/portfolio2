@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { useLoopSpring } from '../lib/useLoopSpring'
+import { useNarrow } from '../lib/useNarrow'
 
 /**
  * Sekcja jako plan w jednej przestrzeni, a nie osobna scena.
@@ -36,7 +37,21 @@ export default function Leaf({ tone = 'paper', z = 1, children }) {
    * Dlatego tło zostaje płaskie i pełnoekranowe, a w przestrzeni
    * porusza się to, co w środku.
    */
-  const zPos = useTransform(p, [0, 0.42, 0.62, 1], [-540, 0, 0, 300])
+  /**
+   * Na telefonie sekcja **nie mija kamery**.
+   *
+   * Wyjście na dodatnie Z powiększa cały plan (perspektywa: około 1.16×)
+   * i na szerokim ekranie to działa — plan odjeżdża w stronę widza.
+   * Przy 424 px ten sam ruch rozpycha tekst poza kadr i nasuwa go na
+   * sąsiednią sekcję; z bliska wygląda to po prostu jak psujący się
+   * układ. Zostaje więc samo nadlatywanie z głębi, bez przelotu.
+   */
+  const waski = useNarrow(760)
+  const zPos = useTransform(
+    p,
+    [0, 0.42, 0.62, 1],
+    waski ? [-330, 0, 0, 0] : [-540, 0, 0, 300],
+  )
   const depth = useTransform(zPos, (v) => `${v}px`)
   const drift = useTransform(p, [0, 0.42, 0.62, 1], [26, 0, 0, -20])
   const seam = useTransform(p, [0.06, 0.3], [0, 1])
