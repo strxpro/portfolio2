@@ -34,7 +34,7 @@ const OPOR = 0.2
  * kółka przebijały próg od razu i oporu nie dało się w ogóle poczuć
  * (zmierzone: 342 px na jedno pociągnięcie).
  */
-const PROG = 420
+const PROG = 300
 /** po tylu ms bez ruchu uznajemy, że użytkownik puścił */
 const CISZA = 220
 
@@ -63,8 +63,20 @@ export default function Loop() {
     }
     const stale = () => { szew = 0 }
 
-    /** Lenis prowadzi własny licznik i dopiero potem zapisuje go do dokumentu. */
-    const pos = () => (window.__lenis ? window.__lenis.animatedScroll : window.scrollY)
+    /**
+     * Gdzie naprawdę jesteśmy — **przycięte do zakresu dokumentu**.
+     *
+     * Lenis prowadzi własny licznik i przy rozpędzie potrafi wyjechać
+     * daleko poza koniec strony (zmierzone: 995 px za maksimum).
+     * Pętla cofa o stałą długość, więc z takiego licznika lądowała
+     * w środku strony zamiast na górze — i to właśnie wyglądało jak
+     * „nie działa nieskończone przewijanie".
+     */
+    const pos = () => {
+      const p = window.__lenis ? window.__lenis.animatedScroll : window.scrollY
+      const max = document.documentElement.scrollHeight - window.innerHeight
+      return Math.max(0, Math.min(p, max))
+    }
 
     /**
      * Cofnięcie pozycji bez zrywania rozpędu.
@@ -117,21 +129,47 @@ export default function Loop() {
     let wolne = false
     let cisza
 
+    /**
+     * Kredyt za nieudane próby.
+     *
+     * Bez niego progu praktycznie nie dało się przebić: po każdym
+     * puszczeniu widok wracał na finał, dystans liczył się od zera
+     * i trzeba było przejechać całe `PROG` jednym ciągiem. Kółko sypie
+     * porcjami z przerwami dłuższymi niż okno ciszy, więc strona po
+     * prostu odbijała w kółko — i tak to wyglądało: „nieskończone
+     * przewijanie nie działa".
+     *
+     * Teraz każda nieudana próba zostawia część przejechanego dystansu.
+     * Druga i trzecia dokładają się do pierwszej, czyli upór popłaca —
+     * dokładnie tak, jak człowiek to rozumie.
+     */
+    let kredyt = 0
+    let osiagniete = 0
+
+    /**
+     * Puszczenie: widok wraca na finał.
+     *
+     * Dwie rzeczy, bez których to nie działa.
+     *
+     * Po pierwsze — pozycję czytamy **prosto z dokumentu**, nie z Lenisa.
+     * Timer odpala się po ciszy, a w tym czasie widok mógł pojechać
+     * zupełnie gdzie indziej: kliknięciem w menu, klawiszem, skokiem.
+     * Licznik Lenisa bywa wtedy o krok w tyle i strona sama wracała na
+     * finał chwilę po tym, jak użytkownik z niego wyszedł.
+     *
+     * Po drugie — napór **opada, a nie znika**. Zerowanie przy każdej
+     * przerwie sprawiało, że progu nie dało się przebić w ogóle: kółko
+     * sypie porcjami z przerwami dłuższymi niż okno ciszy, więc licznik
+     * startował od nowa przy każdym ruchu i strona odbijała w kółko.
+     * Zostawiamy 60%, dzięki czemu druga i trzecia próba dokładają się
+     * do pierwszej — dokładnie tak, jak człowiek to rozumie.
+     */
     const wroc = () => {
-      /**
-       * Sprawdzenie, czy wciąż jesteśmy w strefie.
-       *
-       * Timer odpala się po ciszy, a w tym czasie widok mógł już
-       * pojechać zupełnie gdzie indziej — kliknięciem w menu, klawiszem,
-       * skokiem na górę. Bez tego warunku strona sama wracała na finał
-       * chwilę po tym, jak użytkownik z niego wyszedł.
-       */
-      /* Pozycja prosto z dokumentu, nie z Lenisa: po skoku, który go
-         ominął (kotwica, klawiatura, `window.scrollTo`), jego licznik
-         jest jeszcze w starym miejscu i timer ciągnął widok z powrotem
-         na finał, mimo że użytkownik był już dawno na górze. */
       const p = window.scrollY
       if (p < stop - 4 || p >= szew) { ciagnij(0); return }
+      // nieudana próba zostawia ślad; kredyt nie może zjeść całego progu
+      kredyt = Math.min(PROG * 0.6, kredyt + osiagniete * 0.6)
+      osiagniete = 0
       window.__lenis?.scrollTo(stop, { duration: 0.5 })
     }
 
@@ -142,18 +180,21 @@ export default function Loop() {
       const p = pos()
 
       // domknięcie pętli: kadr jest identyczny jak na górze strony
-      if (p >= szew) { ciagnij(0); cofnij(szew); wolne = false; return }
+      if (p >= szew) { ciagnij(0); cofnij(szew); wolne = false; kredyt = 0; osiagniete = 0; return }
 
       if (p < stop) {
-        // wróciliśmy nad finał — próg staje z powrotem
+        // wróciliśmy nad finał — próg staje z powrotem, od zera
         if (ciagniecie || wolne) { ciagnij(0); wolne = false }
+        kredyt = 0
+        osiagniete = 0
         clearTimeout(cisza)
         return
       }
 
       const za = p - stop
+      if (za > osiagniete) osiagniete = za
 
-      if (!wolne && za >= PROG) {
+      if (!wolne && za + kredyt >= PROG) {
         /* Próg puścił. Echo wraca na swoje miejsce płynnie, bo szew ma
            być co do piksela zgodny — a do niego zostało jeszcze całe
            okno widoku, więc jest na to czas. */

@@ -300,6 +300,52 @@ osobno; przy fallbacku nie pobiera sie w ogole.
 `react >=19 <19.3`. Projekt jest wiec przypiety do React 19.2 —
 sprzegniecie R3F z `react-reconciler` to nie miejsce na `--legacy-peer-deps`.
 
+## Teczka: brama do prac
+
+Zanim prace rozjada sie po przestrzeni, leza tam, gdzie lezalyby
+naprawde: w jednej teczce, wysuniete tak, ze widac wystajace rogi.
+Klikniecie opuszcza przednia kieszen, a karty wachlarzem wychodza w gore
+i rozlatuja sie w tunel albo na kolo.
+
+Ruch jest ulozony tak, jak w systemach Apple'a: **nic nie startuje
+naraz**. Najpierw rusza kieszen, karty wychodza z opoznieniem rosnacym
+od srodka wachlarza, a kazda ma wlasna sprezyne — dzieki temu calosc
+czyta sie jako jeden gest, a nie jako piec animacji odpalonych razem.
+
+Teczka **nie jest pulapka**: otwiera sie tez sama, gdy ktos po prostu
+przewija dalej. Brama, ktorej trzeba sie domyslic, kosztowalaby wiecej,
+niz daje — a przewijanie jest tu podstawowym gestem.
+
+Warunek otwarcia liczy `useBrama` **ze zwyklego nasluchu przewijania**,
+nie z wartosci ruchu Framera. Wartosci ruchu odswiezaja sie w rytmie
+klatek, wiec gdy klatki stoja, brama nigdy by sie nie otworzyla.
+To ta sama zasada, ktora uratowala nawigacje i przelaczanie prac.
+
+## Nieskonczone przewijanie: trzy rzeczy naraz
+
+Petla przestala dzialac i przyczyny byly trzy, wszystkie z tego samego
+zrodla — **hero skurczyl sie po porzadkach dokladnie do jednej wysokosci
+ekranu**.
+
+1. **Szew wypadal na ostatnim pikselu dokumentu.** Echo mialo rowno
+   jedna wysokosc ekranu, wiec za szwem nie bylo ani piksela zapasu.
+2. **Lenis rozpedem wyjezdza poza koniec strony** (zmierzone: 995 px za
+   maksimum). Petla cofa o stala dlugosc, wiec z takiego licznika
+   ladowala w srodku strony zamiast na gorze. `pos()` jest teraz
+   przyciete do zakresu dokumentu.
+3. **Dolna krawedz pierwszego ekranu przestala sie zgadzac.** Na gorze
+   strony wchodzi na nia zaokraglony rog sekcji „o mnie"; echo tego rogu
+   nie mialo. Doklejony `.echo-lip` przywraca brakujacy kawalek kadru
+   i przy okazji daje zapas za szwem.
+
+Do tego prog nie puszczal: dystans liczyl sie od zera po kazdym
+odbiciu, a kolko sypie porcjami z przerwami dluzszymi niz okno ciszy.
+Kazda nieudana proba zostawia teraz **kredyt** (60% przejechanego
+dystansu, najwyzej 60% progu), wiec upor poplaca.
+
+Sprawdzone: kadr po obu stronach szwu jest identyczny co do elementu
+przy offsetach 0, 60 i 150 px.
+
 ## Prace: tunel na duzym ekranie, kolo na telefonie
 
 To nie jest ta sama sekcja w innych stylach, tylko **dwa osobne

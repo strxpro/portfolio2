@@ -2,11 +2,13 @@ import { useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion, useMotionValue, useMotionValueEvent, useScroll, useSpring, useTransform } from 'framer-motion'
 import { useLoopSpring } from '../lib/useLoopSpring'
 import Cover from './Cover'
+import Folder from './Folder'
 import Morph from './Morph'
 import Focus from './Focus'
 import Pixels from './Pixels'
 import Tour from './Tour'
 import { textOf, useProjects } from '../lib/projects'
+import { useBrama } from '../lib/useBrama'
 import { useT } from '../lib/lang-ctx'
 import { useTilt } from '../lib/useTilt'
 import { goToEnd } from '../lib/scroll'
@@ -291,6 +293,16 @@ export default function Space() {
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end end'] })
   /* Źródło kamery wyciągnięte do zmiennej, bo `useLoopSpring` musi je
      obserwować — to ono mówi, kiedy szew pętli już się przeliczył. */
+
+  /**
+   * Teczka: brama do sekcji.
+   *
+   * Otwiera się kliknięciem albo **sama**, gdy ktoś po prostu przewija
+   * dalej. Zamknięta brama, której trzeba się domyślić, kosztowałaby
+   * więcej, niż daje — a przewijanie jest tu podstawowym gestem.
+   */
+  const [otwarte, setOtwarte] = useBrama(ref, 0.1)
+
   const camRaw = useTransform(scrollYProgress, [0, 1], [0, deepest + 120])
   const cam = useLoopSpring(camRaw, { stiffness: 120, damping: 30, restDelta: 0.5 })
 
@@ -339,7 +351,7 @@ export default function Space() {
   })
 
   return (
-    <section className="space" id="prace" ref={ref}>
+    <section className={`space ${otwarte ? '' : 'zamkniete'}`} id="prace" ref={ref}>
       <div
         className={`space-stage ${hot >= 0 ? 'aim' : ''}`}
         onClick={onStageClick}
@@ -374,6 +386,18 @@ export default function Space() {
           ))}
           <Invite seat={invite} cam={cam} t={t} far={far} cardRef={(el) => { cardRefs.current[work.length] = el }} />
         </motion.div>
+
+        <AnimatePresence>
+          {!otwarte && (
+            <Folder
+              key="teczka"
+              prace={work}
+              etykieta={t.tour.teczka}
+              cta={t.tour.otworz}
+              onOpen={() => { if (isOn()) pop(); setOtwarte(true) }}
+            />
+          )}
+        </AnimatePresence>
 
         <div className="space-ui">
           <p className="label">{t.space.label}</p>

@@ -131,6 +131,16 @@ export default function App() {
           cofa pozycję przewijania. */}
       <div className="echo" aria-hidden="true">
         <Hero ghost />
+        {/**
+          * Górna krawędź następnej sekcji, doklejona do echa.
+          *
+          * Na pierwszym ekranie strony dolne kilkadziesiąt pikseli
+          * zajmuje już zaokrąglony róg sekcji „o mnie" — wjeżdża pod
+          * hero ujemnym marginesem. Echo bez tego rogu nie zgadzało się
+          * z górą strony i w chwili domknięcia pętli było widać zmianę.
+          * To nie jest ozdoba, tylko **brakujący kawałek kadru**.
+          */}
+        <div className="echo-lip" />
       </div>
       <Guide />
       <Cursor />

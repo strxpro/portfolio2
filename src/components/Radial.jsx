@@ -1,10 +1,12 @@
 import { useRef, useState } from 'react'
 import { AnimatePresence, motion, useScroll, useTransform } from 'framer-motion'
 import Cover from './Cover'
+import Folder from './Folder'
 import Focus from './Focus'
 import Tour from './Tour'
 import Morph from './Morph'
 import { textOf, useProjects } from '../lib/projects'
+import { useBrama } from '../lib/useBrama'
 import { useT } from '../lib/lang-ctx'
 import { useGuide } from '../lib/mascot'
 import { useLoopSpring } from '../lib/useLoopSpring'
@@ -49,6 +51,16 @@ export default function Radial() {
      prace nadchodzą z prawej — tak, jak czyta się stronę. */
   const obrot = useTransform(p, [0, 1], [0, -360])
 
+  /**
+   * Teczka: brama do sekcji.
+   *
+   * Otwiera się kliknięciem albo **sama**, gdy ktoś po prostu przewija
+   * dalej. Zamknięta brama, której trzeba się domyślić, kosztowałaby
+   * więcej, niż daje — a przewijanie jest tu podstawowym gestem.
+   */
+  const [otwarte, setOtwarte] = useBrama(ref, 0.1)
+
+
   const idx = panel ? prace.findIndex((x) => x.id === panel) : -1
   const item = idx >= 0 ? prace[idx] : null
 
@@ -56,8 +68,20 @@ export default function Radial() {
   const idz = (krok) => setPanel(prace[(idx + krok + prace.length) % prace.length].id)
 
   return (
-    <section className="space rad" id="prace" ref={ref}>
+    <section className={`space rad ${otwarte ? '' : 'zamkniete'}`} id="prace" ref={ref}>
       <div className="space-stage rad-stage">
+        <AnimatePresence>
+          {!otwarte && (
+            <Folder
+              key="teczka"
+              prace={prace}
+              etykieta={t.tour.teczka}
+              cta={t.tour.otworz}
+              onOpen={() => { if (isOn()) pop(); setOtwarte(true) }}
+            />
+          )}
+        </AnimatePresence>
+
         <div className="space-ui">
           <p className="label">{t.space.label}</p>
           <h2 className="space-title">

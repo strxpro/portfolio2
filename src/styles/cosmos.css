@@ -440,3 +440,136 @@ main > .leaf:has(+ .handoff) { padding-bottom: clamp(30px, 4vw, 60px); }
 /* Napisy nad kołem, tak jak nad tunelem. */
 .rad .space-ui,
 .rad .space-meter { z-index: 6; pointer-events: none; }
+
+/* Doklejony róg następnej sekcji — patrz komentarz w `App.jsx`.
+   Wysokość daje przy okazji zapas za szwem, w którym mieści się
+   rozpęd; bez niego szew wypadał na ostatnim pikselu dokumentu. */
+.echo-lip {
+  position: relative;
+  height: 260px;
+  margin-top: calc(var(--leaf-over) * -1);
+  border-radius: var(--float-r) var(--float-r) 0 0;
+  border-top: 1px solid var(--rule);
+  background: var(--card);
+  box-shadow: 0 22px 44px -28px rgba(0, 0, 0, 0.85);
+}
+.echo-lip::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 15px;
+  width: 58px;
+  height: 3px;
+  margin-left: -29px;
+  border-radius: 3px;
+  background: var(--rule);
+}
+
+/* ═════════════════════════════════════════════════════════
+   Teczka z pracami — brama do sekcji.
+   ═════════════════════════════════════════════════════════ */
+
+.fold {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  display: grid;
+  place-items: center;
+  padding: 0 var(--gap);
+}
+.fold-btn {
+  position: relative;
+  display: block;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+/* Karty wychodzą GÓRĄ zza kieszeni — stąd wachlarz nad nią. */
+.fold-karty {
+  position: relative;
+  display: block;
+  width: clamp(230px, 34vw, 420px);
+  height: clamp(150px, 22vw, 270px);
+  margin: 0 auto -18%;
+}
+.fold-karta {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 78%;
+  margin-left: -39%;
+  border-radius: 12px;
+  overflow: hidden;
+  transform-origin: 50% 100%;
+  border: 1px solid rgba(23, 24, 26, 0.1);
+  background: var(--card);
+  box-shadow: 0 20px 44px -26px rgba(0, 0, 0, 0.85);
+}
+.fold-karta .cover { aspect-ratio: 16 / 10; height: auto; }
+
+/* Kieszeń: prostokąt z lekko podniesioną krawędzią, jak papierowa teczka. */
+.fold-kieszen {
+  position: relative;
+  z-index: 12;
+  display: grid;
+  gap: 14px;
+  place-items: center;
+  width: clamp(250px, 38vw, 470px);
+  padding: clamp(26px, 3.4vw, 44px) clamp(20px, 3vw, 36px) clamp(22px, 3vw, 38px);
+  border-radius: 18px 18px var(--float-r) var(--float-r);
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0)) var(--void-2);
+  box-shadow:
+    inset 0 1px 0 rgba(243, 239, 230, 0.16),
+    0 34px 70px -34px rgba(0, 0, 0, 0.95);
+}
+.fold-etykieta {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(243, 239, 230, 0.5);
+}
+.fold-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 11px 20px;
+  border-radius: 999px;
+  background: #F3EFE6;
+  color: var(--void);
+  font-size: 14.5px;
+  font-weight: 600;
+  transition: transform var(--tap) var(--ease);
+}
+.fold-btn:hover .fold-cta { transform: translateY(-2px); }
+.fold-btn:active .fold-cta { transform: scale(0.97); }
+.fold-btn:hover .fold-karta { box-shadow: 0 26px 56px -24px rgba(0, 0, 0, 0.9); }
+
+/* Póki teczka jest zamknięta, scena za nią stoi przygaszona. */
+.space.zamkniete .space-field,
+.space.zamkniete .rad-okno { opacity: 0; pointer-events: none; }
+.space.zamkniete .space-meter { opacity: 0; }
+
+/* ── telefon: dopasowanie elementów, które były robione pod szeroki kadr ──
+   Płyty w sekcji przekazania mają na pionowym ekranie 74vw × 46vh, czyli
+   prawie kwadrat wypełniony numerem i jednym słowem — z bliska wygląda to
+   jak pusty karton. Na telefonie stają się wyraźnie poziome i mniejsze,
+   więc czyta się je jako warstwy projektu, a nie jako pustą płachtę. */
+@media (max-width: 760px) {
+  .plate {
+    width: min(340px, 78vw);
+    height: min(210px, 26vh);
+    margin: calc(min(210px, 26vh) / -2) 0 0 calc(min(340px, 78vw) / -2);
+    border-radius: 16px;
+  }
+  .plate-no { left: 14px; }
+
+  /* Karty na kole też idą w górę — to one są tu treścią. */
+  .rad-karta { width: clamp(200px, 58vw, 280px); }
+
+  /* Gigantyczny napis i tak nie mieści się w jednej linii na telefonie;
+     mniejsza interlinia zbiera go w zwarty blok zamiast rozlewać. */
+  .giant-row { line-height: 0.94; }
+}
