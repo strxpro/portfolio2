@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { motion, useMotionValue, useScroll, useSpring, useTime, useTransform } from 'framer-motion'
 import { usePointer } from '../lib/usePointer'
 import { SPRING } from '../lib/motion'
+import { dlugoscPetli, rozwin, zapomnijDlugosc } from '../lib/loopLength'
+import DeepSky from './DeepSky'
 
 /**
  * Przestrzeń, w której leży cała strona.
@@ -33,6 +35,26 @@ const PLANY = [
  * identyczny co do piksela.
  */
 const KAFEL = 480
+
+/**
+ * Barwy gwiazd z wagami. Prawdziwe niebo nie jest białe: większość
+ * gwiazd jest lekko ciepła, część wyraźnie niebieska, pojedyncze
+ * pomarańczowe. Wagi są dobrane tak, żeby pole dalej grało z ciepłym
+ * papierem paneli.
+ */
+const BARWY = [
+  ['255,251,242', 46],
+  ['255,255,255', 22],
+  ['205,218,255', 18],
+  ['255,234,200', 10],
+  ['255,196,160', 4],
+]
+const SUMA_WAG = BARWY.reduce((a, [, w]) => a + w, 0)
+const barwa = () => {
+  let los = Math.random() * SUMA_WAG
+  for (const [rgb, w] of BARWY) { if ((los -= w) < 0) return rgb }
+  return BARWY[0][0]
+}
 
 function Plan({ spec, i, scroll, px, py }) {
   const [ile, r, alfa, tempo] = spec
@@ -84,15 +106,33 @@ function Plan({ spec, i, scroll, px, py }) {
       const g = c.getContext('2d')
       g.scale(dpr, dpr)
       g.clearRect(0, 0, w, h)
-      for (let n = 0; n < ile; n++) {
+      // na małym ekranie proporcjonalnie mniej gwiazd — gęstość na oko ta sama
+      const naEkran = Math.round(ile * Math.max(0.5, Math.min(1.2, w / 1440)))
+      for (let n = 0; n < naEkran; n++) {
         const x = Math.random() * w
         const y = Math.random() * KAFEL
-        const rr = 0.35 + Math.random() * r
-        // ciepły biały, żeby kosmos nie kłócił się z papierem paneli
-        g.fillStyle = `rgba(255, 251, 242, ${(0.25 + Math.random() * 0.75) * alfa})`
+        /**
+         * Jasność ma rozkład potęgowy, nie równy: na niebie jest mnóstwo
+         * ledwie widocznych punktów i garstka jasnych. Przy równym
+         * rozkładzie pole wyglądało jak posypane solą.
+         */
+        const jasnosc = Math.random() ** 3
+        const rr = 0.3 + jasnosc * r * 1.5
+        const a = (0.2 + jasnosc * 0.8) * alfa
+        const rgb = barwa()
         for (let k = 0; k < kafli; k++) {
+          const yy = y + k * KAFEL
+          // najjaśniejsze dostają miękką poświatę, wypaloną w obrazie
+          if (jasnosc > 0.72) {
+            const h = g.createRadialGradient(x, yy, 0, x, yy, rr * 5)
+            h.addColorStop(0, `rgba(${rgb},${a * 0.45})`)
+            h.addColorStop(1, `rgba(${rgb},0)`)
+            g.fillStyle = h
+            g.fillRect(x - rr * 5, yy - rr * 5, rr * 10, rr * 10)
+          }
+          g.fillStyle = `rgba(${rgb},${a})`
           g.beginPath()
-          g.arc(x, y + k * KAFEL, rr, 0, Math.PI * 2)
+          g.arc(x, yy, rr, 0, Math.PI * 2)
           g.fill()
         }
       }
@@ -218,31 +258,31 @@ export default function Cosmos() {
    * Gwiazdy jadą po **własnym, ciągłym liczniku**, a nie po pozycji strony.
    *
    * Strona ma nieskończoną pętlę: po przekroczeniu szwu pozycja cofa się
-   * o kilkanaście tysięcy pikseli naraz. Dla widza nic się nie zmienia,
-   * bo kadr jest w tym momencie identyczny — ale pole gwiazd liczone
-   * wprost z `scrollY` dostawało wtedy skok przez całą stronę i sprężyna
-   * przejeżdżała go na oczach, jakby wszystko wjeżdżało od dołu.
+   * o całą długość strony. Kadr jest wtedy identyczny, ale pole gwiazd
+   * liczone wprost z `scrollY` dostałoby skok i przejechałoby go na oczach.
    *
-   * Dlatego sumujemy same przyrosty, a o tym jednym sztucznym **pętla
-   * nas uprzedza**: w zdarzeniu `strx:loop` podaje, o ile cofnęła widok,
-   * więc przesuwamy o tyle punkt odniesienia i przyrost wychodzi zerowy.
+   * Dlatego sumujemy przyrosty, a przyrost dłuższy niż pół pętli
+   * **rozwijamy** (`rozwin`) — przeskok pętli daje wtedy prawie zero.
    *
-   * Odsiewanie po samej wielkości skoku byłoby prostsze, ale odcięłoby
-   * też zwykłe skoki z menu — a te mają ruszyć tłem jak każde inne
-   * przewinięcie.
+   * Wcześniej o przeskoku mówiło zdarzenie `strx:loop`, i to był błąd:
+   * na telefonie przewijanie z rozpędem potrafi zignorować `scrollTo`,
+   * pętla próbuje drugi raz, a gwiazdy odejmowały długość pętli dwukrotnie
+   * i teleportowały się o kawał kafla. Rozwijanie nie zależy od żadnego
+   * zdarzenia ani od ich kolejności.
    */
   const ciagly = useMotionValue(0)
   useEffect(() => {
     let ostatni = scrollY.get()
-
-    const szew = (e) => { ostatni -= e.detail?.o ?? 0 }
-    window.addEventListener('strx:loop', szew)
-
     const stop = scrollY.on('change', (v) => {
-      ciagly.set(ciagly.get() + (v - ostatni))
+      const przyrost = v - ostatni
       ostatni = v
+      // mierzymy długość pętli tylko przy dużym skoku, nie co klatkę
+      const krok = Math.abs(przyrost) > window.innerHeight ? rozwin(przyrost, dlugoscPetli()) : przyrost
+      ciagly.set(ciagly.get() + krok)
     })
-    return () => { window.removeEventListener('strx:loop', szew); stop() }
+    const watch = new ResizeObserver(zapomnijDlugosc)
+    watch.observe(document.body)
+    return () => { stop(); watch.disconnect() }
   }, [scrollY, ciagly])
 
   const scroll = useSpring(ciagly, SPRING.scroll)
@@ -254,6 +294,7 @@ export default function Cosmos() {
     <div className="cosmos" aria-hidden="true">
       <span className="cos-glow a" />
       <span className="cos-glow b" />
+      <DeepSky px={px} py={py} scroll={scroll} />
       {PLANY.map((spec, i) => (
         <Plan key={i} spec={spec} i={i} scroll={scroll} px={px} py={py} />
       ))}
