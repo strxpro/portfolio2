@@ -175,7 +175,6 @@ main, .finale { position: relative; z-index: 2; }
 .lab-hint { background: var(--wash); }
 
 .brief-card { background: var(--card); border-color: var(--rule); }
-.flap { background: linear-gradient(180deg, #F0EDE4, #E6E2D6); }
 .brief-chip { background: var(--paper); }
 .brief-chip.on { background: var(--ink); border-color: var(--ink); color: var(--card); }
 

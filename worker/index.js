@@ -4,21 +4,29 @@
  * Jedna trasa: POST /kontakt z JSON-em briefu. Worker sprawdza dane, odsiewa
  * boty, składa czytelną wiadomość i wysyła ją na każdy numer z sekretu
  * WHATSAPP_ALERTS. Odpowiada dopiero, gdy wie, czy wiadomość wyszła — dzięki
- * temu toast „wysłane” na stronie mówi prawdę, a przy awarii formularz
+ * temu toast „doleciało” na stronie mówi prawdę, a przy awarii formularz
  * proponuje zwykły mail zamiast udawać sukces.
+ *
+ * Dane z przeglądarki są sprawdzane tu drugi raz (e-mail, telefon, termin):
+ * formularz na stronie da się obejść jednym poleceniem curl.
  */
 
 const CALLMEBOT = 'https://api.callmebot.com/whatsapp.php'
 
-/** Pola briefu i ich maksymalne długości. Wszystko inne z żądania jest ignorowane. */
-const POLA = { imie: 80, czego: 80, kiedy: 80, kontakt: 120, opis: 1200 }
-const WYMAGANE = ['imie', 'czego', 'kiedy', 'kontakt']
+/** Pola tekstowe briefu i ich maksymalne długości. Wszystko inne jest ignorowane. */
+const POLA = { imie: 80, czego: 80, email: 120, telefon: 24, opis: 1200 }
 
 /** Szybciej niż w 2,5 s człowiek pięciu pytań nie przejdzie — to bot. */
 const MIN_CZAS_MS = 2500
 
 /** Większego zgłoszenia formularz nie wyprodukuje; nie czytamy więcej. */
 const MAX_BAJTOW = 8_000
+
+const EMAIL = /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)*\.[a-z]{2,}$/i
+/** Numer z kierunkowym: „+48 600 111 222” — plus i 7–15 cyfr. */
+const TELEFON = /^\+\d{1,4}(?: ?\d){6,14}$/
+const DZIEN = /^(\d{4})-(\d{2})-(\d{2})$/
+const GODZINA = /^([01]\d|2[0-3]):(00|30)$/
 
 export default {
   async fetch(request, env) {
@@ -61,8 +69,16 @@ export default {
 
     const pola = {}
     for (const [klucz, max] of Object.entries(POLA)) pola[klucz] = oczysc(dane[klucz], max, klucz === 'opis')
-    const brak = WYMAGANE.filter((k) => !pola[k])
-    if (brak.length) return odpowiedz({ error: 'MISSING', fields: brak }, 400, cors)
+    const termin = sprawdzTermin(dane.termin)
+
+    const bledy = []
+    if (!pola.imie) bledy.push('imie')
+    if (!pola.czego) bledy.push('czego')
+    if (!termin) bledy.push('termin')
+    if (!pola.email && !pola.telefon) bledy.push('kontakt')
+    if (pola.email && !EMAIL.test(pola.email)) bledy.push('email')
+    if (pola.telefon && !TELEFON.test(pola.telefon)) bledy.push('telefon')
+    if (bledy.length) return odpowiedz({ error: 'MISSING', fields: bledy }, 400, cors)
 
     const numery = celeWhatsapp(env)
     if (!numery.length) {
@@ -72,7 +88,7 @@ export default {
 
     const jezykStrony = ['pl', 'en', 'it'].includes(dane.lang) ? dane.lang : 'pl'
     const wyniki = await Promise.all(
-      numery.map((cel) => wyslijWhatsapp(env, cel, wiadomosc(pola, jezykStrony, cel.jezyk))),
+      numery.map((cel) => wyslijWhatsapp(env, cel, wiadomosc(pola, termin, jezykStrony, cel.jezyk))),
     )
     const doszlo = wyniki.filter((w) => w.ok).length
 
@@ -89,6 +105,23 @@ export default {
   },
 }
 
+/**
+ * Termin: { typ: 'dogadac' } albo { typ: 'termin', dzien, godzina }.
+ * Zwraca znormalizowany obiekt albo null, gdy dane nie mają sensu
+ * (zły format, nieistniejąca data jak 31 lutego, minuty inne niż :00/:30).
+ */
+function sprawdzTermin(t) {
+  if (!t || typeof t !== 'object') return null
+  if (t.typ === 'dogadac') return { typ: 'dogadac' }
+  if (t.typ !== 'termin') return null
+  const d = DZIEN.exec(String(t.dzien || ''))
+  if (!d || !GODZINA.test(String(t.godzina || ''))) return null
+  const [r, m, dz] = [+d[1], +d[2], +d[3]]
+  const data = new Date(Date.UTC(r, m - 1, dz))
+  if (data.getUTCFullYear() !== r || data.getUTCMonth() !== m - 1 || data.getUTCDate() !== dz) return null
+  return { typ: 'termin', r, m, d: dz, godzina: t.godzina }
+}
+
 /* ─────────────────────────── wiadomość ─────────────────────────── */
 
 const RAMKI = {
@@ -96,50 +129,64 @@ const RAMKI = {
     naglowek: '📩 *Nowe zapytanie ze strony STRX*',
     imie: '👤 *Imię*',
     czego: '🧩 *Czego potrzebuje*',
-    kiedy: '🗓️ *Na kiedy*',
-    kontakt: '📞 *Kontakt*',
-    opis: '🏢 *O firmie*',
+    rozmowa: '📅 *Rozmowa*',
+    dogadac: '🤝 *Termin*: chce się najpierw dogadać',
+    telefon: '📞 *Telefon*',
+    email: '✉️ *E-mail*',
+    opis: '💬 *Co go interesuje*',
     jezyk: '🌐 Język strony',
-    kiedyPrzyszlo: '🕒',
+    strefa: 'czas PL/IT',
     stopka: 'Odpisz, póki temat jest ciepły.',
+    locale: 'pl-PL',
   },
   it: {
     naglowek: '📩 *Nuova richiesta dal sito STRX*',
     imie: '👤 *Nome*',
     czego: '🧩 *Cosa serve*',
-    kiedy: '🗓️ *Per quando*',
-    kontakt: '📞 *Contatto*',
-    opis: '🏢 *Sull’azienda*',
+    rozmowa: '📅 *Chiamata*',
+    dogadac: '🤝 *Quando*: vuole prima parlarne',
+    telefon: '📞 *Telefono*',
+    email: '✉️ *Email*',
+    opis: '💬 *Cosa gli interessa*',
     jezyk: '🌐 Lingua del sito',
-    kiedyPrzyszlo: '🕒',
+    strefa: 'ora italiana',
     stopka: 'Rispondi finché l’interesse è caldo.',
+    locale: 'it-IT',
   },
 }
 
 /**
  * Dane klienta idą DOSŁOWNIE, tłumaczona jest tylko ramka.
- * Etykieta i wartość są w osobnych liniach tam, gdzie tekst bywa długi —
- * na telefonie długa wartość za dwukropkiem łamie się pod etykietą i robi
- * się z tego ściana tekstu.
+ * Kontakt w osobnych liniach: WhatsApp sam robi z numeru i adresu
+ * klikalne odnośniki, jeśli stoją na końcu linii.
  */
-function wiadomosc(p, jezykStrony, jezykRamki) {
+function wiadomosc(p, termin, jezykStrony, jezykRamki) {
   const r = RAMKI[jezykRamki] || RAMKI.pl
   const kreska = '━━━━━━━━━━━━━━'
-  const godzina = new Intl.DateTimeFormat(jezykRamki === 'it' ? 'it-IT' : 'pl-PL', {
+  const godzina = new Intl.DateTimeFormat(r.locale, {
     timeZone: 'Europe/Rome',
     day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit',
   }).format(new Date())
+
+  let kiedy = r.dogadac
+  if (termin.typ === 'termin') {
+    // południe UTC: dzień tygodnia nie przeskoczy przy żadnej strefie
+    const data = new Date(Date.UTC(termin.r, termin.m - 1, termin.d, 12))
+    const dzien = new Intl.DateTimeFormat(r.locale, { timeZone: 'UTC', weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' }).format(data)
+    kiedy = `${r.rozmowa}: ${dzien}, ${termin.godzina} (${r.strefa})`
+  }
 
   return [
     r.naglowek,
     kreska,
     `${r.imie}: ${p.imie}`,
     `${r.czego}: ${p.czego}`,
-    `${r.kiedy}: ${p.kiedy}`,
-    `${r.kontakt}: ${p.kontakt}`,
+    kiedy,
+    ...(p.telefon ? [`${r.telefon}: ${p.telefon}`] : []),
+    ...(p.email ? [`${r.email}: ${p.email}`] : []),
     ...(p.opis ? ['', `${r.opis}:`, p.opis] : []),
     kreska,
-    `${r.jezyk}: ${jezykStrony.toUpperCase()} · ${r.kiedyPrzyszlo} ${godzina}`,
+    `${r.jezyk}: ${jezykStrony.toUpperCase()} · 🕒 ${godzina}`,
     '',
     r.stopka,
   ].join('\n')

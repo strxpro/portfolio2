@@ -85,6 +85,24 @@ export const sched = [
 
 export const labs = ['trojwymiar', 'rezerwacja', 'jezyki', 'automat', 'zakres']
 
+/**
+ * Kiedy można umówić rozmowę przez formularz kontaktowy.
+ *
+ * Godziny liczone w strefie Europe/Rome — to ten sam czas co w Polsce.
+ * Formularz pokazuje tylko terminy w tych ramach, nie wcześniej niż
+ * `wyprzedzenie` godzin od teraz. To NIE jest połączenie z kalendarzem:
+ * dwie osoby mogą wybrać ten sam termin, więc potwierdzasz go w odpowiedzi.
+ */
+export const dostepnosc = {
+  strefa: 'Europe/Rome',
+  // 1 = poniedziałek … 7 = niedziela
+  dni: [1, 2, 3, 4, 5, 6],
+  od: 9, // pierwsza pełna godzina
+  do: 20, // ostatnia rozmowa zaczyna się o 19:30
+  wyprzedzenie: 3, // godziny
+  naprzod: 30, // ile dni do przodu da się wybrać
+}
+
 export const slots = ['12:30', '13:00', '13:30', '19:00', '19:30', '20:00', '20:30', '21:00']
 
 // ── demo: ta sama karta dań w sześciu językach ──────────────

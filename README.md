@@ -1265,11 +1265,17 @@ i po kilku sekundach chowa się z powrotem. Kliknięcie przedłuża pobyt.
 
 ## Brief → WhatsApp
 
-Kontakt to pięć pytań zadawanych po kolei (`components/Brief.jsx`): imię, czego
-potrzebujesz, na kiedy, gdzie odpisać, dwa zdania o firmie. Po „Wyślij” zgłoszenie
-leci do Workera Cloudflare (`worker/`), który wysyła je na WhatsApp przez
-CallMeBota. Karta zwija się w toast z potwierdzeniem i po 5 s wraca do pustego
-formularza. Gdy wysyłka się nie uda, formularz mówi to wprost i proponuje mail
+Kontakt to pięć pytań zadawanych po kolei (`components/Brief.jsx`, kroki w
+`components/brief/`): imię; czego potrzebujesz (`Coś innego` otwiera pole do
+wpisania); na kiedy — „na razie chcę się dogadać” albo rozmowa w wybranym terminie
+(kalendarz z najbliższymi wolnymi, godziny co :00 i :30); gdzie odpisać — e-mail,
+telefon z kierunkowym albo oba, sprawdzane na bieżąco; co by Cię interesowało (do
+pominięcia). Po wysłaniu pocztówka pakuje się do koperty i odlatuje w przestrzeń,
+potem toast z potwierdzeniem, po 5 s pusty formularz.
+
+Godziny, w których da się umówić rozmowę, ustawiasz w `src/data/site.js` →
+`dostepnosc` (dni, od–do, wyprzedzenie, ile dni naprzód; czas Europe/Rome). To nie
+jest połączenie z kalendarzem — termin potwierdzasz w odpowiedzi. Gdy wysyłka się nie uda, formularz mówi to wprost i proponuje mail
 z gotową treścią — nigdy nie udaje sukcesu.
 
 Worker: walidacja pól, pułapka na boty (ukryte pole + zbyt szybkie wypełnienie),

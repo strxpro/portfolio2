@@ -157,24 +157,6 @@ main {
 .leaf.white .brief-card,
 .panel .brief-card { background: var(--paper); }
 
-/* klapka koperty — leży odchylona, domyka się przy pieczętowaniu */
-.flap {
-  position: absolute;
-  left: -1px;
-  right: -1px;
-  top: -1px;
-  height: 152px;
-  transform-origin: top center;
-  transform-style: preserve-3d;
-  backface-visibility: hidden;
-  background: linear-gradient(180deg, #1E1E23, #16161A);
-  border: 1px solid var(--rule);
-  border-radius: var(--r-lg) var(--r-lg) 0 0;
-  clip-path: polygon(0 0, 100% 0, 50% 100%);
-  pointer-events: none;
-  z-index: 5;
-}
-
 .brief-top {
   display: flex;
   align-items: center;
@@ -248,7 +230,6 @@ main {
 }
 .brief-back:hover { color: var(--ink); }
 
-.brief-sealed { text-align: left; padding-top: 74px; }
 .brief-sum {
   margin: 0;
   font-size: 14px;
@@ -328,17 +309,6 @@ main {
   .toast-bar { animation: none; opacity: 0.4; }
 }
 
-.wax {
-  position: absolute;
-  left: 50%;
-  top: 152px;
-  width: 62px;
-  height: 62px;
-  margin: -31px 0 0 -31px;
-  z-index: 6;
-  filter: drop-shadow(0 6px 14px rgba(28, 27, 25, 0.28));
-  pointer-events: none;
-}
 
 /* panel kontaktowy: brief obok nagłówka */
 .panel .contact { align-items: center; }
@@ -354,4 +324,272 @@ main {
   .panel .quick { display: none; }
   .brief-card { padding: 16px 16px 18px; }
   .brief-stage { min-height: 168px; }
+}
+
+/* ── tylko dla czytnika ekranu ─────────────────────────── */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.brief-inne { margin-top: 14px; }
+.brief-pomin { margin-left: auto; }
+.brief-input.zle { border-color: #C2412D; }
+
+/* ── krok „na kiedy”: dwie drogi i kalendarz ──────────────── */
+.tr-opcje {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+@media (max-width: 480px) { .tr-opcje { grid-template-columns: 1fr; } }
+.tr-opcja {
+  display: grid;
+  gap: 3px;
+  padding: 12px 14px;
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  background: var(--card);
+  text-align: left;
+  transition: border-color var(--tap) var(--ease), background var(--tap) var(--ease);
+}
+.tr-opcja b { font-size: 14.5px; font-weight: 600; color: var(--ink); }
+.tr-opcja span { font-size: 12.5px; line-height: 1.4; color: var(--ink-3); }
+.tr-opcja:hover { border-color: var(--ink-3); }
+.tr-opcja.on { border-color: var(--accent); background: rgba(27, 77, 245, 0.06); }
+
+.tr-kal { margin-top: 14px; }
+.tr-mini { margin: 0 0 8px; font-size: 12px; font-weight: 600; letter-spacing: 0.02em; color: var(--ink-3); }
+.tr-szybkie { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.tr-szybkie .bk-slot { padding: 8px 11px; }
+.tr-head { margin-bottom: 8px; }
+.tr-head button:disabled { opacity: 0.25; cursor: default; }
+.tr-kal .bk-day { font-size: 13px; }
+.tr-kal .bk-day:not(.off):hover { box-shadow: inset 0 0 0 1px var(--ink-3); }
+.tr-czas { margin-top: 12px; }
+.tr-godziny {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 5px;
+}
+@media (max-width: 420px) { .tr-godziny { grid-template-columns: repeat(4, 1fr); } }
+.tr-godziny .bk-slot:disabled,
+.tr-minuty .tr-min:disabled { opacity: 0.3; cursor: default; }
+.tr-minuty {
+  display: inline-flex;
+  margin-top: 8px;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--wash);
+}
+.tr-min {
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+.tr-min.on { background: var(--accent); color: #fff; }
+.tr-wskazowka { margin-top: 10px; }
+
+/* ── krok „gdzie mam odpisać” ───────────────────────────── */
+.kt-pole { display: block; margin-top: 10px; }
+.kt-pole > span:first-child {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-3);
+}
+.kt-tel { display: flex; align-items: flex-end; gap: 8px; }
+.kt-kod {
+  flex: none;
+  padding: 11px 6px 11px 2px;
+  border: 0;
+  border-bottom: 1.5px solid var(--rule);
+  background: transparent;
+  font: inherit;
+  font-size: 15px;
+  color: var(--ink);
+  outline: none;
+}
+.kt-kod:focus { border-color: var(--accent); }
+.kt-tel .brief-input { flex: 1; min-width: 0; }
+.kt-blad { margin: 6px 0 0; font-size: 12.5px; color: #C2412D; }
+
+/* ── scena wysyłki: pocztówka → koperta → odlot ─────────────── */
+.brief-card.w-locie { overflow: visible; }
+.brief-tresc { position: relative; }
+.pc-scena {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+.pc-koperta {
+  position: relative;
+  width: min(250px, 78%);
+  aspect-ratio: 3 / 2;
+  perspective: 700px;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.pc-tyl,
+.pc-przod,
+.pc-klapa {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-radius: 10px;
+}
+.pc-tyl {
+  inset: 0;
+  z-index: 0;
+  background: #E4DCC8;
+  box-shadow: 0 22px 40px -24px rgba(23, 24, 26, 0.55);
+}
+.pc-karta {
+  position: absolute;
+  left: 7%;
+  right: 7%;
+  top: 8%;
+  height: 76%;
+  z-index: 1;
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: #FFFDF8;
+  box-shadow: 0 6px 14px -8px rgba(23, 24, 26, 0.4);
+  overflow: hidden;
+}
+.pc-znaczek {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 5px 6px;
+  border: 1.5px dashed var(--accent);
+  border-radius: 3px;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+}
+.pc-linia {
+  position: absolute;
+  left: 12px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--rule);
+}
+.pc-linia-1 { top: 42%; width: 52%; }
+.pc-linia-2 { top: 56%; width: 38%; }
+.pc-podpis {
+  position: absolute;
+  left: 12px;
+  bottom: 12%;
+  font-family: var(--f-serif);
+  font-style: italic;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+.pc-przod {
+  bottom: 0;
+  height: 100%;
+  z-index: 2;
+  background: linear-gradient(180deg, #EFE8D6, #E7DFCB);
+  clip-path: polygon(0 34%, 50% 64%, 100% 34%, 100% 100%, 0 100%);
+}
+.pc-klapa {
+  top: 0;
+  height: 66%;
+  background: linear-gradient(180deg, #DDD3BC, #E9E1CE);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  transform-origin: top center;
+  backface-visibility: visible;
+}
+.pc-pieczec {
+  position: absolute;
+  left: 50%;
+  top: 60%;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin: -22px 0 0 -22px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: inset 0 0 0 4px rgba(255, 255, 255, 0.22), 0 6px 12px -4px rgba(27, 77, 245, 0.6);
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #fff;
+}
+.pc-iskra {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  border-radius: 50%;
+  background: #FFF6D8;
+  box-shadow: 0 0 10px 2px rgba(255, 214, 120, 0.85);
+}
+
+/* Kalendarz w karcie ma być zwarty: z kwadratowymi dniami karta rosła do
+   979 px i wystawała poza panel kontaktu na laptopie 900 px. */
+.tr.otwarty .tr-opcja { padding: 8px 12px; }
+.tr.otwarty .tr-opcja span { display: none; }
+.tr-kal { margin-top: 10px; }
+.tr-szybkie { margin-bottom: 10px; }
+.tr-kal .bk-dow { margin-bottom: 3px; font-size: 10px; }
+.tr-kal .bk-grid { gap: 3px; }
+.tr-kal .bk-day { aspect-ratio: auto; height: 30px; border-radius: 8px; font-size: 12.5px; }
+.tr-kal .bk-head strong { font-size: 14px; }
+.tr-czas { margin-top: 10px; }
+.tr-czas .tr-mini { margin-bottom: 6px; }
+.tr-godziny { gap: 4px; }
+.tr-godziny .bk-slot { padding: 6px 2px; }
+.tr-czas-wiersz {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.tr-czas-wiersz .tr-mini { margin: 0; }
+.tr-czas-wiersz .tr-minuty { margin-top: 0; }
+.tr-czas-wiersz .tr-min { padding: 4px 12px; }
+.tr-szybkie { align-items: center; }
+.tr-szybkie .tr-mini { margin: 0 4px 0 0; }
+/* po otwarciu kalendarza obie drogi to niski pasek w jednej linii */
+.tr.otwarty .tr-opcja { padding: 7px 10px; }
+.tr.otwarty .tr-opcja b {
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tr.otwarty .tr-opcje { grid-template-columns: 1fr 1fr; }
+
+/* przy otwartym kalendarzu maskotka ustępuje miejsca — zostają kropki postępu */
+.brief-card.z-kalendarzem .brief-face { display: none; }
+.brief-card.z-kalendarzem .brief-top { justify-content: flex-end; margin-bottom: 6px; }
+.brief-card.z-kalendarzem .brief-q { margin-bottom: 10px; }
+
+/* Telefon: z otwartym kalendarzem zawartość panelu kontaktu (958 px) nie
+   mieściła się w ekranie 812 px i nagłówek wypadał nad panel, ucięty.
+   Na czas wyboru terminu nagłówek ustępuje — wraca na kolejnym kroku. */
+@media (max-width: 860px) {
+  .panel .contact:has(.z-kalendarzem) h2.display,
+  .panel .contact:has(.z-kalendarzem) .lead { display: none; }
+  .panel-in:has(.z-kalendarzem) .footer { display: none; }
+}
+/* dni pod palec: 30 px było za mało na wygodne trafienie */
+@media (max-width: 480px) {
+  .tr-kal .bk-day { height: 36px; font-size: 13.5px; }
+  .tr-godziny .bk-slot { padding: 9px 2px; }
 }
