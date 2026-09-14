@@ -27,15 +27,20 @@ body { background: var(--void); }
     radial-gradient(120% 80% at 50% -10%, var(--void-2) 0%, var(--void) 62%);
 }
 
-.cos-plan {
+/* Pole gwiazd: jedno płótno wielkości ekranu, rysowane co klatkę w Cosmos.jsx */
+.cos-pola {
   position: absolute;
-  left: 0;
-  /* kafel wychodzi nad kadr, żeby przy przesuwaniu w dół nie odsłonić
-     górnej krawędzi płótna */
-  top: -480px;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   display: block;
-  will-change: transform;
+  opacity: 0.9;
 }
+
+/* Siatka konstrukcyjna z czasów papierowego arkusza leżała nad kosmosem
+   i układała się w równą kratkę. Przestrzeń ma być pomieszana, nie
+   rozrysowana — siatka zostaje wyłączona. */
+.sheetgrid { display: none; }
 
 /* dwie mgławice: ciepła u góry, chłodna niżej — dają kierunek światła */
 .cos-glow {
@@ -813,3 +818,6 @@ main > .leaf:has(+ .handoff) { padding-bottom: clamp(30px, 4vw, 60px); }
   .gx-dysk,
   .cos-tw { animation: none; }
 }
+
+/* Zapas na rozpęd za szwem pętli — patrz komentarz w `App.jsx`. */
+.echo-zapas { height: 150vh; pointer-events: none; }

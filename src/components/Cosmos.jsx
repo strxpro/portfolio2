@@ -1,46 +1,59 @@
 import { useEffect, useRef, useState } from 'react'
-import { motion, useMotionValue, useScroll, useSpring, useTime, useTransform } from 'framer-motion'
+import { motion, useScroll, useSpring } from 'framer-motion'
 import { usePointer } from '../lib/usePointer'
 import { SPRING } from '../lib/motion'
-import { dlugoscPetli, rozwin, zapomnijDlugosc } from '../lib/loopLength'
+import { dlugoscPetli, zapomnijDlugosc } from '../lib/loopLength'
 import DeepSky from './DeepSky'
 
 /**
  * Przestrzeń, w której leży cała strona.
  *
- * Sekcje są nieprzezroczystymi płachtami, więc dopóki tło było kolorem,
- * nie dało się zobaczyć, że cokolwiek dzieje się w głębi. Tutaj pod
- * wszystkim leży pole gwiazd na trzech planach: dalekim, środkowym
- * i bliskim. Scroll przesuwa je z różną prędkością, kursor (a na
- * telefonie przechył) przesuwa je w bok — i dopiero to daje wrażenie,
- * że panele unoszą się w czymś, a nie leżą na kolorze.
+ * Pod panelami leży pole gwiazd na trzech planach: dalekim, środkowym
+ * i bliskim. Przewijanie przesuwa je z różną prędkością, kursor (a na
+ * telefonie przechył) w bok — dopiero to daje wrażenie, że panele
+ * unoszą się w czymś, a nie leżą na kolorze.
  *
- * **Gwiazdy rysują się raz.** Każdy plan to jedno płótno wypalone przy
- * montażu; potem rusza się już tylko `transform`, czyli praca karty
- * graficznej. Rysowanie ich co klatkę byłoby przemalowaniem całego
- * ekranu w kółko — dokładnie ten koszt, przez który wyleciała stąd
- * głębia ostrości.
+ * ── Dlaczego gwiazdy są funkcją pozycji, a nie licznikiem ──────────
+ *
+ * Strona jest nieskończoną pętlą: za finałem stoi echo pierwszego
+ * ekranu i w chwili, gdy kadr jest identyczny, pozycja cofa się o
+ * długość pętli L. Dwie wcześniejsze wersje liczyły ruch gwiazd
+ * własnym licznikiem ze sprężyną i obie przegrywały z tym przeskokiem
+ * — raz przez kolejność zdarzeń, raz przez to, że Lenis trzyma własną
+ * animację i wracał do starych współrzędnych. Sprężyna dostawała skok
+ * i go nadrabiała: gwiazdy teleportowały się i przelatywały.
+ *
+ * Teraz przesunięcie planu to **reszta z dzielenia** `scrollY × tempo`
+ * przez wysokość pola V, a V jest dobrane tak, żeby L × tempo było
+ * dokładnie V. Cofnięcie o L zmienia wynik o zero — gwiazdy na górze
+ * strony są z definicji tym samym obrazem co w echu. Nie ma licznika,
+ * zdarzenia ani sprężyny, więc nie ma czego zepsuć. Wygładzenie i tak
+ * daje Lenis.
+ *
+ * ── Dlaczego bez kafli ──────────────────────────────────────────────
+ *
+ * Wcześniej każdy plan był płótnem z kaflem 480 px powtórzonym w pionie,
+ * na wszystkich trzech planach z tym samym okresem. Na ekranie 900 px
+ * ten sam układ wracał prawie dwa razy, i to na wszystkich planach naraz
+ * — oko łapało to jako równą siatkę. Każdy plan ma teraz własną,
+ * niepowiązaną wysokość pola, a gwiazdy rysują się co klatkę na jednym
+ * płótnie wielkości ekranu (kilkaset kropek; trzy wysokie płótna do
+ * składania w każdej klatce kosztowały więcej).
  */
 
-/** [ile gwiazd, maks. promień, krycie, ile razy szybciej niż strona] */
+/** [gwiazd na ekran 1440×900, maks. promień, krycie, tempo względem strony] */
 const PLANY = [
-  [190, 0.9, 0.55, 0.06],
-  [110, 1.4, 0.75, 0.14],
-  [46, 2.2, 1, 0.26],
+  [150, 0.8, 0.55, 0.08],
+  [95, 1.3, 0.78, 0.17],
+  [42, 2.1, 1, 0.3],
 ]
 
-/**
- * Wysokość kafla. Płótno powtarza go tyle razy, ile trzeba, żeby zakryć
- * kadr — a przesunięcie liczone modulo `KAFEL` wraca zawsze na obraz
- * identyczny co do piksela.
- */
-const KAFEL = 480
+/** Najmniejsze pole planu w ekranach — mniejsze powtarzałoby się w kadrze. */
+const MIN_POLE = 1.35
 
 /**
- * Barwy gwiazd z wagami. Prawdziwe niebo nie jest białe: większość
- * gwiazd jest lekko ciepła, część wyraźnie niebieska, pojedyncze
- * pomarańczowe. Wagi są dobrane tak, żeby pole dalej grało z ciepłym
- * papierem paneli.
+ * Barwy gwiazd z wagami. Większość lekko ciepła, część wyraźnie
+ * niebieska, pojedyncze pomarańczowe — tak, żeby pole grało z papierem.
  */
 const BARWY = [
   ['255,251,242', 46],
@@ -52,130 +65,139 @@ const BARWY = [
 const SUMA_WAG = BARWY.reduce((a, [, w]) => a + w, 0)
 const barwa = () => {
   let los = Math.random() * SUMA_WAG
-  for (const [rgb, w] of BARWY) { if ((los -= w) < 0) return rgb }
-  return BARWY[0][0]
+  for (let i = 0; i < BARWY.length; i++) { if ((los -= BARWY[i][1]) < 0) return i }
+  return 0
 }
 
-function Plan({ spec, i, scroll, px, py }) {
-  const [ile, r, alfa, tempo] = spec
+/** Miękka poświata jako gotowy obrazek — rysowana `drawImage`, nie gradientem co klatkę. */
+function poswiaty() {
+  return BARWY.map(([rgb]) => {
+    const c = document.createElement('canvas')
+    c.width = c.height = 32
+    const g = c.getContext('2d')
+    const gr = g.createRadialGradient(16, 16, 0, 16, 16, 16)
+    gr.addColorStop(0, `rgba(${rgb},0.55)`)
+    gr.addColorStop(0.35, `rgba(${rgb},0.16)`)
+    gr.addColorStop(1, `rgba(${rgb},0)`)
+    g.fillStyle = gr
+    g.fillRect(0, 0, 32, 32)
+    return c
+  })
+}
+
+/**
+ * Gwiazdy losujemy we współrzędnych 0–1 i z zapasem (×4), więc zmiana
+ * wysokości pola czy szerokości ekranu ich nie przetasowuje — plan
+ * bierze tylko tyle pierwszych, ile potrzebuje.
+ */
+function losujPlan([ile, r, alfa]) {
+  return Array.from({ length: Math.round(ile * 4) }, () => {
+    // rozkład potęgowy: mnóstwo ledwie widocznych, garstka jasnych
+    const jasnosc = Math.random() ** 3
+    const b = barwa()
+    const a = (0.2 + jasnosc * 0.8) * alfa
+    return {
+      u: Math.random(),
+      v: Math.random(),
+      r: 0.3 + jasnosc * r * 1.5,
+      b,
+      styl: `rgba(${BARWY[b][0]},${a})`,
+      blask: jasnosc > 0.72,
+    }
+  })
+}
+
+const mod = (a, n) => ((a % n) + n) % n
+
+function PoleGwiazd({ px, py }) {
   const ref = useRef(null)
 
   useEffect(() => {
     const c = ref.current
-    if (!c) return
-    /**
-     * Gęstość 1, nie gęstość ekranu.
-     *
-     * To trzy płótna na całą szerokość i ~2.5 ekranu wysokości, składane
-     * w każdej klatce. Przy 1.5 kosztowały **6.3 ms na klatkę** nawet
-     * przy nieruchomej stronie (zmierzone: 24 ms z gwiazdami, 17.7 ms
-     * bez). Kropki mają 1–2 px, więc gęstsza siatka i tak nic nie wnosi,
-     * a tekstura rośnie z kwadratem.
-     */
-    const dpr = 1
+    if (!c) return undefined
+    const g = c.getContext('2d')
+    const blaski = poswiaty()
+    const plany = PLANY.map(losujPlan)
+    const spokoj = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
+    let w = 0
+    let h = 0
     /**
-     * Pole gwiazd jest **kaflowane**, nie po prostu wysokie.
+     * Wymiar z **pudełka płótna**, nie z `innerWidth`.
      *
-     * Pierwsza wersja miała płótno wysokości 1.6 ekranu i to się nie
-     * broniło: najszybsza warstwa przesuwa się o 1030 px na 4000 px
-     * przewijania, więc po chwili wyjeżdżała poza swój obraz i dolna
-     * część kadru zostawała bez gwiazd (zmierzone: pusto poniżej 154 px).
-     *
-     * Dlatego gwiazdy losujemy w pasie wysokości `KAFEL` i kopiujemy ten
-     * pas raz pod spód. Przesunięcie liczone modulo `KAFEL` wraca wtedy
-     * na obraz identyczny co do piksela — pole jest nieskończone, a
-     * przeskok niewidoczny, bo nie ma czego przeskoczyć.
+     * W Windowsie `innerWidth` obejmuje pasek przewijania (15 px), więc
+     * płótno było o 1% szersze niż miejsce na ekranie i przeglądarka je
+     * zmniejszała. Takie przeskalowanie drobnych kropek daje mory —
+     * regularne prążki, które wyglądały jak siatka. Piksel płótna ma być
+     * dokładnie pikselem ekranu.
      */
-    const bake = () => {
-      const w = window.innerWidth
-      /**
-       * Ile kafli musi mieć płótno.
-       *
-       * Leży ono jeden kafel nad kadrem i zsuwa się w dół o maksymalnie
-       * jeden kafel, więc musi zakryć ekran plus dwa kafle zapasu.
-       * Przy dwóch kaflach na stałe (960 px) poniżej połowy ekranu
-       * gwiazd już nie było.
-       */
-      const kafli = Math.ceil((window.innerHeight + KAFEL * 2) / KAFEL)
-      const h = KAFEL * kafli
-      c.width = Math.round(w * dpr)
-      c.height = Math.round(h * dpr)
-      c.style.width = `${w}px`
-      c.style.height = `${h}px`
-      const g = c.getContext('2d')
-      g.scale(dpr, dpr)
+    const wymiary = () => {
+      w = Math.max(1, Math.round(c.clientWidth))
+      h = Math.max(1, Math.round(c.clientHeight))
+      // gęstość 1: kropki mają 1–2 px, gęstsza siatka nic nie wnosi, a kosztuje
+      if (c.width !== w) c.width = w
+      if (c.height !== h) c.height = h
+    }
+    wymiary()
+    const pudelko = new ResizeObserver(wymiary)
+    pudelko.observe(c)
+    const watch = new ResizeObserver(zapomnijDlugosc)
+    watch.observe(document.body)
+
+    let id
+    let licznik = 0
+    const klatka = (czas) => {
+      id = requestAnimationFrame(klatka)
+      // zapasowe sprawdzenie wymiaru co pół sekundy, gdyby obserwator się spóźnił
+      if (++licznik % 30 === 0) wymiary()
+      const L = dlugoscPetli()
+      const s = window.scrollY
+      const ox = px.get()
+      const oy = py.get()
+      const skalaX = Math.max(0.45, Math.min(1.3, w / 1440))
       g.clearRect(0, 0, w, h)
-      // na małym ekranie proporcjonalnie mniej gwiazd — gęstość na oko ta sama
-      const naEkran = Math.round(ile * Math.max(0.5, Math.min(1.2, w / 1440)))
-      for (let n = 0; n < naEkran; n++) {
-        const x = Math.random() * w
-        const y = Math.random() * KAFEL
+
+      for (let i = 0; i < PLANY.length; i++) {
+        const [ile, , , tempo] = PLANY[i]
         /**
-         * Jasność ma rozkład potęgowy, nie równy: na niebie jest mnóstwo
-         * ledwie widocznych punktów i garstka jasnych. Przy równym
-         * rozkładzie pole wyglądało jak posypane solą.
+         * Wysokość pola: dokładnie L × tempo, żeby pętla była niewidoczna.
+         * Gdyby wyszło za nisko (krótka strona, bardzo wysoki ekran),
+         * podnosimy tempo planu zamiast skracać pole — warunek
+         * L × tempo = V musi zostać spełniony.
          */
-        const jasnosc = Math.random() ** 3
-        const rr = 0.3 + jasnosc * r * 1.5
-        const a = (0.2 + jasnosc * 0.8) * alfa
-        const rgb = barwa()
-        for (let k = 0; k < kafli; k++) {
-          const yy = y + k * KAFEL
-          // najjaśniejsze dostają miękką poświatę, wypaloną w obrazie
-          if (jasnosc > 0.72) {
-            const h = g.createRadialGradient(x, yy, 0, x, yy, rr * 5)
-            h.addColorStop(0, `rgba(${rgb},${a * 0.45})`)
-            h.addColorStop(1, `rgba(${rgb},0)`)
-            g.fillStyle = h
-            g.fillRect(x - rr * 5, yy - rr * 5, rr * 10, rr * 10)
+        const V = L ? Math.max(L * tempo, h * MIN_POLE) : h * 3
+        const t = L ? V / L : tempo
+        const dryf = spokoj ? 0 : Math.sin((czas / (26000 + i * 9000)) * Math.PI * 2) * (5 + i * 5)
+        const dryfX = spokoj ? 0 : Math.cos((czas / (36000 + i * 12000)) * Math.PI * 2) * (6 + i * 6)
+        const przes = mod(s * t - oy * (6 + i * 14) - dryf, V)
+        const bokX = ox * (10 + i * 22) + dryfX
+        const n = Math.min(plany[i].length, Math.round(ile * skalaX * (V / 900)))
+
+        for (let k = 0; k < n; k++) {
+          const st = plany[i][k]
+          const y = mod(st.v * V - przes, V)
+          if (y > h + 12) continue
+          const x = mod(st.u * w + bokX, w)
+          if (st.blask) {
+            const d = st.r * 11
+            g.drawImage(blaski[st.b], x - d / 2, y - d / 2, d, d)
           }
-          g.fillStyle = `rgba(${rgb},${a})`
-          g.beginPath()
-          g.arc(x, yy, rr, 0, Math.PI * 2)
-          g.fill()
+          g.fillStyle = st.styl
+          if (st.r < 0.9) g.fillRect(x - st.r, y - st.r, st.r * 2, st.r * 2)
+          else { g.beginPath(); g.arc(x, y, st.r, 0, 6.2832); g.fill() }
         }
       }
     }
-    bake()
-    let t
-    const later = () => { clearTimeout(t); t = setTimeout(bake, 220) }
-    window.addEventListener('resize', later)
-    return () => { clearTimeout(t); window.removeEventListener('resize', later) }
-  }, [ile, r, alfa])
+    id = requestAnimationFrame(klatka)
 
-  /**
-   * Trzy rzeczy naraz w jednej wartości.
-   *
-   * `y` i `translateY` to w Framerze **ta sama** składowa transformacji,
-   * więc podanie obu kasowało jedną z nich — reakcja gwiazd na kursor
-   * była martwa, choć wyglądała na podpiętą. Dlatego wszystko sumujemy
-   * ręcznie i oddajemy jako jedno `x` i jedno `y`.
-   *
-   * Składniki: zawijanie przy przewijaniu (modulo kafla), odchylenie od
-   * kursora albo przechyłu telefonu, i **własny, powolny dryf** — pole
-   * gwiazd ma leciutko żyć także wtedy, gdy nikt niczego nie dotyka.
-   */
-  const czas = useTime()
-  const okres = 26000 + i * 9000
-  const amp = 5 + i * 5
+    return () => {
+      cancelAnimationFrame(id)
+      pudelko.disconnect()
+      watch.disconnect()
+    }
+  }, [px, py])
 
-  const y = useTransform([scroll, py, czas], ([sv, pv, tv]) => {
-    const zawin = -(((sv * tempo) % KAFEL) + KAFEL) % KAFEL
-    return zawin + pv * (6 + i * 14) + Math.sin((tv / okres) * Math.PI * 2) * amp
-  })
-  const x = useTransform([px, czas], ([pv, tv]) =>
-    pv * (10 + i * 22) + Math.cos((tv / (okres * 1.4)) * Math.PI * 2) * amp * 1.3,
-  )
-
-  return (
-    <motion.canvas
-      ref={ref}
-      className="cos-plan"
-      style={{ x, y, opacity: 0.9 }}
-      aria-hidden="true"
-    />
-  )
+  return <canvas ref={ref} className="cos-pola" aria-hidden="true" />
 }
 
 /**
@@ -253,39 +275,6 @@ function Spadajace() {
 
 export default function Cosmos() {
   const { scrollY } = useScroll()
-
-  /**
-   * Gwiazdy jadą po **własnym, ciągłym liczniku**, a nie po pozycji strony.
-   *
-   * Strona ma nieskończoną pętlę: po przekroczeniu szwu pozycja cofa się
-   * o całą długość strony. Kadr jest wtedy identyczny, ale pole gwiazd
-   * liczone wprost z `scrollY` dostałoby skok i przejechałoby go na oczach.
-   *
-   * Dlatego sumujemy przyrosty, a przyrost dłuższy niż pół pętli
-   * **rozwijamy** (`rozwin`) — przeskok pętli daje wtedy prawie zero.
-   *
-   * Wcześniej o przeskoku mówiło zdarzenie `strx:loop`, i to był błąd:
-   * na telefonie przewijanie z rozpędem potrafi zignorować `scrollTo`,
-   * pętla próbuje drugi raz, a gwiazdy odejmowały długość pętli dwukrotnie
-   * i teleportowały się o kawał kafla. Rozwijanie nie zależy od żadnego
-   * zdarzenia ani od ich kolejności.
-   */
-  const ciagly = useMotionValue(0)
-  useEffect(() => {
-    let ostatni = scrollY.get()
-    const stop = scrollY.on('change', (v) => {
-      const przyrost = v - ostatni
-      ostatni = v
-      // mierzymy długość pętli tylko przy dużym skoku, nie co klatkę
-      const krok = Math.abs(przyrost) > window.innerHeight ? rozwin(przyrost, dlugoscPetli()) : przyrost
-      ciagly.set(ciagly.get() + krok)
-    })
-    const watch = new ResizeObserver(zapomnijDlugosc)
-    watch.observe(document.body)
-    return () => { stop(); watch.disconnect() }
-  }, [scrollY, ciagly])
-
-  const scroll = useSpring(ciagly, SPRING.scroll)
   const { x, y } = usePointer(90, 30)
   const px = useSpring(x, SPRING.enter)
   const py = useSpring(y, SPRING.enter)
@@ -294,10 +283,8 @@ export default function Cosmos() {
     <div className="cosmos" aria-hidden="true">
       <span className="cos-glow a" />
       <span className="cos-glow b" />
-      <DeepSky px={px} py={py} scroll={scroll} />
-      {PLANY.map((spec, i) => (
-        <Plan key={i} spec={spec} i={i} scroll={scroll} px={px} py={py} />
-      ))}
+      <DeepSky px={px} py={py} scrollY={scrollY} />
+      <PoleGwiazd px={px} py={py} />
       <Spadajace />
       <span className="cos-vign" />
     </div>

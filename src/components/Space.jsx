@@ -5,7 +5,6 @@ import Cover from './Cover'
 import Folder from './Folder'
 import Morph from './Morph'
 import Focus from './Focus'
-import Pixels from './Pixels'
 import Tour from './Tour'
 import { textOf, useProjects } from '../lib/projects'
 import { useT } from '../lib/lang-ctx'
@@ -357,8 +356,6 @@ export default function Space() {
         onPointerMove={onStageMove}
         onPointerLeave={() => setHot(-1)}
       >
-        <Pixels className="space-bg" gap={40} />
-
         {/* Mgła wolumetryczna: trzy płachty na różnych głębokościach.
             To one budują wrażenie przestrzeni — obiekt w pustce wygląda
             jak wycinanka, obiekt za warstwami powietrza ma dystans. */}

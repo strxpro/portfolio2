@@ -66,20 +66,45 @@ export default function Loop() {
       const to = pos() - o
       const l = window.__lenis
       if (l) {
+        const bylo = l.animatedScroll
         const zostalo = l.targetScroll - l.animatedScroll
         l.animatedScroll = to
         l.targetScroll = to + zostalo
+        /**
+         * Lenis prowadzi płynny dojazd osobnym obiektem animacji, który ma
+         * własny punkt startu, cel i bieżącą wartość. Bez przesunięcia
+         * również ich w następnej klatce Lenis wracał do starych
+         * współrzędnych — pozycja skakała tam i z powrotem przez szew,
+         * a wszystko liczone z przewijania dostawało fałszywy skok.
+         */
+        const a = l.animate
+        if (a && a.isRunning) {
+          const d = to - bylo
+          a.from += d
+          a.to += d
+          a.value += d
+        }
       }
       window.scrollTo(0, to)
-      /* W zdarzeniu leci **o ile** cofnęliśmy widok: pasek postępu ma
-         przeskoczyć razem z nim zamiast dojechać, a tło gwiazd odejmuje
-         tę wartość i w ogóle nie zauważa szwu. */
+      /* W zdarzeniu leci **o ile** cofnęliśmy widok: pasek postępu i sprężyny
+         sekcji przeskakują razem z nim zamiast dojeżdżać. Tło gwiazd go nie
+         potrzebuje — liczy się z pozycji okresowo, z okresem równym pętli. */
       window.dispatchEvent(new CustomEvent('strx:loop', { detail: { o } }))
     }
 
     const check = () => {
       if (!szew) measure()
-      if (szew && pos() >= szew) cofnij(szew)
+      if (dlug > 0) splacDlug()
+      if (!szew || pos() < szew) return
+      /**
+       * Za szwem, ale w drodze **w górę**, nie domykamy. Tak jest tuż po
+       * przeskoku z góry strony w echo (`naKolko`): stoimy kilka pikseli
+       * za szwem i jedziemy w stronę finału. Domknięcie odbiłoby nas
+       * z powrotem na górę i przeskoki szłyby w kółko.
+       */
+      const l = window.__lenis
+      if (l && l.targetScroll < l.animatedScroll - 0.5) return
+      cofnij(szew)
     }
 
     /**
@@ -113,7 +138,53 @@ export default function Loop() {
       if (szew && pos() <= 2) cofnij(-(szew - 4))
     }
 
-    const onWheel = (e) => { if (e.deltaY < 0) doTylu() }
+    /**
+     * Kółko w górę przy samym początku strony.
+     *
+     * Lenis obcina cel przewijania na zerze, więc zanim pozycja dojechała
+     * do góry, kolejne obroty kółka po prostu ginęły (zmierzone: 2044 px
+     * z 4080). Przeskakujemy więc w echo, gdzie kadr jest ten sam, a nad
+     * nim jest miejsce na dalszy ruch.
+     *
+     * Przeskoczyć wolno tylko wtedy, gdy echo pokrywa cały kadr, czyli
+     * w pierwszych `zapasEcha()` pikselach — głębiej pod echem jest już
+     * pusty zapas na rozpęd. Cel przewijania wyprzedza jednak pozycję
+     * o kilkaset pikseli i dochodzi do zera wcześniej. To, co Lenis w tym
+     * czasie obetnie, zapisujemy jako **dług** i oddajemy zaraz po
+     * przeskoku — dzięki temu żaden obrót kółka nie przepada.
+     *
+     * Nasłuch idzie w fazie przechwytywania, żeby policzyć stan celu
+     * przed Lenisem.
+     */
+    let dlug = 0
+    const zapasEcha = () => {
+      const e = document.querySelector('.echo')
+      if (!e || !szew) return 0
+      return Math.max(0, e.getBoundingClientRect().bottom + window.scrollY - szew - window.innerHeight - 4)
+    }
+    const splacDlug = () => {
+      const l = window.__lenis
+      if (!l || dlug <= 0 || !szew || pos() > zapasEcha()) return
+      const ile = dlug
+      dlug = 0
+      cofnij(-szew)
+      // te same parametry, co Lenis dla kółka — bez nich przy `programmatic: false`
+      // nie ma czasu ani krzywej i dług spłacał się skokiem w jednej klatce
+      const { lerp, duration, easing } = l.options
+      l.scrollTo(l.targetScroll - ile, { programmatic: false, lerp, duration, easing })
+    }
+    const naKolko = (e) => {
+      const l = window.__lenis
+      if (!szew) measure()
+      if (!szew) return
+      if (!l) { if (e.deltaY < 0) doTylu(); return }
+      if (e.deltaY >= 0) { dlug = 0; return }
+      const cel = l.targetScroll + e.deltaY * (l.options?.wheelMultiplier ?? 1)
+      if (cel >= 0) return
+      if (pos() <= zapasEcha()) { dlug = 0; cofnij(-szew); return }
+      // Lenis zaraz obetnie ten obrót do zera — zapamiętaj, ile zabierze
+      dlug += -cel - Math.max(0, -l.targetScroll)
+    }
 
     /**
      * Dotyk. `touchmove` mówi tylko, gdzie jest palec, więc kierunek
@@ -134,7 +205,7 @@ export default function Loop() {
     const watch = new ResizeObserver(stale)
     watch.observe(document.body)
     window.addEventListener('scroll', check, { passive: true })
-    window.addEventListener('wheel', onWheel, { passive: true })
+    window.addEventListener('wheel', naKolko, { passive: true, capture: true })
     window.addEventListener('touchstart', onTouchStart, { passive: true })
     window.addEventListener('touchmove', onTouchMove, { passive: true })
     window.addEventListener('touchend', onTouchEnd, { passive: true })
@@ -144,7 +215,7 @@ export default function Loop() {
       off?.()
       watch.disconnect()
       window.removeEventListener('scroll', check)
-      window.removeEventListener('wheel', onWheel)
+      window.removeEventListener('wheel', naKolko, { capture: true })
       window.removeEventListener('touchstart', onTouchStart)
       window.removeEventListener('touchmove', onTouchMove)
       window.removeEventListener('touchend', onTouchEnd)

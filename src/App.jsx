@@ -145,6 +145,18 @@ export default function App() {
           */}
         <div className="echo-lip" />
       </div>
+      {/**
+        * Zapas na rozpęd za szwem.
+        *
+        * Lenis obcina cel przewijania do końca dokumentu. Kiedy za szwem
+        * było tylko ~150 px, każdy szybszy ruch kółka przy końcu strony
+        * uderzał w dno: kolejne obroty nie przesuwały celu i ginęły
+        * (zmierzone: 515 px z 4080 przejechanych), a strona sprawiała
+        * wrażenie, że się kończy, zanim zacznie od nowa. Pętla cofa pozycję
+        * już na szwie, więc tego pasa nigdy nie widać — jest tylko po to,
+        * żeby było dokąd się rozpędzić.
+        */}
+      <div className="echo-zapas" aria-hidden="true" />
       <Guide />
       <Cursor />
       <Jump />

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useTime, useTransform } from 'framer-motion'
+import { dlugoscPetli } from '../lib/loopLength'
 
 /**
  * Najdalszy plan kosmosu: Droga Mleczna, mgławice, migoczące gwiazdy
@@ -54,10 +55,20 @@ function rysujGalaktyke(c, bok) {
   const zwoj = 1 / Math.tan((22 * Math.PI) / 180)
   const katRamienia = (r, ramie) => (ramie * 2 * Math.PI) / RAMIONA + zwoj * Math.log(r / (R * 0.05))
 
-  g.globalCompositeOperation = 'lighter'
+  /**
+   * Poświata i mgliste ramiona w ćwiartce rozdzielczości, potem powiększone.
+   * Bardzo przezroczyste gradienty nakładane na siebie przeglądarka
+   * wyrównuje regularnym ditheringiem — w obrocie ten wzór kropek byłby
+   * widoczny jeszcze bardziej niż na stojącym niebie.
+   */
+  const mgla = document.createElement('canvas')
+  mgla.width = mgla.height = Math.ceil((bok * dpr) / 4)
+  const m = mgla.getContext('2d')
+  m.scale(mgla.width / bok, mgla.width / bok)
+  m.globalCompositeOperation = 'lighter'
 
   // poświata dysku
-  plama(g, s, s, R, '130,150,215', 0.13)
+  plama(m, s, s, R, '130,150,215', 0.13)
 
   // mgliste ramiona: dużo miękkich plam wzdłuż spirali
   for (let n = 0; n < 340; n++) {
@@ -66,8 +77,13 @@ function rysujGalaktyke(c, bok) {
     const t = r / R
     const k = katRamienia(r, ramie) + gauss() * 0.16
     const rgb = Math.random() < 0.18 ? '215,140,200' : '120,155,255'
-    plama(g, s + Math.cos(k) * r, s + Math.sin(k) * r, (10 + Math.random() * 22) * skala * (0.6 + t), rgb, 0.05 * (1.1 - t))
+    plama(m, s + Math.cos(k) * r, s + Math.sin(k) * r, (10 + Math.random() * 22) * skala * (0.6 + t), rgb, 0.05 * (1.1 - t))
   }
+  g.imageSmoothingEnabled = true
+  g.imageSmoothingQuality = 'high'
+  g.drawImage(mgla, 0, 0, bok, bok)
+
+  g.globalCompositeOperation = 'lighter'
 
   // gwiazdy dysku: większość w ramionach, reszta rozsiana
   const ile = Math.round(5200 * Math.max(0.55, gestosc()))
@@ -130,41 +146,56 @@ function rysujGalaktyke(c, bok) {
   g.globalCompositeOperation = 'source-over'
 }
 
-/** Przerysowanie tylko przy zmianie szerokości — pasek adresu na telefonie zmienia samą wysokość. */
-function usePrzerysuj(rysuj) {
+/**
+ * Przerysowanie, gdy zmieni się **szerokość pudełka** elementu.
+ * Sama wysokość zmienia się na telefonie przy chowaniu paska adresu —
+ * wtedy nie przerysowujemy, żeby niebo nie mrugało przy przewijaniu.
+ * Pudełko, a nie okno: w Windowsie okno liczy też pasek przewijania.
+ */
+function usePrzerysuj(ref, rysuj) {
   useEffect(() => {
+    const el = ref.current
+    if (!el) return undefined
+    // pierwsze rysowanie od razu — obserwator raportuje dopiero w cyklu klatki
+    let szer = Math.round(el.clientWidth)
     rysuj()
     let t
-    let szer = window.innerWidth
-    const pozniej = () => {
-      if (window.innerWidth === szer) return
-      szer = window.innerWidth
+    const sprawdz = () => {
+      const nowa = Math.round(el.clientWidth)
+      if (nowa === szer) return
+      szer = nowa
       clearTimeout(t)
-      t = setTimeout(rysuj, 260)
+      t = setTimeout(rysuj, 200)
     }
-    window.addEventListener('resize', pozniej)
-    return () => { clearTimeout(t); window.removeEventListener('resize', pozniej) }
+    const obs = new ResizeObserver(sprawdz)
+    obs.observe(el)
+    // zapas na wypadek spóźnionego obserwatora (np. pasek przewijania po ekranie ładowania)
+    const zapas = setInterval(sprawdz, 1000)
+    return () => { clearTimeout(t); clearInterval(zapas); obs.disconnect() }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 }
 
-function Galaktyka({ px, py, scroll }) {
+function Galaktyka({ px, py, scrollY }) {
   const ramka = useRef(null)
   const dysk = useRef(null)
 
-  usePrzerysuj(() => {
+  usePrzerysuj(ramka, () => {
     const bok = ramka.current?.clientWidth
     if (bok && dysk.current) rysujGalaktyke(dysk.current, bok)
   })
 
   /**
-   * Galaktyka jest daleko, więc prawie nie reaguje. Przewijanie kołysze
-   * nią sinusoidą, a nie przesuwa liniowo: licznik gwiazd rośnie bez
-   * końca, więc przesunięcie liniowe po kilku okrążeniach pętli
-   * wyprowadziłoby ją poza ekran. Sinus zawsze wraca.
+   * Galaktyka jest daleko, więc prawie nie reaguje. Przez całą stronę
+   * wykonuje jedno pełne kołysanie: sinus z okresem **równym długości
+   * pętli**. Na szwie pętli pozycja cofa się dokładnie o ten okres, więc
+   * galaktyka stoi tam, gdzie stała — bez skoku i bez nadrabiania.
    */
   const x = useTransform(px, (v) => v * 16)
-  const y = useTransform([py, scroll], ([v, sv]) => v * 10 + Math.sin(sv / 1400) * 26)
+  const y = useTransform([py, scrollY], ([v, sv]) => {
+    const L = dlugoscPetli() || window.innerHeight * 12
+    return v * 10 + Math.sin((sv / L) * Math.PI * 2) * 34
+  })
 
   return (
     <motion.div className="gx" ref={ramka} style={{ x, y }}>
@@ -182,8 +213,9 @@ function Galaktyka({ px, py, scroll }) {
 const ZAPAS = 24
 
 function rysujNiebo(c) {
-  const w = window.innerWidth + ZAPAS * 2
-  const h = window.innerHeight + ZAPAS * 2
+  // wymiar z pudełka, nie z innerWidth — patrz komentarz w PoleGwiazd (Cosmos.jsx)
+  const w = Math.max(1, Math.round(c.clientWidth))
+  const h = Math.max(1, Math.round(c.clientHeight))
   c.width = w
   c.height = h
   const g = c.getContext('2d')
@@ -201,26 +233,47 @@ function rysujNiebo(c) {
   const szer = Math.min(w, h) * 0.13
   const naPasie = (u, o) => [ax + dx * u + nx * o, ay + dy * u + ny * o]
 
-  g.globalCompositeOperation = 'lighter'
-
+  /**
+   * Mgławice rysujemy w ćwiartce rozdzielczości i dopiero potem
+   * powiększamy z wygładzaniem.
+   *
+   * Dziesiątki bardzo przezroczystych gradientów (krycie ~0.04) nałożonych
+   * na siebie mają za mało odcieni w 8 bitach, więc przeglądarka wyrównuje
+   * przejścia ditheringiem — regularnym wzorem kropek. Na ciemnym niebie
+   * układał się on w **równą kratkę**, dokładnie to, co miało zniknąć.
+   * Powiększenie małego obrazu rozmywa ten wzór w gładką mgłę.
+   */
+  const SKALA_MGLY = 4
+  const mgla = document.createElement('canvas')
+  mgla.width = Math.ceil(w / SKALA_MGLY)
+  mgla.height = Math.ceil(h / SKALA_MGLY)
+  const m = mgla.getContext('2d')
+  m.scale(1 / SKALA_MGLY, 1 / SKALA_MGLY)
+  m.globalCompositeOperation = 'lighter'
   const kolory = ['95,115,200', '150,95,170', '205,165,125', '80,150,175']
   for (let n = 0; n < 46; n++) {
     const [x, y] = naPasie(Math.random(), gauss() * szer * 0.8)
-    plama(g, x, y, (90 + Math.random() * 230) * Math.sqrt(f), kolory[n % kolory.length], 0.035 + Math.random() * 0.03)
+    plama(m, x, y, (90 + Math.random() * 230) * Math.sqrt(f), kolory[n % kolory.length], 0.035 + Math.random() * 0.03)
   }
-
-  for (let n = 0; n < 2600 * f; n++) {
-    const [x, y] = naPasie(Math.random(), gauss() * szer)
-    const bok = Math.random() < 0.85 ? 1 : 1.6
-    g.fillStyle = `rgba(235,238,255,${0.06 + Math.random() * 0.32})`
-    g.fillRect(x, y, bok, bok)
-  }
-
-  // ciemna szczelina pyłu przez środek pasa
-  g.globalCompositeOperation = 'destination-out'
+  // ciemna szczelina pyłu przez środek pasa — też w mgle, z tego samego powodu
+  m.globalCompositeOperation = 'destination-out'
   for (let n = 0; n < 70; n++) {
     const [x, y] = naPasie(Math.random(), gauss() * szer * 0.22)
-    plama(g, x, y, (26 + Math.random() * 60) * Math.sqrt(f), '0,0,0', 0.2)
+    plama(m, x, y, (26 + Math.random() * 60) * Math.sqrt(f), '0,0,0', 0.2)
+  }
+  g.imageSmoothingEnabled = true
+  g.imageSmoothingQuality = 'high'
+  g.drawImage(mgla, 0, 0, w, h)
+
+  g.globalCompositeOperation = 'lighter'
+  for (let n = 0; n < 2600 * f; n++) {
+    const o = gauss() * szer
+    const [x, y] = naPasie(Math.random(), o)
+    // w szczelinie pyłu gwiazdy gasną zamiast być wycinane
+    const pyl = 1 - 0.75 * Math.exp(-((o / (szer * 0.25)) ** 2))
+    const bok = Math.random() < 0.85 ? 1 : 1.6
+    g.fillStyle = `rgba(235,238,255,${(0.06 + Math.random() * 0.32) * pyl})`
+    g.fillRect(x, y, bok, bok)
   }
 
   // rzadki, drobny pył gwiazd poza pasem
@@ -245,11 +298,11 @@ function losujMigotanie(ile) {
   }))
 }
 
-export default function DeepSky({ px, py, scroll }) {
+export default function DeepSky({ px, py, scrollY }) {
   const niebo = useRef(null)
   const [migotanie] = useState(() => losujMigotanie(window.innerWidth < 860 ? 9 : 18))
 
-  usePrzerysuj(() => { if (niebo.current) rysujNiebo(niebo.current) })
+  usePrzerysuj(niebo, () => { if (niebo.current) rysujNiebo(niebo.current) })
 
   // najdalszy plan: kilka pikseli za kursorem i powolny oddech
   const czas = useTime()
@@ -276,7 +329,7 @@ export default function DeepSky({ px, py, scroll }) {
           />
         ))}
       </motion.div>
-      <Galaktyka px={px} py={py} scroll={scroll} />
+      <Galaktyka px={px} py={py} scrollY={scrollY} />
     </>
   )
 }

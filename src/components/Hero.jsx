@@ -2,7 +2,6 @@ import { useRef } from 'react'
 import { motion, useTransform } from 'framer-motion'
 import Photo from './Photo'
 import HeroArt from './HeroArt'
-import Pixels from './Pixels'
 import Type from './Type'
 import { me, photos } from '../data/site'
 import { useT } from '../lib/lang-ctx'
@@ -35,8 +34,9 @@ export default function Hero({ ghost = false }) {
 
   return (
     <section className="hero" id={ghost ? undefined : 'top'} ref={ref}>
-      {/* pikselowa siatka pod treścią — ta sama, co w scenie 3D, tylko rzadsza */}
-      <Pixels className="hero-bg" gap={46} tone="light" />
+      {/* Bez pikselowej siatki: hero jest przezroczysty i siatka leżała
+          wprost na kosmosie jako równa kratka kropek. Przestrzeń ma być
+          pomieszana, nie rozrysowana. */}
       <HeroArt />
 
       <div className="wrap hero-grid">
