@@ -73,10 +73,19 @@ export default function App() {
 
     /* Dłuższy dobieg i łagodniejsza krzywa — koniec gestu ma wybrzmieć,
        a nie uciąć się w miejscu, w którym puściłeś kółko. */
+    /**
+     * Dociąganie (`lerp`) zamiast animacji o stałym czasie.
+     *
+     * Przy `duration` każdy ząbek kółka odpalał od nowa krzywą 1.25 s
+     * zaczynającą się od największej prędkości — przewijanie szło
+     * zrywami, szczególnie myszką. `lerp` co klatkę pokonuje stały
+     * ułamek drogi do celu, więc kolejne ząbki tylko przesuwają cel,
+     * a ruch zostaje jednym ciągłym wyhamowaniem.
+     */
     const lenis = new Lenis({
-      duration: 1.25,
-      easing: (t) => 1 - Math.pow(1 - t, 3.2),
+      lerp: 0.085,
       smoothWheel: true,
+      wheelMultiplier: 0.9,
       touchMultiplier: 1.6,
     })
     window.__lenis = lenis

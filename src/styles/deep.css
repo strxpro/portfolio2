@@ -1162,35 +1162,7 @@
   margin-top: 10px;
 }
 
-/* ── mgła wolumetryczna i winieta w tunelu ────────────── */
-.space-fog {
-  position: absolute;
-  inset: -12%;
-  pointer-events: none;
-  will-change: transform;
-}
-/* trzy płachty na różnych głębokościach — najgęstsza najniżej */
-.space-fog.f1 {
-  z-index: 0;
-  background: radial-gradient(58% 44% at 26% 62%, rgba(252, 251, 247, 0.85) 0%, transparent 70%);
-  filter: blur(28px);
-}
-.space-fog.f2 {
-  z-index: 0;
-  background: radial-gradient(50% 40% at 78% 34%, rgba(233, 230, 220, 0.75) 0%, transparent 72%);
-  filter: blur(34px);
-  animation: drift 26s ease-in-out infinite alternate;
-}
-.space-fog.f3 {
-  z-index: 2;
-  background:
-    linear-gradient(to bottom, rgba(244, 242, 236, 0.9) 0%, transparent 22%),
-    linear-gradient(to top, rgba(244, 242, 236, 0.95) 0%, transparent 26%);
-}
-@keyframes drift {
-  from { transform: translate3d(-2%, 1%, 0) scale(1); }
-  to { transform: translate3d(3%, -2%, 0) scale(1.08); }
-}
+
 .space-vign {
   position: absolute;
   inset: 0;

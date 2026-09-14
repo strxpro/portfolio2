@@ -4,7 +4,18 @@
    ═════════════════════════════════════════════════════════ */
 
 /* ── napisy wjeżdżające spod maski ───────────────────── */
-.t-line { display: block; }
+/* Maska na wiersz. Bez stałego will-change — Framer podnosi warstwę
+   tylko na czas animacji, a potem wiersz wraca do zwykłego tekstu. */
+.t-line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+.t-in { display: block; }
+
+/* Ręczna maska pojedynczego fragmentu (litery w preloaderze, nagłówek
+   kontaktu przesuwany scrollem). Też bez stałego will-change. */
 .t-word {
   display: inline-block;
   overflow: hidden;
@@ -12,7 +23,7 @@
   padding-bottom: 0.14em;
   margin-bottom: -0.14em;
 }
-.t-word > span { display: inline-block; will-change: transform; }
+.t-word > span { display: inline-block; }
 
 
 /* ── prace: pokaz pełnoekranowy ──────────────────────── */

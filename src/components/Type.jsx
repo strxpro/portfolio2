@@ -3,13 +3,18 @@ import { motion } from 'framer-motion'
 import { EASE } from '../lib/motion'
 
 /**
- * Napis wjeżdżający spod maski, słowo po słowie.
+ * Napis wjeżdżający spod maski — **wierszami, nie słowami**.
  *
- * Między słowami stoi PRAWDZIWA spacja jako osobny węzeł tekstowy —
- * dzięki temu wiersz ma gdzie się złamać, a skopiowany tekst i czytnik
- * ekranu dostają normalne odstępy zamiast sklejonych wyrazów.
+ * Wcześniej każde słowo miało własną maskę i własną animację. Dwie
+ * rzeczy przemawiały przeciw temu: każde słowo trzymało na stałe
+ * `will-change: transform`, więc na stronie wisiały 92 warstwy GPU
+ * składane w każdej klatce przewijania, a tekst sypiący się wyraz po
+ * wyrazie to jeden z najbardziej rozpoznawalnych chwytów generowanych
+ * stron. Wiersz wjeżdżający w całości czyta się spokojniej.
  *
- * Pionową kreską `|` dzielisz tekst na wiersze.
+ * Tekst wiersza jest zwykłym ciągiem, więc spacje, łamanie, kopiowanie
+ * i czytnik ekranu działają normalnie. Pionową kreską `|` dzielisz
+ * tekst na wiersze.
  */
 
 
@@ -37,9 +42,11 @@ export default function Type({
   const Tag = TAGS[as] ?? motion.span
   const lines = String(text).split(/[|\n]/)
 
+  // odstęp liczony dla wierszy; stare wartości dla słów (0.014–0.026) byłyby niewidoczne
+  const krok = Math.max(stagger, 0.09)
   const parent = {
     hidden: {},
-    show: { transition: { staggerChildren: stagger, delayChildren: delay } },
+    show: { transition: { staggerChildren: krok, delayChildren: delay } },
   }
   const child = {
     hidden: { y: '105%', opacity: 0 },
@@ -57,16 +64,15 @@ export default function Type({
   return (
     <Tag className={className} variants={parent} {...gate}>
       {lines.map((line, li) => (
-        <span className="t-line" key={li}>
-          {line.split(' ').map((word, wi, all) => (
-            <Fragment key={wi}>
-              <span className="t-word">
-                <motion.span variants={child}>{word}</motion.span>
-              </span>
-              {wi < all.length - 1 ? ' ' : null}
-            </Fragment>
-          ))}
-        </span>
+        <Fragment key={li}>
+          <span className="t-line">
+            <motion.span className="t-in" variants={child}>{line.trim()}</motion.span>
+          </span>
+          {/* spacja między wierszami: na ekranie jej nie widać (wiersze są
+              blokami), ale kopiowany tekst i czytnik ekranu nie sklejają
+              „aplikacjeod projektu" */}
+          {li < lines.length - 1 ? ' ' : null}
+        </Fragment>
       ))}
     </Tag>
   )

@@ -82,21 +82,14 @@ function Card({ item, seat, cam, rush, far, hot, cardRef }) {
   )
 
   /**
-   * Głębia ostrości — płynna, nie skokowa.
+   * Bez głębi ostrości.
    *
-   * Wcześniej były cztery stopnie rozmycia i przeskoki między nimi
-   * było widać: karta co chwilę „strzelała" ostrością. Progi wzięły się
-   * z założenia, że rozmycie jest drogie — i to prawda, ale **na
-   * płachtach wielkości ekranu**. Na kartach zmierzyłem różnicę na
-   * granicy szumu (40.8 ms z rozmyciem kontra 41.8 bez), więc nie ma
-   * czego oszczędzać, a płynność widać od razu.
+   * Karty były rozmywane filtrem liczonym od nowa w każdej klatce, osobno
+   * dla każdej z dziewięciu. Dawny pomiar „na granicy szumu" był zrobiony
+   * przy wstrzymanych klatkach panelu, więc niczego nie dowodził, a filtr
+   * zmieniany co klatkę wymusza ponowne malowanie warstwy. Dystans czyta
+   * się i tak z krycia, skali i obrotu.
    */
-  const rozmycie = useTransform(
-    here,
-    [-2300, -1500, -820, -300, NEAR],
-    [6.5, 3.4, 1.2, 0, 2.4],
-  )
-  const filtr = useTransform(rozmycie, (v) => (v < 0.06 ? 'none' : `blur(${v.toFixed(2)}px)`))
   // cień zostaje stały: liczony co klatkę dla dziewięciu kart kosztował
   // ~7 ms na najgorszych klatkach (p95 57 → 50 ms po zamrożeniu)
 
@@ -115,7 +108,8 @@ function Card({ item, seat, cam, rush, far, hot, cardRef }) {
   // pękate rogi — tak samo jak w prawdziwym szerokim kadrze
   const rotY = useTransform(near, (v) => -x * (0.3 + v * 0.95))
   const rotX = useTransform(near, (v) => y * (0.24 + v * 0.85))
-  const round = useTransform(near, (v) => `${14 + Math.min(off, 60) * (0.3 + v * 1.05)}px`)
+  // rogi stałe: zaokrąglenie zmieniane co klatkę przemalowywało kartę razem z maską
+  const round = `${Math.round(14 + Math.min(off, 60) * 0.55)}px`
 
   return (
     <motion.div
@@ -129,7 +123,6 @@ function Card({ item, seat, cam, rush, far, hot, cardRef }) {
         translateZ: depth,
         opacity: fade,
         borderRadius: round,
-        filter: filtr,
         rotateY: rotY,
         rotateX: rotX,
         scale: hot ? 1.06 : 1,
@@ -284,10 +277,6 @@ export default function Space() {
     setHot(pickAt(e.clientX, e.clientY))
   }
 
-  // mgła dryfuje wolniej niż karty — stąd wrażenie głębi powietrza
-  const fogA = useTransform(x, [-1, 1], [26, -26])
-  const fogB = useTransform(x, [-1, 1], [-14, 14])
-
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end end'] })
   /* Źródło kamery wyciągnięte do zmiennej, bo `useLoopSpring` musi je
      obserwować — to ono mówi, kiedy szew pętli już się przeliczył. */
@@ -356,12 +345,6 @@ export default function Space() {
         onPointerMove={onStageMove}
         onPointerLeave={() => setHot(-1)}
       >
-        {/* Mgła wolumetryczna: trzy płachty na różnych głębokościach.
-            To one budują wrażenie przestrzeni — obiekt w pustce wygląda
-            jak wycinanka, obiekt za warstwami powietrza ma dystans. */}
-        <motion.span className="space-fog f1" style={{ x: fogA }} aria-hidden="true" />
-        <motion.span className="space-fog f2" style={{ x: fogB }} aria-hidden="true" />
-        <span className="space-fog f3" aria-hidden="true" />
         <span className="space-vign" aria-hidden="true" />
 
         <motion.div

@@ -43,10 +43,11 @@ body { background: var(--void); }
 .sheetgrid { display: none; }
 
 /* dwie mgławice: ciepła u góry, chłodna niżej — dają kierunek światła */
+/* Bez filter: blur — gradient i tak gaśnie do przezroczystości, a rozmycie
+   60 px na warstwie wielkości pół ekranu to kosztowny filtr za nic. */
 .cos-glow {
   position: absolute;
   border-radius: 50%;
-  filter: blur(60px);
   opacity: 0.5;
 }
 .cos-glow.a {
@@ -254,7 +255,6 @@ main { padding: 0 var(--float); }
  * a w kosmosie robi to ciemność i winieta — dystans widać nawet lepiej
  * niż wcześniej.
  */
-.space .space-fog { display: none; }
 .space .space-vign {
   background: radial-gradient(110% 85% at 50% 45%, transparent 46%, rgba(6, 8, 14, 0.9) 100%);
 }
