@@ -232,20 +232,6 @@
 }
 @media (max-width: 860px) { .svc-view { position: static; min-height: 190px; } }
 
-.svc-num {
-  position: relative;
-  height: clamp(74px, 9vw, 118px);
-  overflow: hidden;
-  font-family: var(--f-serif);
-  font-weight: 300;
-  font-size: clamp(78px, 10vw, 128px);
-  line-height: 1;
-  letter-spacing: -0.04em;
-  color: transparent;
-  -webkit-text-stroke: 1px var(--ink-3);
-  margin-bottom: 16px;
-}
-.svc-num span { position: absolute; inset: 0; display: block; }
 
 .svc-title {
   font-family: var(--f-serif);
@@ -271,12 +257,6 @@
   transition: color var(--fast) var(--ease), padding-left var(--fast) var(--ease);
 }
 .svc-list li.on button { color: var(--ink); padding-left: 14px; }
-.svc-i {
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  color: var(--ink-3);
-  flex: none;
-}
 .svc-n {
   font-family: var(--f-serif);
   font-weight: 400;

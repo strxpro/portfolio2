@@ -284,15 +284,6 @@
   will-change: transform, opacity;
   overflow: hidden;
 }
-.plate-no {
-  position: absolute;
-  left: 20px;
-  top: 16px;
-  font-family: var(--f-mono);
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  color: var(--ink-3);
-}
 .plate-name {
   position: absolute;
   left: 20px;
@@ -982,12 +973,6 @@
   background: var(--card);
   overflow: hidden;
   will-change: transform;
-}
-.proof-i {
-  font-family: var(--f-mono);
-  font-size: 9.5px;
-  letter-spacing: 0.18em;
-  color: var(--ink-3);
 }
 .proof-figure {
   display: flex;

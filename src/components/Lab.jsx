@@ -38,7 +38,6 @@ export default function Lab() {
       <div className="wrap">
         <div className="head">
           <div>
-            <Type as="p" className="label" text={t.lab.label} />
             <Type as="h2" className="title" text={t.labTitle} delay={0.08} />
           </div>
           <Type

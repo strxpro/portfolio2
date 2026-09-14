@@ -379,7 +379,6 @@ export default function Space() {
         </AnimatePresence>
 
         <div className="space-ui">
-          <p className="label">{t.space.label}</p>
           <h2 className="space-title">
             {t.space.title}
             <Morph words={t.space.morph} className="space-morph" />

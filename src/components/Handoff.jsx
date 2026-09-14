@@ -49,7 +49,6 @@ function Plate({ i, plate, p, label, index }) {
         background: plate.tint,
       }}
     >
-      <span className="plate-no">{String(index).padStart(2, '0')}</span>
       <span className="plate-name">{label}</span>
       <span className="plate-grid" aria-hidden="true" />
     </motion.div>
@@ -77,7 +76,6 @@ export default function Handoff() {
         </div>
 
         <motion.div className="handoff-say" style={{ opacity: say, y: rise, scale: near }}>
-          <p className="label">{t.handoff.label}</p>
           <h2>{t.handoff.title}</h2>
           <p className="handoff-lead">{t.handoff.lead}</p>
           <motion.button

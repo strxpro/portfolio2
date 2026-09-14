@@ -155,7 +155,6 @@ export default function Finale() {
         transition={{ duration: 0.42, ease: [0.16, 1, 0.3, 1] }}
       >
         <motion.div className="stage-msg" style={{ opacity: msgOp, y: msgY }}>
-          <Type as="p" className="label" text={t.finale.label} amount={0.2} />
           <Type as="h2" className="title" text={t.finale.title} delay={0.08} amount={0.2} />
           <p className="lead">{t.finale.lead}</p>
         </motion.div>
@@ -184,8 +183,7 @@ export default function Finale() {
           <div className="panel-in">
             <div className="contact">
               <div>
-                <Type as="p" className="label" text={t.finale.cLabel} amount={0.1} />
-                <h2 className="display" style={{ marginTop: 14 }}>
+                <h2 className="display">
                   <span className="t-line"><span className="t-word">
                     <motion.span style={{ y: headA }}>{t.finale.cTitle1}</motion.span>
                   </span></span>

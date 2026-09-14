@@ -41,14 +41,17 @@ export default function Hero({ ghost = false }) {
 
       <div className="wrap hero-grid">
         <div className="hero-main">
-          <motion.div
-            className="hero-status"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
+          {/* Samo imię zamiast plakietki z kropką „dostępny” — pastylka
+              z hasłem nad nagłówkiem to jeden z najbardziej rozpoznawalnych
+              chwytów generowanych stron. */}
+          <motion.p
+            className="hero-name"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             transition={{ delay: 0.12, duration: 0.6, ease: EASE }}
           >
-            <span className="avail"><i />{t.hero.badge}</span>
-          </motion.div>
+            {me.name}
+          </motion.p>
 
           <Type as="h1" className="display" text={t.hero.head} onMount delay={0.2} duration={0.9} />
 
@@ -79,15 +82,17 @@ export default function Hero({ ghost = false }) {
                   <path d="M5 12h14M13 6l6 6-6 6" />
                 </svg>
               </motion.a>
-              <motion.a
-                className="btn ghost big"
+              {/* drugi krok to zwykły link, nie drugi guzik tej samej wagi */}
+              <a
+                className="hero-link"
                 href="#kontakt"
                 onClick={(e) => { e.preventDefault(); goToEnd() }}
-                whileHover={{ y: -3 }}
-                whileTap={{ scale: 0.97 }}
               >
                 {t.hero.cta2}
-              </motion.a>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
+              </a>
             </div>
           </motion.div>
         </div>
@@ -119,20 +124,6 @@ export default function Hero({ ghost = false }) {
         </motion.aside>
       </div>
 
-      <div className="wrap">
-        <motion.span
-          className="hero-scroll"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.95, duration: 0.6 }}
-        >
-          {t.scroll}
-          <motion.i
-            animate={{ y: [0, 7, 0] }}
-            transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
-          />
-        </motion.span>
-      </div>
     </section>
   )
 }

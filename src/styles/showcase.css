@@ -247,7 +247,7 @@
 .gantt-rows { display: grid; }
 .gantt-row {
   display: grid;
-  grid-template-columns: 44px minmax(70px, 1fr) minmax(0, 3.2fr) auto;
+  grid-template-columns: minmax(70px, 1fr) minmax(0, 3.2fr) auto;
   gap: 12px;
   align-items: center;
   padding: 14px clamp(12px, 1.6vw, 20px);
@@ -256,7 +256,6 @@
   transition: background var(--fast) var(--ease);
 }
 .gantt-row.on { background: var(--paper); }
-.gantt-n { font-family: var(--f-mono); font-size: 11px; color: var(--ink-3); }
 .gantt-name {
   font-family: var(--f-serif);
   font-weight: 700;
@@ -278,7 +277,7 @@
 .gantt-when { font-family: var(--f-mono); font-size: 10px; color: var(--ink-3); white-space: nowrap; }
 @media (max-width: 720px) {
   .gantt-axis { padding-left: 96px; }
-  .gantt-row { grid-template-columns: 26px minmax(58px, 1fr) minmax(0, 2.4fr); gap: 8px; padding: 12px 10px; }
+  .gantt-row { grid-template-columns: minmax(58px, 1fr) minmax(0, 2.4fr); gap: 8px; padding: 12px 10px; }
   .gantt-when { display: none; }
 }
 

@@ -43,7 +43,6 @@ export default function Services() {
       <div className="wrap">
         <div className="head">
           <div>
-            <Type as="p" className="label" text={t.services.label} />
             <Type as="h2" className="title" text={t.services.title} delay={0.08} />
           </div>
           <Type
@@ -60,32 +59,20 @@ export default function Services() {
           <div className="svc-view">
             <SvcArt pick={pick} />
 
-            <div className="svc-num">
-              <AnimatePresence mode="popLayout">
-                <motion.span
-                  key={pick}
-                  initial={{ y: '60%', opacity: 0 }}
-                  animate={{ y: '0%', opacity: 1 }}
-                  exit={{ y: '-60%', opacity: 0 }}
-                  transition={{ duration: 0.5, ease: EASE }}
-                >
-                  {String(pick + 1).padStart(2, '0')}
-                </motion.span>
-              </AnimatePresence>
-            </div>
-
-            <AnimatePresence mode="wait">
-              <motion.div
-                  key={pick}
-                initial={{ opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -12 }}
-                transition={{ duration: 0.36, ease: EASE }}
-              >
-                <h3 className="svc-title">{name}</h3>
-                <p className="svc-text">{text}</p>
-              </motion.div>
-            </AnimatePresence>
+            {/* Zwykła zmiana klucza zamiast AnimatePresence mode="wait":
+                „wait” każe czekać na wyjście starej treści, więc przy
+                przesuwaniu kursora po liście każdy opis przychodził
+                z opóźnieniem — a przy zatrzymanych klatkach nie przychodził
+                wcale (ten sam błąd był już w Focus i w Lab). */}
+            <motion.div
+              key={pick}
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.32, ease: EASE }}
+            >
+              <h3 className="svc-title">{name}</h3>
+              <p className="svc-text">{text}</p>
+            </motion.div>
           </div>
 
           <ul className="svc-list">
@@ -103,7 +90,6 @@ export default function Services() {
                 style={{ transformPerspective: 900 }}
               >
                 <button type="button">
-                  <span className="svc-i">{String(i + 1).padStart(2, '0')}</span>
                   <span className="svc-n">{label}</span>
                   <motion.span
                     className="svc-fill"

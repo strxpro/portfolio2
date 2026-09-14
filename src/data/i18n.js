@@ -19,12 +19,12 @@ export const dict = {
 
     hero: {
       badge: 'Jeden człowiek, nie agencja',
-      head: 'Strony i aplikacje|od projektu|po dzień startu.',
+      head: 'Robię strony,|które ktoś naprawdę|otwiera.',
       role: 'Robię strony i aplikacje',
       intro:
-        'Projektuję i koduję sam — od pierwszego szkicu po dzień, w którym strona rusza. Najbardziej lubię projekty, w których trzeba coś wymyślić od zera.',
-      cta1: 'Zobacz wdrożenia',
-      cta2: 'Umów rozmowę',
+        'Projektuję i koduję sam. Najbardziej lubię projekty, w których trzeba coś wymyślić od zera — dziewięć takich działa teraz, niżej.',
+      cta1: 'Zobacz prace',
+      cta2: 'Napisz do mnie',
     },
 
     me: {
@@ -142,8 +142,8 @@ export const dict = {
 
     lab: {
       label: 'Na żywo',
-      title: 'Zamiast obiecywać —|pokazuję działające.',
-      lead: 'Pięć kawałków kodu z wdrożonych projektów. Liczą się w Twojej przeglądarce, teraz.',
+      title: 'Poklikaj.|To działa naprawdę.',
+      lead: 'Pięć rzeczy wyjętych z moich projektów. Działają w Twojej przeglądarce — to nie są nagrania.',
       live: 'działa na żywo',
       tabs: { trojwymiar: 'Trójwymiar', rezerwacja: 'Rezerwacja', jezyki: 'Języki', automat: 'Automatyzacja' },
       hints: {
@@ -192,8 +192,8 @@ export const dict = {
 
     services: {
       label: 'Zakres prac',
-      title: 'Wszystko w jednym|zamówieniu.',
-      lead: 'Bez podwykonawców i bez przerzucania odpowiedzialności między firmami.',
+      title: 'Co mogę|dla Ciebie zrobić.',
+      lead: 'Projekt, ruch, 3D, panel, automatyzacje i języki. Najedź na pozycję, żeby przeczytać więcej.',
       items: [
         ['Projekt graficzny', 'Własna typografia, paleta i układ pod konkretną firmę. Nie przestawiam bloków w gotowym motywie.'],
         ['Ruch i interakcja', 'Scroll steruje sceną, elementy reagują na kursor. Płynnie także na starszym telefonie.'],
@@ -265,11 +265,11 @@ export const dict = {
 
     guide: {
       hero: 'Cześć. Jestem Piksel i oprowadzę Cię po tej stronie — scrolluj spokojnie.',
-      about: 'Krótko o tym, jak pracuję. Bez podwykonawców i bez znikania po fakturze.',
+      about: 'Krótko o mnie i o tym, jak pracuję.',
       work: 'Dziewięć stron, które chodzą na produkcji. To w ramce to żywa strona, nie zrzut ekranu.',
       lab: 'To nie są zrzuty ekranu — wszystko tu działa naprawdę. Poklikaj.',
       services: 'Sześć rzeczy, które robię sam. Najedź na listę — po lewej podmieni się opis.',
-      process: 'Przewijaj dalej — kroki jadą w bok. Pięć etapów, żadnych niespodzianek na fakturze.',
+      process: 'Przewijaj dalej — kroki jadą w bok.',
     },
 
     loader: ['układam siatkę', 'liczę maskotkę', 'rozgrzewam animacje', 'gotowe'],
@@ -282,12 +282,12 @@ export const dict = {
 
     hero: {
       badge: 'One person, not an agency',
-      head: 'Websites and apps,|from the design|to the launch day.',
+      head: 'I build websites|people actually|open.',
       role: 'I build sites and apps',
       intro:
-        'I design and build everything myself — from the first sketch to the day the site goes live. What I like most are projects where something has to be invented from scratch.',
+        'I design and code everything myself. What I like most are projects where something has to be invented from scratch — nine of them are live right now, below.',
       cta1: 'See the work',
-      cta2: 'Book a call',
+      cta2: 'Write to me',
     },
 
     me: {
@@ -405,8 +405,8 @@ export const dict = {
 
     lab: {
       label: 'Live',
-      title: 'Instead of promising —|here it is, running.',
-      lead: 'Five pieces of code from shipped projects. They run in your browser, right now.',
+      title: 'Click around.|It really works.',
+      lead: 'Five things taken from my projects. They run in your browser — these are not recordings.',
       live: 'running live',
       tabs: { trojwymiar: '3D', rezerwacja: 'Booking', jezyki: 'Languages', automat: 'Automation' },
       hints: {
@@ -455,8 +455,8 @@ export const dict = {
 
     services: {
       label: 'Scope',
-      title: 'What you get|in one package.',
-      lead: 'No subcontractors and no passing responsibility between firms.',
+      title: 'What I can|do for you.',
+      lead: 'Design, motion, 3D, an owner panel, automations and languages. Hover an item to read more.',
       items: [
         ['Visual design', 'Typography, palette and layout made for one specific business. I do not rearrange blocks in a ready-made theme.'],
         ['Motion and interaction', 'Scroll drives the scene, elements answer the cursor. Smooth on an older phone too.'],
@@ -528,11 +528,11 @@ export const dict = {
 
     guide: {
       hero: 'Hello. I am Piksel and I will show you around — scroll at your own pace.',
-      about: 'Briefly, how I work. No subcontractors and no vanishing after the invoice.',
+      about: 'A little about me and how I work.',
       work: 'Nine sites running in production. What you see in the frame is the live site, not a screenshot.',
       lab: 'These are not screenshots — everything here actually runs. Have a click.',
       services: 'Six things I do myself. Hover the list and the description swaps on the left.',
-      process: 'Keep scrolling — the steps move sideways. Five stages, no surprises on the invoice.',
+      process: 'Keep scrolling — the steps move sideways.',
     },
 
     loader: ['laying out the grid', 'computing the mascot', 'warming up motion', 'ready'],
@@ -545,12 +545,12 @@ export const dict = {
 
     hero: {
       badge: 'Una persona, non un’agenzia',
-      head: 'Siti e applicazioni,|dal progetto|al giorno del lancio.',
+      head: 'Faccio siti|che la gente|apre davvero.',
       role: 'Faccio siti e applicazioni',
       intro:
-        'Progetto e programmo tutto da solo — dal primo schizzo al giorno in cui il sito parte. Quello che mi piace di più sono i progetti dove bisogna inventare qualcosa da zero.',
+        'Progetto e programmo tutto da solo. Mi piacciono di più i progetti dove bisogna inventare qualcosa da zero — nove sono online adesso, qui sotto.',
       cta1: 'Guarda i lavori',
-      cta2: 'Fissiamo una call',
+      cta2: 'Scrivimi',
     },
 
     me: {
@@ -668,8 +668,8 @@ export const dict = {
 
     lab: {
       label: 'Dal vivo',
-      title: 'Invece di promettere —|te lo mostro in funzione.',
-      lead: 'Cinque pezzi di codice da progetti consegnati. Girano nel tuo browser, adesso.',
+      title: 'Prova.|Funziona davvero.',
+      lead: 'Cinque cose prese dai miei progetti. Girano nel tuo browser — non sono registrazioni.',
       live: 'in funzione',
       tabs: { trojwymiar: '3D', rezerwacja: 'Prenotazione', jezyki: 'Lingue', automat: 'Automazione' },
       hints: {
@@ -718,8 +718,8 @@ export const dict = {
 
     services: {
       label: 'Ambito dei lavori',
-      title: 'Tutto in un solo|incarico.',
-      lead: 'Nessun subappalto e nessuno scaricabarile tra fornitori.',
+      title: 'Cosa posso|fare per te.',
+      lead: 'Progetto, movimento, 3D, pannello, automazioni e lingue. Passa sopra una voce per leggere di più.',
       items: [
         ['Progetto grafico', 'Tipografia, palette e impaginazione per una sola azienda. Non sposto blocchi in un tema già fatto.'],
         ['Movimento e interazione', 'Lo scroll guida la scena, gli elementi rispondono al cursore. Fluido anche su un telefono vecchio.'],
@@ -793,11 +793,11 @@ export const dict = {
 
     guide: {
       hero: 'Ciao. Sono Piksel e ti accompagno — scorri con calma.',
-      about: 'In breve, come lavoro. Nessun subappalto e nessuna sparizione dopo la fattura.',
+      about: 'Due parole su di me e su come lavoro.',
       work: 'Nove siti in produzione. Quello nella cornice è il sito vero, non uno screenshot.',
       lab: 'Non sono screenshot — qui funziona tutto davvero. Prova a cliccare.',
       services: 'Sei cose che faccio da solo. Passa sulla lista e a sinistra cambia la descrizione.',
-      process: 'Continua a scorrere — i passi vanno di lato. Cinque tappe, nessuna sorpresa in fattura.',
+      process: 'Continua a scorrere — i passi vanno di lato.',
     },
 
     loader: ['imposto la griglia', 'calcolo la mascotte', 'scaldo le animazioni', 'pronto'],

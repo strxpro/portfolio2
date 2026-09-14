@@ -62,7 +62,6 @@ export default function Me() {
           </div>
 
           <div className="me-text">
-            <Type as="p" className="label" text={t.me.label} />
             <Type as="h2" className="title" text={t.me.title} delay={0.08} />
 
             <Deep from={180} tilt={6} amount={0.4}>

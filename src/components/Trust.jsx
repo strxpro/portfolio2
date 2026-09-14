@@ -1,36 +1,23 @@
-import { useEffect, useRef, useState } from 'react'
-import { animate, motion, useInView, useMotionValue, useMotionValueEvent, useTransform } from 'framer-motion'
+import { useRef } from 'react'
+import { motion, useMotionValue, useTransform } from 'framer-motion'
 import Type from './Type'
 import { useT } from '../lib/lang-ctx'
 import { goToEnd } from '../lib/scroll'
 import { EASE, SPRING } from '../lib/motion'
 
 /**
- * Liczba, która sama się dolicza.
+ * Liczba stoi, nie dolicza się od zera.
  *
- * Cztery dowody to cztery konkretne liczby, więc niech się zachowają
- * jak liczby: startują od zera i dobijają do swojej wartości, kiedy
- * karta wjedzie w kadr. Ułamek („9.8") dostaje jedno miejsce po
- * przecinku, całości nie mają żadnego.
+ * Licznik nabijający wartość przy wejściu w kadr to chwyt z szablonów —
+ * i ma wadę praktyczną: kto przewinie szybko albo zrobi zrzut ekranu,
+ * widzi „0 stron” i „0.0 na Booking”. Konkretna liczba jest mocniejsza,
+ * kiedy po prostu jest.
  */
-function Figure({ value, live }) {
-  const target = parseFloat(value)
-  const dec = String(value).includes('.') ? 1 : 0
-  const mv = useMotionValue(0)
-  const [shown, setShown] = useState(dec ? '0.0' : '0')
-
-  useMotionValueEvent(mv, 'change', (v) => setShown(v.toFixed(dec)))
-
-  useEffect(() => {
-    if (!live) return undefined
-    const c = animate(mv, target, { duration: 1.05, ease: [0.16, 1, 0.3, 1] })
-    return () => c.stop()
-  }, [live, mv, target])
-
-  return <span className="proof-num">{shown}</span>
+function Figure({ value }) {
+  return <span className="proof-num">{value}</span>
 }
 
-function Proof({ row, i, live }) {
+function Proof({ row, i }) {
   const [num, unit, title, desc] = row
   const box = useRef(null)
 
@@ -60,10 +47,8 @@ function Proof({ row, i, live }) {
       /* rotateX/rotateY zostaja przy kursorze — wejscie rusza sama glebia */
       style={{ rotateX: rx, rotateY: ry, transformPerspective: 900 }}
     >
-      <span className="proof-i">{String(i + 1).padStart(2, '0')}</span>
-
       <p className="proof-figure">
-        <Figure value={num} live={live} />
+        <Figure value={num} />
         {unit && <em>{unit}</em>}
       </p>
 
@@ -85,14 +70,12 @@ function Proof({ row, i, live }) {
 export default function Trust() {
   const t = useT()
   const grid = useRef(null)
-  const live = useInView(grid, { once: true, amount: 0.3 })
 
   return (
     <section className="pad trust" id="zaufanie">
       <div className="wrap">
         <div className="head">
           <div>
-            <Type as="p" className="label" text={t.trust.label} />
             <Type as="h2" className="title" text={t.trust.title} delay={0.08} />
           </div>
           <motion.div
@@ -121,7 +104,7 @@ export default function Trust() {
 
         <div className="proofs" ref={grid}>
           {t.trust.items.map((row, i) => (
-            <Proof key={row[2]} row={row} i={i} live={live} />
+            <Proof key={row[2]} row={row} i={i} />
           ))}
         </div>
       </div>

@@ -227,25 +227,6 @@ section { position: relative; }
 }
 .hero .display { max-width: none; }
 
-.avail {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  padding: 6px 13px 6px 10px;
-  border-radius: 999px;
-  background: var(--card);
-  box-shadow: var(--sh-1);
-  font-size: 13px;
-  color: var(--ink-2);
-}
-.avail i {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #5E9E6B;
-  box-shadow: 0 0 0 3px rgba(94, 158, 107, 0.16);
-}
-
 .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
 
 .facts {

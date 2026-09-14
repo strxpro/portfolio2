@@ -57,7 +57,6 @@ export default function Rail() {
     <section className={`space rail ${otwarte ? '' : 'zamkniete'}`} id="prace" ref={ref}>
       <div className="rail-in">
         <div className="space-ui rail-ui">
-          <p className="label">{t.space.label}</p>
           <h2 className="space-title">
             {t.space.title}
             <Morph words={t.space.morph} className="space-morph" />

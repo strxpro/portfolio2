@@ -302,5 +302,4 @@ main, .finale { position: relative; z-index: 2; }
 .step .dot, .show-points li::before { background: var(--accent); }
 .brand .dot { background: var(--accent); }
 .progress { background: var(--accent); }
-.avail i { background: #1E7A45; box-shadow: 0 0 0 3px rgba(30, 122, 69, 0.14); }
 .lab-live i { background: #1E7A45; }

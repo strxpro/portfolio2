@@ -31,7 +31,6 @@ export default function Process() {
       <div className="wrap">
         <div className="head">
           <div>
-            <Type as="p" className="label" text={t.sched.label} />
             <Type as="h2" className="title" text={t.sched.title} delay={0.08} />
           </div>
           <Type as="p" className="lead" text={t.sched.lead} delay={0.16} stagger={0.014} amount={0.3} />
@@ -64,7 +63,6 @@ export default function Process() {
                   transition={{ ...SPRING.enter, delay: i * 0.07 }}
                   style={{ transformPerspective: 900 }}
                 >
-                  <span className="gantt-n">{String(i + 1).padStart(2, '0')}</span>
                   <span className="gantt-name">{label}</span>
                   <span className="gantt-track">
                     <motion.i
