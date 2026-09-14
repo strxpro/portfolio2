@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { EASE } from '../lib/motion'
 
 const A = { fill: 'none', stroke: 'currentColor', strokeWidth: 1.6, strokeLinecap: 'round', strokeLinejoin: 'round' }
@@ -13,9 +13,15 @@ const pop = (i = 0) => ({
   animate: { scale: 1, opacity: 1 },
   transition: { duration: 0.5, delay: 0.2 + i * 0.08, ease: EASE },
 })
+/**
+ * Oddech rysunku — animacja CSS, nie pętla Framera.
+ * `repeat: Infinity` we Framerze liczył się w JS co klatkę także wtedy,
+ * gdy sekcja usług była kilka ekranów niżej. CSS nic nie liczy w skrypcie,
+ * a poza ekranem przeglądarka tego w ogóle nie maluje.
+ */
 const beat = (d = 2.6) => ({
-  animate: { y: [0, -6, 0] },
-  transition: { duration: d, repeat: Infinity, ease: 'easeInOut' },
+  className: 'art-beat',
+  style: { animationDuration: `${d}s` },
 })
 
 /**
@@ -87,18 +93,18 @@ const ART = [
 export default function SvcArt({ pick }) {
   return (
     <div className="svc-art" aria-hidden="true">
-      <AnimatePresence mode="wait">
-        <motion.svg
-          key={pick}
-          viewBox="0 0 160 120"
-          initial={{ opacity: 0, scale: 0.94 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 1.04 }}
-          transition={{ duration: 0.34, ease: EASE }}
-        >
-          {ART[pick % ART.length]}
-        </motion.svg>
-      </AnimatePresence>
+      {/* Zwykła zmiana klucza zamiast AnimatePresence mode="wait" — przy
+          przesuwaniu kursora po liście „wait” opóźniał każdy rysunek,
+          a przy wstrzymanych klatkach nowy nie przychodził wcale. */}
+      <motion.svg
+        key={pick}
+        viewBox="0 0 160 120"
+        initial={{ opacity: 0, scale: 0.94 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.34, ease: EASE }}
+      >
+        {ART[pick % ART.length]}
+      </motion.svg>
     </div>
   )
 }

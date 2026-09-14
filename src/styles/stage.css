@@ -138,7 +138,13 @@ main {
 .quick a:hover::after { transform: scaleX(1); }
 
 /* ── brief: rozmowa zamiast formularza ───────────────── */
-.brief { perspective: 1200px; }
+.brief {
+  perspective: 1200px;
+  /* toast siada na środku miejsca, które zajmował formularz */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
 .brief-card {
   position: relative;
   background: var(--paper);
@@ -248,6 +254,78 @@ main {
   font-size: 14px;
   line-height: 1.6;
   color: var(--ink-2);
+}
+
+/* Pułapka na boty: w DOM-ie i w formularzu, ale poza ekranem i poza
+   kolejnością klawisza Tab. Nie display:none — część botów to sprawdza. */
+.brief-pulapka {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ── karta zwinięta w toast ─────────────────────────────── */
+.brief-card.as-toast {
+  align-self: center;
+  width: min(100%, 440px);
+  padding: 14px 14px 18px 16px;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 18px 40px -22px rgba(23, 24, 26, 0.45);
+}
+.toast-in {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.toast-ok { flex: none; margin-top: 1px; }
+.toast-txt { flex: 1; min-width: 0; }
+.toast-title {
+  margin: 0 0 3px;
+  font-family: var(--f-serif);
+  font-size: 18px;
+  line-height: 1.25;
+  color: var(--ink);
+}
+.toast-sub {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--ink-2);
+  overflow-wrap: anywhere;
+}
+.toast-x {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin: -2px -2px 0 0;
+  border-radius: 50%;
+  color: var(--ink-3);
+  transition: background var(--fast) var(--ease), color var(--fast) var(--ease);
+}
+.toast-x:hover { background: var(--rule); color: var(--ink); }
+/* odliczanie 5 s: CSS, bez JS co klatkę */
+.toast-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: var(--accent);
+  transform-origin: left center;
+  animation: toast-czas linear forwards;
+}
+@keyframes toast-czas {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .toast-bar { animation: none; opacity: 0.4; }
 }
 
 .wax {

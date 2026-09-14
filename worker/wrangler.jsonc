@@ -1,0 +1,44 @@
+// Worker formularza kontaktowego portfolio STRX.
+//
+// Przyjmuje zgłoszenie z briefu (POST /kontakt) i wysyła je na WhatsApp przez
+// CallMeBota — ten sam kanał i ten sam format klucza, co w workerze Carruleddhi.
+//
+// Ten plik leży w worker/, więc każde wywołanie wranglera musi go wskazać:
+//   npx wrangler dev    -c worker/wrangler.jsonc
+//   npx wrangler deploy -c worker/wrangler.jsonc
+// (skrypty `npm run kontakt:*` mają to już w sobie).
+{
+  "name": "strx-kontakt",
+  "main": "index.js",
+  "compatibility_date": "2026-09-14",
+  "compatibility_flags": ["nodejs_compat"],
+
+  // Adres *.workers.dev jest tu potrzebny: strona jest statyczna i woła Workera
+  // bezpośrednio. Worker nie serwuje żadnych plików, więc nic poza /kontakt
+  // się pod tym adresem nie publikuje.
+  "workers_dev": true,
+  "preview_urls": false,
+
+  // Najwyżej 5 zgłoszeń na minutę z jednego adresu IP. Wbudowany limiter
+  // Cloudflare — bez KV i bez bazy. Chroni Twój WhatsApp przed zasypaniem
+  // i darmowy limit CallMeBota przed wyczerpaniem przez jednego spamera.
+  "ratelimits": [
+    { "name": "LIMIT", "namespace_id": "4401", "simple": { "limit": 5, "period": 60 } }
+  ],
+
+  "vars": {
+    // Skąd wolno wysyłać formularz, po przecinku. Pusto = każda strona (tylko
+    // do testów). Po wdrożeniu wpisz adres portfolio, np.:
+    //   "https://strx.pl,https://www.strx.pl"
+    "ALLOWED_ORIGINS": ""
+  },
+
+  // Logi włączone na stałe: nieudana wysyłka na WhatsApp ma zostawić ślad.
+  "observability": { "enabled": true, "head_sampling_rate": 1 }
+
+  // JEDYNY SEKRET — nigdy nie w tym pliku:
+  //   npx wrangler secret put WHATSAPP_ALERTS -c worker/wrangler.jsonc
+  // Format: numer:klucz  (numer bez plusa, klucz z CallMeBota), kilka po przecinku:
+  //   48600111222:1234567,393401112233:7654321:it
+  // Trzecia część to język ramki wiadomości: pl (domyślnie) albo it.
+}

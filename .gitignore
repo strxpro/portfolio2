@@ -2,3 +2,7 @@ node_modules
 dist
 .DS_Store
 *.local
+
+# Worker formularza: lokalne sekrety i pamiec podreczna wranglera
+worker/.dev.vars
+.wrangler

@@ -146,6 +146,16 @@ function PoleGwiazd({ px, py }) {
 
     let id
     let licznik = 0
+    /**
+     * Malowanie tylko wtedy, gdy coś się zmieniło.
+     *
+     * Na stojącej stronie jedynym ruchem jest dryf: kilka pikseli na
+     * 26–44 sekundy, czyli setne części piksela na klatkę. Malowanie tego
+     * 60 razy na sekundę nie zmieniało obrazu, a trzymało telefon w ciągłej
+     * pracy przez cały czas czytania. Przy przewijaniu i ruchu kursora
+     * rysujemy każdą klatkę; w bezruchu co 100 ms, co dla dryfu jest płynne.
+     */
+    const ost = { s: NaN, ox: NaN, oy: NaN, w: 0, h: 0, czas: -1e9 }
     const klatka = (czas) => {
       id = requestAnimationFrame(klatka)
       // zapasowe sprawdzenie wymiaru co pół sekundy, gdyby obserwator się spóźnił
@@ -154,6 +164,9 @@ function PoleGwiazd({ px, py }) {
       const s = window.scrollY
       const ox = px.get()
       const oy = py.get()
+      const ruch = Math.abs(s - ost.s) > 0.2 || Math.abs(ox - ost.ox) > 0.0005 || Math.abs(oy - ost.oy) > 0.0005 || w !== ost.w || h !== ost.h
+      if (!ruch && czas - ost.czas < 100) return
+      Object.assign(ost, { s, ox, oy, w, h, czas })
       const skalaX = Math.max(0.45, Math.min(1.3, w / 1440))
       g.clearRect(0, 0, w, h)
 

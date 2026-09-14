@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview --port 4173"
+    "preview": "vite preview --port 4173",
+    "kontakt:dev": "npx wrangler dev -c worker/wrangler.jsonc",
+    "kontakt:sekret": "npx wrangler secret put WHATSAPP_ALERTS -c worker/wrangler.jsonc",
+    "kontakt:deploy": "npx wrangler deploy -c worker/wrangler.jsonc"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.8",

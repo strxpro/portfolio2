@@ -14,6 +14,17 @@
 }
 .t-in { display: block; }
 
+/* oddech rysunku w przeglądarce usług (SvcArt.jsx) */
+.art-beat {
+  transform-box: fill-box;
+  animation: art-oddech 2.6s ease-in-out infinite;
+}
+@keyframes art-oddech {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+@media (prefers-reduced-motion: reduce) { .art-beat { animation: none; } }
+
 /* Ręczna maska pojedynczego fragmentu (litery w preloaderze, nagłówek
    kontaktu przesuwany scrollem). Też bez stałego will-change. */
 .t-word {

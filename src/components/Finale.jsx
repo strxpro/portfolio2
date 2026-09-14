@@ -163,8 +163,11 @@ export default function Finale() {
           <motion.div
             className="cord-arm"
             style={{ rotate: cordTilt }}
-            animate={held ? { rotate: 0 } : { rotate: [-1.4, 1.4, -1.4] }}
-            transition={held ? { duration: 0.3 } : { duration: 4.4, repeat: Infinity, ease: 'easeInOut' }}
+            /* Kołysze się tylko w fazie 1 — jedynej, w której sznurek jest
+               widoczny i jeszcze nie chwycony. W fazie 0 ma krycie 0, a pętla
+               liczyła się co klatkę przez całą resztę strony. */
+            animate={phase === 1 ? { rotate: [-1.4, 1.4, -1.4] } : { rotate: 0 }}
+            transition={phase === 1 ? { duration: 4.4, repeat: Infinity, ease: 'easeInOut' } : { duration: 0.3 }}
           >
             <motion.div className="cord" style={{ height: cordH, width: cordThick }} />
             <motion.div

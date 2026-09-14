@@ -2,9 +2,24 @@ import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useT } from '../lib/lang-ctx'
 import { goToEnd } from '../lib/scroll'
+import { useNarrow } from '../lib/useNarrow'
 
 /** Guzik, który wjeżdża po zejściu z hero i zostaje pod ręką aż do kontaktu. */
 export default function StickyCta() {
+  /**
+   * Na telefonie guzika nie ma wcale.
+   *
+   * Pojawiał się dokładnie wtedy, gdy przestajesz przewijać — czyli wtedy,
+   * kiedy zaczynasz czytać — i zmierzone przy 375 px zasłaniał opis sekcji
+   * „na żywo”, pozycję listy usług i tytuł karty z oceną. Na wąskim ekranie
+   * „Kontakt” jest w górnym pasku, który wraca przy każdym ruchu w górę.
+   * Osobny komponent, żeby na telefonie nie wisiał też nasłuch przewijania.
+   */
+  const waski = useNarrow(900)
+  return waski ? null : <Guzik />
+}
+
+function Guzik() {
   const t = useT()
   const [show, setShow] = useState(false)
 

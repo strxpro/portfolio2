@@ -1263,13 +1263,39 @@ Każda sekcja woła `useGuide({ id, text, corner, mood, point })`:
 Piksel nie wisi na ekranie cały czas — wychodzi przy każdej nowej kwestii
 i po kilku sekundach chowa się z powrotem. Kliknięcie przedłuża pobyt.
 
-## Brief zamiast formularza
+## Brief → WhatsApp
 
 Kontakt to pięć pytań zadawanych po kolei (`components/Brief.jsx`): imię, czego
-potrzebujesz, na kiedy, gdzie odpisać, dwa zdania o firmie. Na końcu klapka
-koperty zamyka się nad odpowiedziami, przybija się lakowa pieczęć STRX,
-a treść trafia do przycisku `mailto:` — działa bez żadnego serwera. Obok
-przycisk kopiujący całość do schowka.
+potrzebujesz, na kiedy, gdzie odpisać, dwa zdania o firmie. Po „Wyślij” zgłoszenie
+leci do Workera Cloudflare (`worker/`), który wysyła je na WhatsApp przez
+CallMeBota. Karta zwija się w toast z potwierdzeniem i po 5 s wraca do pustego
+formularza. Gdy wysyłka się nie uda, formularz mówi to wprost i proponuje mail
+z gotową treścią — nigdy nie udaje sukcesu.
+
+Worker: walidacja pól, pułapka na boty (ukryte pole + zbyt szybkie wypełnienie),
+limit 5 zgłoszeń na minutę z jednego IP, CORS tylko dla adresów z
+`ALLOWED_ORIGINS`. CallMeBot odmawia ze statusem 200, więc sukces jest liczony
+z treści odpowiedzi.
+
+### Uruchomienie (raz)
+
+1. **Klucz CallMeBota** — z telefonu, na który mają przychodzić wiadomości, wyślij
+   na WhatsApp do numeru CallMeBota wiadomość aktywacyjną (instrukcja na
+   callmebot.com). Dostaniesz `apikey`.
+2. **Sekret** — w katalogu projektu:
+   `npm run kontakt:sekret` i wklej `numer:klucz` (numer bez plusa, np.
+   `48600111222:1234567`). Kilka numerów po przecinku; dopisek `:it` daje ramkę
+   wiadomości po włosku.
+3. **Adres strony** — w `worker/wrangler.jsonc` wpisz do `ALLOWED_ORIGINS` adres
+   portfolio (np. `https://strx.pl,https://www.strx.pl`).
+4. **Wdrożenie** — `npm run kontakt:deploy`. Wrangler wypisze adres
+   `https://strx-kontakt.<subdomena>.workers.dev`.
+5. **Strona** — skopiuj `.env.example` do `.env.local` (lokalnie) albo ustaw
+   zmienną `VITE_KONTAKT_URL` w hostingu, wpisz tam adres z punktu 4 i zbuduj
+   stronę od nowa.
+
+Bez `VITE_KONTAKT_URL` formularz działa dalej, tylko od razu proponuje mail.
+Logi wysyłek: panel Cloudflare → Workers → strx-kontakt → Logs.
 
 ## Drobiazgi
 
