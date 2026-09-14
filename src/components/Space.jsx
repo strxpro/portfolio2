@@ -236,6 +236,15 @@ export default function Space() {
    * kart i wybiera tę, która jest pod kursorem i najbliżej. Pomiar leci
    * tylko przy zdarzeniu, więc nic nie kosztuje przy scrollu.
    */
+  /**
+   * Teczka: brama do sekcji.
+   *
+   * Otwiera się **wyłącznie kliknięciem**. Wcześniej rozsuwała się też
+   * sama po kawałku przewinięcia, ale wtedy wachlarz kart rozlatywał
+   * się, zanim ktokolwiek zdążył go zobaczyć — gest gubił swój moment.
+   */
+  const [otwarte, setOtwarte] = useState(false)
+
   const cardRefs = useRef([])
   const [hot, setHot] = useState(-1)
 
@@ -256,7 +265,17 @@ export default function Space() {
     return best
   }
 
+  /**
+   * Kliknięcie w scenę działa tylko przy otwartej teczce.
+   *
+   * Przy zamkniętej karty są schowane przez krycie całej warstwy, ale
+   * `pickAt` sprawdza krycie pojedynczej karty — więc trafiał w niewidoczny
+   * kafel zaproszenia leżący dokładnie pod teczką i kliknięcie „Otwórz
+   * teczkę” przerzucało do kontaktu. Do tego klik w samą teczkę wpadał
+   * tu przez bąbelkowanie, stąd drugi warunek.
+   */
   const onStageClick = (e) => {
+    if (!otwarte || e.target.closest('.fold')) return
     const i = pickAt(e.clientX, e.clientY)
     if (i < 0) return
     const el = cardRefs.current[i]
@@ -271,6 +290,8 @@ export default function Space() {
   // podświetlenie tej karty, nad którą stoi kursor — badane rzadko
   const lastLook = useRef(0)
   const onStageMove = (e) => {
+    // przy zamkniętej teczce nie ma czego podświetlać ani celować w niewidoczne karty
+    if (!otwarte) return
     const now = performance.now()
     if (now - lastLook.current < 90) return
     lastLook.current = now
@@ -280,15 +301,6 @@ export default function Space() {
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end end'] })
   /* Źródło kamery wyciągnięte do zmiennej, bo `useLoopSpring` musi je
      obserwować — to ono mówi, kiedy szew pętli już się przeliczył. */
-
-  /**
-   * Teczka: brama do sekcji.
-   *
-   * Otwiera się **wyłącznie kliknięciem**. Wcześniej rozsuwała się też
-   * sama po kawałku przewinięcia, ale wtedy wachlarz kart rozlatywał
-   * się, zanim ktokolwiek zdążył go zobaczyć — gest gubił swój moment.
-   */
-  const [otwarte, setOtwarte] = useState(false)
 
   const camRaw = useTransform(scrollYProgress, [0, 1], [0, deepest + 120])
   const cam = useLoopSpring(camRaw, { stiffness: 120, damping: 30, restDelta: 0.5 })

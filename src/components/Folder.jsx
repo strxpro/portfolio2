@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { motion, useIsPresent } from 'framer-motion'
 import Cover from './Cover'
 import { EASE_CUT, SPRING } from '../lib/motion'
 
@@ -26,9 +26,21 @@ const WACHLARZ = [-16, -8, 0, 8, 16]
 export default function Folder({ prace, etykieta, cta, onOpen }) {
   const karty = prace.slice(0, WACHLARZ.length)
 
+  /**
+   * Znikająca teczka nie przyjmuje kliknięć.
+   *
+   * Animacja wyjścia trwa pół sekundy i przez ten czas teczka leży nad
+   * kartami. Gdyby dalej łapała kursor, pierwsze kliknięcie w kartę po
+   * otwarciu trafiałoby w nią — a przy wstrzymanych klatkach nie
+   * zniknęłaby wcale i blokowała sekcję na stałe. Animacja ma być ozdobą
+   * kroku, nie jego warunkiem.
+   */
+  const obecna = useIsPresent()
+
   return (
     <motion.div
       className="fold"
+      style={{ pointerEvents: obecna ? undefined : 'none' }}
       initial={{ opacity: 0, y: 26, scale: 0.96 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, scale: 0.94, transition: { duration: 0.28, ease: EASE_CUT } }}
