@@ -48,6 +48,26 @@ export const dict = {
     work: { label: 'Wybrane wdrożenia', visit: 'otwórz' },
 
     items: {
+      oltre: {
+        kind: 'Doradztwo edukacyjne i relokacja · platforma',
+        lead: 'Doradztwo w sprawie studiów, wiz i przeprowadzki, w sześciu językach. Największa robota na zapleczu: katalog usług zależny od obywatelstwa, panel do prowadzenia spraw i poczta pod automatyzacją.',
+        points: [
+          'Sześć wersji językowych z jednego źródła treści',
+          'Glob 3D z obrotem i przybliżaniem, obsługiwany też palcem',
+          'Wybór obywatelstwa filtruje usługi i wymagane dokumenty',
+          'Panel: zapytania, terminy, eksport do CSV, kolejka powiadomień',
+        ],
+      },
+      pizzeria: {
+        kind: 'Pizzeria z zamówieniami · projekt lokalny',
+        lead: 'Zamówienia od koszyka po widok dla kuchni. Do tego mapa dojazdu, naklejki z prawdziwą fizyką i panel, w którym właściciel sam zmienia kartę.',
+        points: [
+          'Koszyk, potwierdzenie e-mailem i ekran „moje zamówienia”',
+          'Osobny widok dla kuchni z kolejką zamówień',
+          'Mapa dojazdu i szacowany czas dostawy',
+          'Naklejki na pudełku liczone silnikiem fizycznym',
+        ],
+      },
       spabi: {
         kind: 'Pizzeria · Santa Teresa Gallura',
         lead: 'Pizza z pieca opalanego drewnem, podana jak plakat: grube retro liternictwo, „MAMMA MIA!” przez pół ekranu i maskotka, która prowadzi przez menu.',
@@ -337,6 +357,26 @@ export const dict = {
     work: { label: 'Selected projects', visit: 'open' },
 
     items: {
+      oltre: {
+        kind: 'Education advice and relocation · platform',
+        lead: 'Advice on studies, visas and moving abroad, in six languages. Most of the work sits in the back: a service catalogue that depends on citizenship, a panel for running cases and mail driven by automation.',
+        points: [
+          'Six languages from a single source of content',
+          'A 3D globe you can spin and zoom, on a phone too',
+          'Choosing a citizenship filters services and required documents',
+          'Panel: enquiries, dates, CSV export, notification queue',
+        ],
+      },
+      pizzeria: {
+        kind: 'Pizzeria with online orders · local project',
+        lead: 'Orders from the basket to the kitchen screen. Plus a delivery map, stickers with real physics and a panel where the owner edits the menu.',
+        points: [
+          'Basket, email confirmation and a „my orders” screen',
+          'A separate kitchen view with the order queue',
+          'Delivery map with an estimated time',
+          'Box stickers driven by a physics engine',
+        ],
+      },
       spabi: {
         kind: 'Pizzeria · Santa Teresa Gallura',
         lead: 'Wood-fired pizza served like a poster: heavy retro lettering, „MAMMA MIA!” across half the screen and a mascot walking you through the menu.',
@@ -626,6 +666,26 @@ export const dict = {
     work: { label: 'Lavori selezionati', visit: 'apri' },
 
     items: {
+      oltre: {
+        kind: 'Consulenza per studio e trasferimento · piattaforma',
+        lead: 'Consulenza su studi, visti e trasferimento all’estero, in sei lingue. Il lavoro più grosso sta dietro: un catalogo di servizi che dipende dalla cittadinanza, un pannello per seguire le pratiche e la posta gestita da un’automazione.',
+        points: [
+          'Sei lingue da una sola fonte di contenuti',
+          'Globo 3D che si gira e si ingrandisce, anche col dito',
+          'La cittadinanza filtra servizi e documenti richiesti',
+          'Pannello: richieste, date, esportazione CSV, coda notifiche',
+        ],
+      },
+      pizzeria: {
+        kind: 'Pizzeria con ordini online · progetto locale',
+        lead: 'Ordini dal carrello fino allo schermo della cucina. Più la mappa delle consegne, adesivi con fisica vera e un pannello dove il titolare cambia il menù da solo.',
+        points: [
+          'Carrello, conferma per email e schermata „i miei ordini”',
+          'Vista separata per la cucina con la coda degli ordini',
+          'Mappa delle consegne con il tempo stimato',
+          'Adesivi sulla scatola calcolati da un motore fisico',
+        ],
+      },
       spabi: {
         kind: 'Pizzeria · Santa Teresa Gallura',
         lead: 'Pizza dal forno a legna servita come un manifesto: lettering retro pesante, „MAMMA MIA!” su mezzo schermo e una mascotte che accompagna nel menu.',

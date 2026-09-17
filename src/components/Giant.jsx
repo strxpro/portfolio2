@@ -116,7 +116,7 @@ export default function Giant() {
               exit={{ opacity: 0 }}
               transition={{ duration: 1.7, ease: [0.3, 0, 0.7, 1], opacity: { times: [0, 0.1, 0.7, 1], duration: 1.7 } }}
             >
-              {d.host}
+              {d.host || t.tour.wip}
             </motion.span>
           ))}
         </AnimatePresence>

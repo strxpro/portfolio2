@@ -825,3 +825,77 @@ main > .leaf:has(+ .handoff) { padding-bottom: clamp(30px, 4vw, 60px); }
 
 /* Zapas na rozpęd za szwem pętli — patrz komentarz w `App.jsx`. */
 .echo-zapas { height: 150vh; pointer-events: none; }
+
+/* ═════════════════════════════════════════════════════════
+   Telefon: czytelność napisów i cele pod palec.
+
+   Zmierzone na ekranie 375 px: czterdzieści miejsc z tekstem 9–12 px
+   (przełącznik języka i podpisy etapów po 9 px, metryczka „Kto/Skąd” 10 px,
+   podpisy okładek 9–11 px) oraz cztery cele mniejsze niż 38×34 px.
+   Rozmiary z komputera są tu za małe, bo tam te napisy czyta się z 60 cm,
+   a nie z wyciągniętej ręki, i klika myszką, a nie palcem.
+
+   Wszystko w jednym miejscu, żeby skala telefonu dała się przeczytać i
+   zmienić bez chodzenia po dziesięciu plikach. Układu na komputerze to
+   nie rusza.
+   ═════════════════════════════════════════════════════════ */
+@media (max-width: 620px) {
+  /* mikro-etykiety: 9–10 px → 12 px, z mniejszym rozstrzeleniem liter,
+     bo przy tej wielkości spacja między literami zjada czytelność */
+  .langs button,
+  .langs button > span,
+  .cover-tag,
+  .fold-etykieta,
+  .chain-name,
+  .me-creds dt,
+  .gantt-gives span,
+  .gantt-axis i,
+  .footer-panel,
+  .space-hint,
+  .rail-hint {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+  }
+
+  /* podpisy, które są zdaniami, a nie etykietami — bez rozstrzelenia */
+  .trust-note {
+    font-size: 12.5px;
+    letter-spacing: 0;
+    line-height: 1.5;
+  }
+
+  .cover-name { font-size: 13px; }
+  .knot-hint,
+  .lab-live { font-size: 12.5px; }
+  .hero-since,
+  .hero-card-foot span { font-size: 13px; }
+  .proof-figure em { font-size: 14px; }
+
+  /* Cele pod palec: 40 px wysokości obszaru klikalnego.
+     Powiększamy sam obszar, nie napis — wygląd zostaje. */
+  .langs button {
+    min-height: 40px;
+    min-width: 40px;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    min-height: 42px;
+  }
+  .footer-end { gap: 20px; }
+  .footer-panel,
+  .footer-end button {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+  }
+
+  /* Zaślepka zdjęcia: ścieżka pliku łamie się na dwie linie, zamiast
+     zostać ucięta w połowie nazwy (zmierzone: 170 px treści w 123 px). */
+  .shot-gap code {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    text-overflow: clip;
+    line-height: 1.35;
+  }
+}

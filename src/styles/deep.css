@@ -1234,6 +1234,16 @@
 
 /* Ściągawka na dole. Skróty, które istnieją, ale nikt o nich nie wie,
    to skróty, których nie ma. */
+.focus-wip {
+  margin: 18px 0 0;
+  padding: 12px 14px;
+  border: 1px dashed var(--rule);
+  border-radius: 14px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
 .focus-klawisze {
   margin: 2px 0 0;
   text-align: center;

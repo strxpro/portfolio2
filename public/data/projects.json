@@ -210,5 +210,58 @@
       "Cennik, FAQ i tryb ciemny",
       "Sklep na Shopify z motywem pisanym od zera"
     ]
+  },
+  {
+    "id": "oltre",
+    "name": "Oltre",
+    "year": "2026",
+    "url": "",
+    "host": "",
+    "wip": true,
+    "embed": false,
+    "tint": "#DDE3EF",
+    "stack": [
+      "Next.js App Router",
+      "React",
+      "Tailwind CSS",
+      "Three.js",
+      "Supabase",
+      "Stripe",
+      "Make.com"
+    ],
+    "kind": "Doradztwo edukacyjne i relokacja · platforma",
+    "lead": "Doradztwo w sprawie studiów, wiz i przeprowadzki, w sześciu językach. Największa robota na zapleczu: katalog usług zależny od obywatelstwa, panel do prowadzenia spraw i poczta pod automatyzacją.",
+    "points": [
+      "Sześć wersji językowych z jednego źródła treści",
+      "Glob 3D z obrotem i przybliżaniem, obsługiwany też palcem",
+      "Wybór obywatelstwa filtruje usługi i wymagane dokumenty",
+      "Panel: zapytania, terminy, eksport do CSV, kolejka powiadomień"
+    ]
+  },
+  {
+    "id": "pizzeria",
+    "name": "Pizzeria",
+    "year": "2026",
+    "url": "",
+    "host": "",
+    "wip": true,
+    "embed": false,
+    "tint": "#EFD9C6",
+    "stack": [
+      "Next.js",
+      "React",
+      "Leaflet",
+      "Matter.js",
+      "Lenis",
+      "Framer Motion"
+    ],
+    "kind": "Pizzeria z zamówieniami · projekt lokalny",
+    "lead": "Zamówienia od koszyka po widok dla kuchni. Do tego mapa dojazdu, naklejki z prawdziwą fizyką i panel, w którym właściciel sam zmienia kartę.",
+    "points": [
+      "Koszyk, potwierdzenie e-mailem i ekran „moje zamówienia”",
+      "Osobny widok dla kuchni z kolejką zamówień",
+      "Mapa dojazdu i szacowany czas dostawy",
+      "Naklejki na pudełku liczone silnikiem fizycznym"
+    ]
   }
 ]

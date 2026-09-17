@@ -53,7 +53,15 @@ export const contact = {
   github: 'https://github.com/strxpro',
 }
 
-/** Dziewięć żywych wdrożeń. Kolejność = kolejność w pokazie. */
+/**
+ * Prace w kolejności pokazu: najpierw dziewięć żywych wdrożeń, na końcu to,
+ * czego jeszcze nie ma pod publicznym adresem.
+ *
+ * `wip: true` znaczy „nie ma czego pokazać w ramce”: zamiast żywej strony
+ * leci rysowana okładka, a zamiast „Otwórz stronę” — notka. Liczba dziewięciu
+ * działających stron w tekstach zostaje nietknięta, bo te dwie jeszcze nie
+ * ruszyły.
+ */
 export const work = [
   { id: 'spabi', name: 'SpabiNext', year: '2026', url: 'https://spabinext.com', host: 'spabinext.com', tint: '#EBD8C8', stack: ['Next.js', 'React', 'GSAP + ScrollTrigger', 'Lenis', 'Supabase', 'Make.com'] },
   { id: 'shistoria', name: "S'Historia", year: '2025', url: 'https://shistoria.it', host: 'shistoria.it', tint: '#D6DEE6', stack: ['Next.js', 'React Three Fiber', 'Three.js', 'GSAP', 'Lenis', 'Supabase'] },
@@ -65,6 +73,10 @@ export const work = [
   { id: 'renabianca', name: 'Rena Bianca Beach Bar', year: '2025', url: 'https://renabiancabeachbar.com', host: 'renabiancabeachbar.com', tint: '#D8E2E6', stack: ['Next.js', 'React', 'Framer Motion', 'Wideo'] },
   // Shopify blokuje osadzanie (frame-ancestors 'none') — zostaje szkielet
   { id: 'antiqua', name: 'ANTIQUA', year: '2026', url: 'https://antiqua-shop.pl', host: 'antiqua-shop.pl', embed: false, tint: '#E2DDD4', stack: ['Shopify', 'Autorski motyw', 'Liquid'] },
+  // Za hasłem do dnia startu (sprawdzone: 401), więc bez żywej ramki.
+  { id: 'oltre', name: 'Oltre', year: '2026', url: '', host: '', wip: true, tint: '#DDE3EF', stack: ['Next.js App Router', 'React', 'Tailwind CSS', 'Three.js', 'Supabase', 'Stripe', 'Make.com'] },
+  // Jeszcze bez domeny — chodzi lokalnie.
+  { id: 'pizzeria', name: 'Pizzeria', year: '2026', url: '', host: '', wip: true, tint: '#EFD9C6', stack: ['Next.js', 'React', 'Leaflet', 'Matter.js', 'Lenis', 'Framer Motion'] },
 ]
 
 export const nav = [

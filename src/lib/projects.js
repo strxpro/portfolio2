@@ -108,6 +108,14 @@ export function useProjects() {
  * pytamy słownik, a jak go tam nie ma, bierzemy pola z samego projektu.
  * Bez tego dodanie nowej pozycji wywracało sekcję prac.
  */
+/**
+ * Co pokazać w miejscu adresu.
+ *
+ * Praca bez publicznego adresu (`wip`) nie ma czego tam wpisać, a puste
+ * miejsce w karcie wygląda na błąd. Dostaje więc podpis z tłumaczeń.
+ */
+export const etykieta = (t, item) => item.host || t?.tour?.wip || ''
+
 export function textOf(t, item) {
   const dict = t?.items?.[item.id]
   if (dict) return dict

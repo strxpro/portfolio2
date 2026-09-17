@@ -12,7 +12,7 @@ export const extra = {
       nextCta: 'Napisz do mnie',
       badge: 'następna',
     },
-    tour: { running: 'przewijam stronę', hold: 'za chwilę ruszy', open: 'Otwórz stronę', close: 'Zamknij', hint: 'Esc zamyka', more: 'O projekcie', less: 'Zwiń', used: 'Czego użyłem', stop: 'najedź, żeby zatrzymać', teczka: 'Prace', otworz: 'Otwórz teczkę', prev: 'Poprzednia', next: 'Następna', keys: '← → przełącza prace' },
+    tour: { running: 'przewijam stronę', hold: 'za chwilę ruszy', open: 'Otwórz stronę', close: 'Zamknij', hint: 'Esc zamyka', more: 'O projekcie', less: 'Zwiń', used: 'Czego użyłem', stop: 'najedź, żeby zatrzymać', teczka: 'Prace', otworz: 'Otwórz teczkę', prev: 'Poprzednia', next: 'Następna', keys: '← → przełącza prace', wip: 'w przygotowaniu', wipNote: 'Ta jeszcze nie ruszyła — pokażę ją na rozmowie, razem z panelem.' },
     trust: {
       label: 'Podstawy współpracy',
       title: 'Kilka rzeczy,|które da się sprawdzić.',
@@ -105,7 +105,7 @@ export const extra = {
       nextCta: 'Write to me',
       badge: 'next',
     },
-    tour: { running: 'scrolling the site', hold: 'starts in a moment', open: 'Open the site', close: 'Close', hint: 'Esc closes', more: 'About', less: 'Collapse', used: 'What I used', stop: 'hover to pause', teczka: 'Work', otworz: 'Open the folder', prev: 'Previous', next: 'Next', keys: '← → switches projects' },
+    tour: { running: 'scrolling the site', hold: 'starts in a moment', open: 'Open the site', close: 'Close', hint: 'Esc closes', more: 'About', less: 'Collapse', used: 'What I used', stop: 'hover to pause', teczka: 'Work', otworz: 'Open the folder', prev: 'Previous', next: 'Next', keys: '← → switches projects', wip: 'in progress', wipNote: 'This one is not live yet — I will show it on a call, panel included.' },
     trust: {
       label: 'Terms of the engagement',
       title: 'A few things|you can check.',
@@ -198,7 +198,7 @@ export const extra = {
       nextCta: 'Scrivimi',
       badge: 'il prossimo',
     },
-    tour: { running: 'scorro il sito', hold: 'parte tra poco', open: 'Apri il sito', close: 'Chiudi', hint: 'Esc chiude', more: 'Il progetto', less: 'Chiudi', used: 'Cosa ho usato', stop: 'passa sopra per fermare', teczka: 'Lavori', otworz: 'Apri la cartella', prev: 'Precedente', next: 'Successiva', keys: '← → cambia progetto' },
+    tour: { running: 'scorro il sito', hold: 'parte tra poco', open: 'Apri il sito', close: 'Chiudi', hint: 'Esc chiude', more: 'Il progetto', less: 'Chiudi', used: 'Cosa ho usato', stop: 'passa sopra per fermare', teczka: 'Lavori', otworz: 'Apri la cartella', prev: 'Precedente', next: 'Successiva', keys: '← → cambia progetto', wip: 'in lavorazione', wipNote: 'Questo non è ancora online — te lo mostro in chiamata, pannello compreso.' },
     trust: {
       label: 'Basi della collaborazione',
       title: 'Alcune cose|che puoi verificare.',

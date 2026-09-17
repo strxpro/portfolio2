@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { useT } from '../lib/lang-ctx'
 import { EASE } from '../lib/motion'
 
 /**
@@ -160,6 +161,36 @@ const ART = {
   ),
 
   // fotoceramika: owalny portret w ramie
+  // oltre: glob z południkami, pinezka i ślad trasy — doradztwo i relokacja
+  oltre: (c) => (
+    <>
+      <rect width="320" height="200" fill={c.tint} />
+      <motion.circle cx="126" cy="104" r="78" fill="none" stroke={c.ink} strokeWidth="2" {...c.d(0, 1, 0.85)} />
+      <motion.path d="M126 26 C 86 64, 86 144, 126 182 M126 26 C 166 64, 166 144, 126 182" fill="none" stroke={c.ink} strokeWidth="1.6" {...c.d(1, 1, 0.6)} />
+      <motion.path d="M50 82 h152 M48 126 h156" fill="none" stroke={c.ink} strokeWidth="1.6" {...c.d(2, 0.9, 0.6)} />
+      <motion.path d="M214 58 c26 14, 34 44, 78 46" fill="none" stroke={c.ink} strokeWidth="2" strokeDasharray="6 7" {...c.d(3, 1.1, 0.75)} />
+      <motion.path d="M292 96 a12 12 0 1 0 -0.1 0 z M292 108 l0 22" fill="none" stroke={c.ink} strokeWidth="2.4" {...c.d(4, 0.8, 0.9)} />
+      <motion.circle cx="96" cy="78" r="5" fill={c.ink} {...c.p(0, 0.15, 0.8)} />
+      <motion.circle cx="148" cy="130" r="5" fill={c.ink} {...c.p(1, 0.25, 0.8)} />
+    </>
+  ),
+
+  // pizzeria: otwarte pudełko, kawałek w drodze i pinezka dojazdu
+  pizzeria: (c) => (
+    <>
+      <rect width="320" height="200" fill={c.tint} />
+      <motion.path d="M44 96 h140 v78 H44 z" fill="none" stroke={c.ink} strokeWidth="2.4" {...c.d(0, 1, 0.9)} />
+      <motion.path d="M44 96 L74 44 h140 L184 96" fill="none" stroke={c.ink} strokeWidth="2" {...c.d(1, 1, 0.7)} />
+      <motion.path d="M206 128 l64 -34 6 40 z" fill={c.ink} {...c.p(0, 0.2, 0.12)} />
+      <motion.path d="M206 128 l64 -34 6 40 z" fill="none" stroke={c.ink} strokeWidth="2" {...c.d(2, 0.9, 0.85)} />
+      <motion.circle cx="238" cy="112" r="4.5" fill={c.ink} {...c.p(1, 0.3, 0.8)} />
+      <motion.circle cx="252" cy="124" r="4" fill={c.ink} {...c.p(2, 0.36, 0.8)} />
+      <motion.path d="M184 170 c34 -6, 60 4, 96 -10" fill="none" stroke={c.ink} strokeWidth="1.8" strokeDasharray="5 7" {...c.d(3, 1, 0.6)} />
+      <motion.path d="M286 148 a11 11 0 1 0 -0.1 0 z M286 159 l0 18" fill="none" stroke={c.ink} strokeWidth="2.2" {...c.d(4, 0.8, 0.85)} />
+      <motion.path d="M0 62 h64" stroke={c.ink} strokeWidth="9" fill="none" {...c.d(5, 0.7, 0.9)} />
+    </>
+  ),
+
   antiqua: (c) => (
     <>
       <rect width="320" height="200" fill={c.tint} />
@@ -178,6 +209,7 @@ const ART = {
  * obserwatorów widoczności ani przeliczać `pathLength` co klatkę.
  */
 export default function Cover({ id, tint, name, host, still = false }) {
+  const t = useT()
   const make = ART[id] ?? ART.spabi
   const c = {
     tint,
@@ -199,7 +231,9 @@ export default function Cover({ id, tint, name, host, still = false }) {
       <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
         {make(c)}
       </svg>
-      <span className="cover-tag">{host}</span>
+      {/* Praca bez adresu dostaje podpis z tłumaczeń — puste miejsce
+          w narożniku okładki wyglądało na błąd renderowania. */}
+      <span className="cover-tag">{host || t.tour.wip}</span>
       <span className="cover-name">{name}</span>
     </div>
   )

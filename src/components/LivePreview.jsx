@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import SitePreview from './SitePreview'
+import { etykieta } from '../lib/projects'
+import { useT } from '../lib/lang-ctx'
 
 /**
  * Prawdziwa strona projektu w oknie modala.
@@ -24,6 +26,7 @@ import SitePreview from './SitePreview'
 const CZEKAJ = 6000
 
 export default function LivePreview({ item, hint }) {
+  const t = useT()
   const [stan, setStan] = useState(() =>
     item.url && item.embed !== false ? 'czeka' : 'zablokowane',
   )
@@ -62,7 +65,7 @@ export default function LivePreview({ item, hint }) {
   if (stan === 'zablokowane') {
     return (
       <div className="lp">
-        <SitePreview id={item.id} tint={item.tint} name={item.name} host={item.host} hint={hint} />
+        <SitePreview id={item.id} tint={item.tint} name={item.name} host={etykieta(t, item)} hint={item.url ? hint : ''} />
       </div>
     )
   }

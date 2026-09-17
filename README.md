@@ -1263,6 +1263,23 @@ Każda sekcja woła `useGuide({ id, text, corner, mood, point })`:
 Piksel nie wisi na ekranie cały czas — wychodzi przy każdej nowej kwestii
 i po kilku sekundach chowa się z powrotem. Kliknięcie przedłuża pobyt.
 
+## Prace i te jeszcze nieruszone
+
+Lista prac ma trzy źródła, w tej kolejności: pamięć przeglądarki (panel pod
+`#admin`), plik `public/data/projects.json`, lista w `src/data/site.js`. Plik
+wygrywa z kodem — dodając pracę, dopisz ją w OBU miejscach, inaczej zobaczysz
+starą listę i będziesz szukał błędu w kodzie.
+
+Praca z `wip: true` i bez `url` to ta, której nie ma jeszcze pod publicznym
+adresem: zamiast żywej ramki dostaje rysowaną okładkę, w narożniku podpis
+„w przygotowaniu”, a w podglądzie — notkę zamiast guzika „Otwórz stronę”.
+Teksty prac (rodzaj, opis, punkty) siedzą w `i18n.js` pod `items.<id>`;
+pola w JSON-ie są tylko zapasem, gdy w słowniku nic nie ma.
+
+Okładki to autorskie rysunki SVG w `components/Cover.jsx`, po jednej na pracę,
+kluczowane po `id`. Bez wpisu praca dostaje okładkę pizzerii — dlatego nowe
+`id` zawsze dokładaj też tam.
+
 ## Brief → WhatsApp
 
 Kontakt to pięć pytań zadawanych po kolei (`components/Brief.jsx`, kroki w

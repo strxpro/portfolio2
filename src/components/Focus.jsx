@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom'
 import { motion } from 'framer-motion'
 import LivePreview from './LivePreview'
 import { useT } from '../lib/lang-ctx'
-import { textOf } from '../lib/projects'
+import { etykieta, textOf } from '../lib/projects'
 import { EASE, SPRING } from '../lib/motion'
 import { isOn, shut, tick } from '../lib/sound'
 
@@ -155,7 +155,7 @@ export default function Focus({ item, from, index, total, onPrev, onNext, onClos
         >
             <div className="focus-head">
               <p className="focus-host">
-                {item.host}
+                {etykieta(t, item)}
                 <span className="focus-licz">
                   {String(index + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}
                 </span>
@@ -198,6 +198,18 @@ export default function Focus({ item, from, index, total, onPrev, onNext, onClos
           * końcu treści znikałby razem z nią; przyklejony jest pod ręką
           * niezależnie od tego, gdzie akurat jesteś.
           */}
+        {/* Praca bez adresu nie dostaje guzika „Otwórz stronę” — nie ma gdzie
+            prowadzić. Zamiast niego jedno zdanie, co z nią jest. */}
+        {!item.url ? (
+          <motion.p
+            className="focus-wip"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.36, delay: 0.44, ease: EASE }}
+          >
+            {t.tour.wipNote}
+          </motion.p>
+        ) : (
         <motion.button
           className="btn big focus-go"
           onClick={onOpenSite}
@@ -212,6 +224,7 @@ export default function Focus({ item, from, index, total, onPrev, onNext, onClos
             <path d="M5 12h14M13 6l6 6-6 6" />
           </svg>
         </motion.button>
+        )}
 
         <motion.p
           className="focus-klawisze"

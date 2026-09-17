@@ -422,7 +422,7 @@ export default function Space() {
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.28, ease: EASE }}
             >
-              {work[lead].host}
+              {work[lead].host || t.tour.wip}
             </motion.span>
           </AnimatePresence>
 
