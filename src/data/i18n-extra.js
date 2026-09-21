@@ -30,6 +30,7 @@ export const extra = {
       title: 'Tydzień|po tygodniu.',
       lead: 'Zwykle dwa do pięciu tygodni. Zależy, ile trzeba podpiąć.',
       week: 'tydzień',
+      weeks: 'Tygodnie',
       weekShort: 'tyg.',
       gives: 'Dostajesz',
       steps: [
@@ -48,7 +49,7 @@ export const extra = {
       title: 'Prace.',
       morph: ['dziewięć stron', 'wszystkie online', 'kliknij którąś'],
       hint: 'rusz myszą albo przechyl telefon',
-      swipe: 'przesuń palcem →',
+      swipe: 'przesuń palcem w bok',
       gyro: 'Włącz czujnik ruchu',
     },
     giant: {
@@ -123,6 +124,7 @@ export const extra = {
       title: 'Week|by week.',
       lead: 'Usually two to five weeks. It depends on how much needs hooking up.',
       week: 'week',
+      weeks: 'Weeks',
       weekShort: 'wk',
       gives: 'You get',
       steps: [
@@ -141,7 +143,7 @@ export const extra = {
       title: 'Work.',
       morph: ['nine sites', 'all of them live', 'pick one'],
       hint: 'move the mouse or tilt your phone',
-      swipe: 'swipe →',
+      swipe: 'swipe sideways',
       gyro: 'Enable motion sensor',
     },
     giant: {
@@ -216,6 +218,7 @@ export const extra = {
       title: 'Settimana|per settimana.',
       lead: 'Di solito da due a cinque settimane. Dipende da quanto c’è da collegare.',
       week: 'settimana',
+      weeks: 'Settimane',
       weekShort: 'sett.',
       gives: 'Ricevi',
       steps: [
@@ -234,7 +237,7 @@ export const extra = {
       title: 'Lavori.',
       morph: ['nove siti', 'tutti online', 'scegline uno'],
       hint: 'muovi il mouse o inclina il telefono',
-      swipe: 'scorri →',
+      swipe: 'scorri di lato',
       gyro: 'Attiva il sensore di movimento',
     },
     giant: {

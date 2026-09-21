@@ -611,90 +611,33 @@ main > .leaf:has(+ .handoff) { padding-bottom: clamp(30px, 4vw, 60px); }
 }
 
 /* ═════════════════════════════════════════════════════════
-   Prace na telefonie: pozioma szyna przewijana palcem.
+   Prace na telefonie: ta sama przestrzeń 3D, jeden ekran wysokości.
+   Kamerę pcha gest w bok (Space.jsx), pion zostaje przy stronie.
    ═════════════════════════════════════════════════════════ */
-
-.rail {
-  margin-left: calc(var(--float) * -1);
-  margin-right: calc(var(--float) * -1);
-  border-radius: 0;
-  box-shadow: none;
-  /* Sekcja ma NORMALNĄ wysokość, bez przyklejonej sceny — to ona
-     decyduje, że można ją opuścić w dowolnym momencie. */
-  min-height: 0;
-  height: auto;
-  padding: clamp(52px, 12vw, 92px) 0 clamp(40px, 9vw, 72px);
+@media (max-width: 900px) {
+  .space.space-tel { height: 100svh; min-height: 560px; }
+  .space-tel .space-stage {
+    position: relative;
+    height: 100%;
+    touch-action: pan-y;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .space-tel .space-meter { pointer-events: none; }
+  .space-tel .space-meter button { pointer-events: auto; }
 }
-.rail-in { position: relative; }
-.rail-ui { position: static; margin-bottom: clamp(22px, 6vw, 38px); }
-
-/* Szyna: natywne przewijanie w poziomie z doskakiwaniem do kart. */
-.rail-tor {
-  display: flex;
-  gap: clamp(12px, 3.4vw, 20px);
-  margin: 0;
-  padding: 4px var(--gap) 18px;
-  list-style: none;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-snap-type: x mandatory;
-  scroll-padding-left: var(--gap);
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior-x: contain;
-  /* Pasek przewijania schodzi — kartki same mówią, że jest ich więcej. */
-  scrollbar-width: none;
+.space-kroki { display: inline-flex; gap: 8px; }
+.space-kroki button {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(243, 239, 230, 0.28);
+  background: rgba(243, 239, 230, 0.06);
+  color: #F3EFE6;
+  font-size: 20px;
+  line-height: 1;
 }
-.rail-tor::-webkit-scrollbar { display: none; }
-.rail-tor > li { flex: 0 0 auto; scroll-snap-align: start; }
-
-.rail-karta {
-  display: block;
-  width: min(78vw, 340px);
-  padding: 0;
-  border: 1px solid rgba(243, 239, 230, 0.14);
-  border-radius: 16px;
-  overflow: hidden;
-  background: var(--card);
-  box-shadow: 0 20px 44px -24px rgba(0, 0, 0, 0.9);
-  transition: transform var(--tap) var(--ease);
-}
-.rail-karta:active { transform: scale(0.975); }
-.rail-karta .cover { aspect-ratio: 16 / 10; height: auto; }
-
-.rail-pasek {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 10px 12px 11px;
-  border-top: 1px solid var(--rule);
-  font-family: var(--f-mono);
-  font-size: 9px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--ink-3);
-}
-.rail-pasek b {
-  font-family: var(--f-sans);
-  font-size: 13.5px;
-  font-weight: 700;
-  letter-spacing: 0;
-  text-transform: none;
-  color: var(--ink);
-}
-
-.rail-hint {
-  margin: 4px 0 0;
-  padding: 0 var(--gap);
-  font-family: var(--f-mono);
-  font-size: 9px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: rgba(243, 239, 230, 0.45);
-}
-
-/* Teczka w szynie leży w zwykłym rytmie, nie na całą wysokość ekranu. */
-.rail .fold { position: relative; inset: auto; padding: 8px var(--gap) 0; }
+.space-kroki button:active { transform: scale(0.94); }
 
 /* ── sekcja „Cześć, tu Claudio" na telefonie ──────────────
    Zdjęcia leżały jedno na drugim: mniejsze wisiało absolutnie przy
@@ -868,6 +811,9 @@ main > .leaf:has(+ .handoff) { padding-bottom: clamp(30px, 4vw, 60px); }
   .title { margin-bottom: 0; }
 }
 
+/* łańcuch etapów w wersji stojącej (telefon) — zwykła lista */
+.chain-stoi .chain-row { list-style: none; margin: 0; padding: 0; }
+
 /* ═════════════════════════════════════════════════════════
    Telefon: czytelność napisów i cele pod palec.
 
@@ -891,7 +837,7 @@ main > .leaf:has(+ .handoff) { padding-bottom: clamp(30px, 4vw, 60px); }
   .chain-name,
   .me-creds dt,
   .gantt-gives span,
-  .gantt-axis i,
+  .gantt-axis-name,
   .footer-panel,
   .space-hint,
   .rail-hint {

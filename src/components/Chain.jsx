@@ -54,6 +54,7 @@ export default function Chain() {
 
   const LOOP = steps.length * 1.1 + 1.4
 
+
   /**
    * Który etap jest teraz „pod iskrą".
    *
@@ -70,7 +71,7 @@ export default function Chain() {
    */
   const [act, setAct] = useState(-1)
   useEffect(() => {
-    if (!live) { setAct(-1); return }
+    if (!live || waski) { setAct(-1); return }
     const start = performance.now()
     const okno = LOOP / steps.length
     const id = setInterval(() => {
@@ -79,7 +80,41 @@ export default function Chain() {
       setAct((was) => (was === i ? was : i))
     }, 100)
     return () => clearInterval(id)
-  }, [live, LOOP, steps.length])
+  }, [live, waski, LOOP, steps.length])
+
+  /**
+   * Telefon: lista stoi, bez impulsu.
+   *
+   * W pionowej liście kropka traci pozycjonowanie, więc pulsujące kółko
+   * rozlewało się na cały wiersz i jechało przez listę jak niebieska
+   * plama. Tu nie ma czego pokazywać ruchem — kolejność widać z listy.
+   * Ikony są od razu narysowane, nic nie miga.
+   */
+  if (waski) {
+    return (
+      <div className="chain chain-stoi">
+        <ol className="chain-row">
+          {steps.map((s, i) => (
+            <li className="chain-node" key={s}>
+              <span className="chain-dot" />
+              <span className="chain-name">{s}</span>
+              <span className="chain-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  {ICONS[i % ICONS.length].map(([d, o], n) => (
+                    <path key={n} d={d} {...S} opacity={o} />
+                  ))}
+                </svg>
+              </span>
+            </li>
+          ))}
+        </ol>
+        <p className="chain-sum">
+          <b>{t.me.one}</b>
+          {t.me.oneNote}
+        </p>
+      </div>
+    )
+  }
 
   return (
     <div className="chain" ref={ref}>

@@ -224,33 +224,54 @@
   background: var(--card);
   overflow: hidden;
 }
+/* Oś i wiersze mają jedną siatkę: nazwa | pięć tygodni | kiedy.
+   Linie tygodni biegną przez całą wysokość wiersza, więc pasek da się
+   odczytać jak w kalendarzu: zaczyna się w tygodniu 2, kończy w 3. */
+.gantt {
+  --g-cols: minmax(70px, 1fr) minmax(0, 3.2fr) 92px;
+  --g-py: 14px;
+  --g-px: clamp(12px, 1.6vw, 20px);
+  --g-week: linear-gradient(to right, var(--rule) 1px, transparent 1px) 0 0 / 20% 100%;
+}
 .gantt-axis {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  padding-left: clamp(120px, 20vw, 230px);
+  grid-template-columns: var(--g-cols);
+  gap: 12px;
+  align-items: stretch;
+  padding: 0 var(--g-px);
   border-bottom: 1px solid var(--rule);
   background: var(--wash);
 }
-.gantt-week {
-  padding: 9px 10px;
-  border-left: 1px solid var(--rule);
+.gantt-axis-name {
+  align-self: center;
+  padding: 10px 0;
   font-family: var(--f-mono);
-  font-size: 9.5px;
-  letter-spacing: 0.12em;
+  font-size: 10px;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink-3);
-  white-space: nowrap;
-  overflow: hidden;
 }
-.gantt-week i { font-style: normal; }
+.gantt-axis-nums {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  background: var(--g-week);
+}
+.gantt-axis-nums i {
+  padding: 10px 0 10px 8px;
+  font-style: normal;
+  font-family: var(--f-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-2);
+}
 
 .gantt-rows { display: grid; }
 .gantt-row {
   display: grid;
-  grid-template-columns: minmax(70px, 1fr) minmax(0, 3.2fr) auto;
+  grid-template-columns: var(--g-cols);
   gap: 12px;
   align-items: center;
-  padding: 14px clamp(12px, 1.6vw, 20px);
+  padding: var(--g-py) var(--g-px);
   border-bottom: 1px solid var(--rule);
   text-align: left;
   transition: background var(--fast) var(--ease);
@@ -263,10 +284,17 @@
   letter-spacing: -0.018em;
   color: var(--ink);
 }
-.gantt-track { position: relative; height: 12px; }
+.gantt-track {
+  position: relative;
+  align-self: stretch;
+  min-height: 12px;
+  margin: calc(var(--g-py) * -1) 0;
+  background: var(--g-week);
+}
 .gantt-bar {
   position: absolute;
-  top: 0;
+  top: 50%;
+  margin-top: -6px;
   height: 12px;
   border-radius: 3px;
   background: var(--accent);
@@ -276,9 +304,11 @@
 .gantt-row.on .gantt-bar { opacity: 1; }
 .gantt-when { font-family: var(--f-mono); font-size: 10px; color: var(--ink-3); white-space: nowrap; }
 @media (max-width: 720px) {
-  .gantt-axis { padding-left: 96px; }
-  .gantt-row { grid-template-columns: minmax(58px, 1fr) minmax(0, 2.4fr); gap: 8px; padding: 12px 10px; }
+  .gantt { --g-cols: minmax(84px, 1fr) minmax(0, 2.2fr); --g-py: 14px; --g-px: 12px; }
+  .gantt-row, .gantt-axis { gap: 10px; }
   .gantt-when { display: none; }
+  .gantt-axis-name { font-size: 11px; letter-spacing: 0.08em; }
+  .gantt-axis-nums i { padding-left: 6px; font-size: 12.5px; }
 }
 
 .gantt-detail { padding: clamp(18px, 2.4vw, 28px); min-height: 132px; background: var(--paper); }

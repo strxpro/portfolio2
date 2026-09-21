@@ -7,8 +7,6 @@ import Topbar from './components/Topbar'
 import Hero from './components/Hero'
 import Me from './components/Me'
 import Space from './components/Space'
-import Rail from './components/Rail'
-import { useNarrow } from './lib/useNarrow'
 import Giant from './components/Giant'
 import Handoff from './components/Handoff'
 import Lab from './components/Lab'
@@ -31,7 +29,6 @@ import { SPRING } from './lib/motion'
 
 export default function App() {
   const [loading, setLoading] = useState(true)
-  const waski = useNarrow(900)
 
   // panel prac otwiera się adresem z `#admin` na końcu
   const [admin, setAdmin] = useState(() => window.location.hash === '#admin')
@@ -127,7 +124,7 @@ export default function App() {
           * przewija się palcem w poziomie, a gest pionowy zostaje dla
           * strony.
           */}
-        {waski ? <Rail /> : <Space />}
+        <Space />
         <Giant />
         <Handoff />
         <Leaf tone="white" z={6}><Lab /></Leaf>

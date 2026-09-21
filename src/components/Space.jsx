@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from 'react'
-import { AnimatePresence, motion, useMotionValue, useMotionValueEvent, useScroll, useSpring, useTransform } from 'framer-motion'
+import { AnimatePresence, animate, motion, useMotionValue, useMotionValueEvent, useScroll, useSpring, useTransform } from 'framer-motion'
 import { useLoopSpring } from '../lib/useLoopSpring'
 import Cover from './Cover'
 import Folder from './Folder'
@@ -12,6 +12,7 @@ import { useTilt } from '../lib/useTilt'
 import { goToEnd } from '../lib/scroll'
 import { ambience, isOn, pop } from '../lib/sound'
 import { EASE } from '../lib/motion'
+import { useNarrow } from '../lib/useNarrow'
 
 
 /**
@@ -203,6 +204,7 @@ function Invite({ seat, cam, t, far, cardRef }) {
 export default function Space() {
   const t = useT()
   const ref = useRef(null)
+  const waski = useNarrow(900)
   const [open, setOpen] = useState(null)   // pełny podgląd strony
   const [focus, setFocus] = useState(null) // karta wyciągnięta na środek
   const [from, setFrom] = useState(null)
@@ -275,7 +277,8 @@ export default function Space() {
    * tu przez bąbelkowanie, stąd drugi warunek.
    */
   const onStageClick = (e) => {
-    if (!otwarte || e.target.closest('.fold')) return
+    if (!otwarte || e.target.closest('.fold, .space-kroki')) return
+    if (tylkoGest.current) return // koniec przeciągnięcia to nie kliknięcie
     const i = pickAt(e.clientX, e.clientY)
     if (i < 0) return
     const el = cardRefs.current[i]
@@ -303,7 +306,76 @@ export default function Space() {
      obserwować — to ono mówi, kiedy szew pętli już się przeliczył. */
 
   const camRaw = useTransform(scrollYProgress, [0, 1], [0, deepest + 120])
-  const cam = useLoopSpring(camRaw, { stiffness: 120, damping: 30, restDelta: 0.5 })
+  const camScroll = useLoopSpring(camRaw, { stiffness: 120, damping: 30, restDelta: 0.5 })
+
+  /**
+   * Telefon: ta sama przestrzeń, ale sekcja ma jeden ekran wysokości.
+   *
+   * Na komputerze kamerę pcha przewijanie strony, więc sekcja musi być
+   * wysoka. Na telefonie to więziło — żeby wyjść, trzeba było przelecieć
+   * przez wszystkie prace. Tu kamerę pcha **gest w bok**: palec w lewo
+   * leci w głąb, w prawo wraca. Gest pionowy zostaje przy stronie
+   * (`touch-action: pan-y`), więc sekcję można opuścić w każdej chwili.
+   *
+   * Po puszczeniu kamera dojeżdża do najbliższej karty, z uwzględnieniem
+   * rozpędu palca — jedno machnięcie to jedna, czasem dwie prace dalej.
+   */
+  const camTel = useMotionValue(0)
+  const cam = waski ? camTel : camScroll
+  // karta „na wprost” stoi 260 px przed obiektywem — tam jest w pełni widoczna
+  const OKO = waski ? -260 : 40
+  const przystanki = useMemo(
+    () => [...seats.map(([, , z]) => OKO - z), deepest + 120],
+    [seats, OKO, deepest],
+  )
+  const gest = useRef(null)
+  const jedzie = useRef(null)
+  const tylkoGest = useRef(false)
+  const dojedz = (i) => {
+    const k = Math.max(0, Math.min(przystanki.length - 1, i))
+    jedzie.current?.stop()
+    jedzie.current = animate(camTel, przystanki[k], { type: 'spring', stiffness: 90, damping: 20 })
+  }
+  const najblizszy = (v) => {
+    let b = 0
+    przystanki.forEach((p, i) => { if (Math.abs(p - v) < Math.abs(przystanki[b] - v)) b = i })
+    return b
+  }
+  const onDown = (e) => {
+    if (!waski || !otwarte) return
+    jedzie.current?.stop()
+    const now = performance.now()
+    gest.current = { x: e.clientX, y: e.clientY, cam: camTel.get(), px: e.clientX, pt: now, vx: 0, bok: null, ruszyl: false }
+  }
+  const onMoveTel = (e) => {
+    const g = gest.current
+    if (!g) return
+    const dx = e.clientX - g.x
+    const dy = e.clientY - g.y
+    // kierunek rozstrzygamy raz, po kilku pikselach — pion oddajemy stronie
+    if (g.bok === null && Math.hypot(dx, dy) > 8) g.bok = Math.abs(dx) > Math.abs(dy)
+    if (!g.bok) return
+    g.ruszyl = true
+    const now = performance.now()
+    g.vx = (e.clientX - g.px) / Math.max(1, now - g.pt)
+    g.px = e.clientX
+    g.pt = now
+    const max = przystanki[przystanki.length - 1]
+    camTel.set(Math.max(-80, Math.min(max + 80, g.cam - dx * 3.2)))
+  }
+  const onUp = () => {
+    const g = gest.current
+    gest.current = null
+    if (!g) return
+    if (!g.ruszyl) {
+      // puszczenie bez przeciągnięcia: jeśli kamera stała między kartami, dociągamy
+      return
+    }
+    tylkoGest.current = true
+    setTimeout(() => { tylkoGest.current = false }, 60)
+    // rozpęd: szybkie machnięcie przeskakuje dalej niż wolne przeciągnięcie
+    dojedz(najblizszy(camTel.get() - g.vx * 380))
+  }
 
   /**
    * Rozpęd kamery — stąd bierze się rozpad krawędzi.
@@ -340,7 +412,7 @@ export default function Space() {
     let best = 0
     let bestD = Infinity
     seats.forEach(([, , z], i) => {
-      const d = Math.abs(v + z - 40)
+      const d = Math.abs(v + z - OKO)
       if (d < bestD) {
         bestD = d
         best = i
@@ -350,16 +422,21 @@ export default function Space() {
   })
 
   return (
-    <section className={`space ${otwarte ? '' : 'zamkniete'}`} id="prace" ref={ref}>
+    <section className={`space ${waski ? 'space-tel' : ''} ${otwarte ? '' : 'zamkniete'}`} id="prace" ref={ref}>
       <div
         className={`space-stage ${hot >= 0 ? 'aim' : ''}`}
         onClick={onStageClick}
-        onPointerMove={onStageMove}
+        onPointerDown={onDown}
+        onPointerMove={(e) => { if (waski) onMoveTel(e); else onStageMove(e) }}
+        onPointerUp={onUp}
+        onPointerCancel={onUp}
         onPointerLeave={() => setHot(-1)}
       >
         <span className="space-vign" aria-hidden="true" />
 
+        {/* klucz: przy przejściu telefon ↔ komputer karty podpinają się pod inną kamerę */}
         <motion.div
+          key={waski ? 'tel' : 'pc'}
           className="space-field"
           style={{ rotateX: rotX, rotateY: rotY, x: slideX, y: slideY }}
         >
@@ -413,23 +490,28 @@ export default function Space() {
             <i>/ {String(work.length).padStart(2, '0')}</i>
           </span>
 
-          <AnimatePresence mode="wait">
-            <motion.span
-              className="space-name"
-              key={work[lead].id}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.28, ease: EASE }}
-            >
-              {work[lead].host || t.tour.wip}
-            </motion.span>
-          </AnimatePresence>
+          {/* zwykła zmiana klucza — przy mode="wait" nazwa czekała na wyjście poprzedniej */}
+          <motion.span
+            className="space-name"
+            key={work[lead].id}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.28, ease: EASE }}
+          >
+            {work[lead].host || t.tour.wip}
+          </motion.span>
+
+          {waski && (
+            <span className="space-kroki">
+              <button type="button" onClick={() => dojedz(najblizszy(camTel.get()) - 1)} aria-label={t.tour.prev}>‹</button>
+              <button type="button" onClick={() => dojedz(najblizszy(camTel.get()) + 1)} aria-label={t.tour.next}>›</button>
+            </span>
+          )}
 
           {needsAsk ? (
             <button className="space-gyro" onClick={ask}>{t.space.gyro}</button>
           ) : (
-            <span className="space-hint">{t.space.hint}</span>
+            <span className="space-hint">{waski ? t.space.swipe : t.space.hint}</span>
           )}
         </div>
       </div>

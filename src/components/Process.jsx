@@ -39,14 +39,17 @@ export default function Process() {
         </div>
 
         <div className="gantt ticked">
-          <div className="gantt-axis">
-            {Array.from({ length: WEEKS }).map((_, w) => (
-              <span key={w} className="gantt-week">
-                {/* Nagłówki kolumn są wąskie — „tydzień 3" nie mieści się
-                    i ucinało je w połowie. Pełna nazwa zostaje w opisie. */}
-                <i>{t.sched.weekShort} {w + 1}</i>
-              </span>
-            ))}
+          {/* Oś jak w tabeli: „Tygodnie” w nagłówku, pod spodem same numery.
+              Oś ma tę samą siatkę co wiersze, więc kolumna „2” stoi
+              dokładnie nad drugim tygodniem każdego paska. */}
+          <div className="gantt-axis" aria-hidden="true">
+            <span className="gantt-axis-name">{t.sched.weeks}</span>
+            <span className="gantt-axis-nums">
+              {Array.from({ length: WEEKS }).map((_, w) => (
+                <i key={w}>{w + 1}</i>
+              ))}
+            </span>
+            <span className="gantt-when" />
           </div>
 
           <div className="gantt-rows">
