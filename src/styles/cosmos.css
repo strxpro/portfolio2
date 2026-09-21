@@ -827,6 +827,48 @@ main > .leaf:has(+ .handoff) { padding-bottom: clamp(30px, 4vw, 60px); }
 .echo-zapas { height: 150vh; pointer-events: none; }
 
 /* ═════════════════════════════════════════════════════════
+   Telefon: sekcje obok siebie, nie na sobie.
+
+   Na komputerze każda sekcja wjeżdża na poprzednią (`--leaf-over`) —
+   to daje wrażenie przekładanych kart. Na telefonie zakładka zjadała
+   52 px treści poprzedniej sekcji i karty wyglądały na wciśnięte jedna
+   w drugą. Tu każda sekcja stoi osobno, z przerwą, w której widać kosmos.
+
+   Ta sama przerwa MUSI stać przed `.echo-lip`: to on odtwarza górę
+   strony na szwie pętli. Inny odstęp = przeskok widoczny przy domknięciu.
+   ═════════════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  :root {
+    --leaf-over: 0px;
+    --przerwa: 14px;
+  }
+  .leaf,
+  .handoff,
+  .finale,
+  .echo-lip { margin-top: var(--przerwa); }
+  .leaf { box-shadow: none; }
+  .leaf-seam,
+  .leaf-dim { display: none; }
+
+  /* powietrze w sekcjach: więcej miejsca nad i pod treścią */
+  .leaf > section,
+  .pad { padding-top: 64px; padding-bottom: 64px; }
+
+  /* tekst do czytania: wygodna interlinia i szerokość wiersza */
+  .lead,
+  .me-p,
+  .handoff-lead,
+  .svc-text,
+  .gantt-detail p,
+  .proof-desc {
+    line-height: 1.62;
+    max-width: 36ch;
+  }
+  .head { gap: 14px; margin-bottom: 36px; }
+  .title { margin-bottom: 0; }
+}
+
+/* ═════════════════════════════════════════════════════════
    Telefon: czytelność napisów i cele pod palec.
 
    Zmierzone na ekranie 375 px: czterdzieści miejsc z tekstem 9–12 px

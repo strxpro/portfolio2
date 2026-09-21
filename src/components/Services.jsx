@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import SvcArt from './SvcArt'
 import Type from './Type'
 import { useT } from '../lib/lang-ctx'
@@ -14,12 +14,12 @@ export default function Services() {
   const [name, text] = services[pick]
 
   /**
-   * Na telefonie lista jest akordeonem.
+   * Na telefonie zwykła lista: nazwa i opis, wszystko widać od razu.
    *
-   * Podgląd obok listy ma sens tylko wtedy, gdy jest gdzie go położyć.
-   * Na wąskim ekranie opis lądował daleko nad listą i przy kliknięciu
-   * nic się nie działo w miejscu, w które patrzysz — dlatego tam treść
-   * rozwija się pod klikniętą pozycją.
+   * Wcześniej był tu akordeon. Pozycje odchylały się w 3D, rozwijały
+   * wysokością, a cała lista (klasa `fold` pożyczona od teczki z pracami)
+   * stała absolutnie i wchodziła na nagłówek i na następną sekcję.
+   * Sześć krótkich opisów czyta się szybciej niż sześć kliknięć.
    */
   const [narrow, setNarrow] = useState(false)
   useEffect(() => {
@@ -35,7 +35,7 @@ export default function Services() {
     text: t.guide.services,
     corner: 'br',
     mood: 'mowi',
-    point: '.svc-list',
+    point: '.svc-list, .svc-stack',
   })
 
   return (
@@ -55,7 +55,23 @@ export default function Services() {
           />
         </div>
 
-        <div className={`svc ${narrow ? 'fold' : ''}`}>
+        {narrow ? (
+          <ol className="svc-stack">
+            {services.map(([label, opis]) => (
+              <motion.li
+                key={label}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.4 }}
+                transition={{ duration: 0.45, ease: EASE }}
+              >
+                <h3 className="svc-stack-t">{label}</h3>
+                <p className="svc-text">{opis}</p>
+              </motion.li>
+            ))}
+          </ol>
+        ) : (
+        <div className="svc">
           <div className="svc-view">
             <SvcArt pick={pick} />
 
@@ -80,9 +96,9 @@ export default function Services() {
               <motion.li
                 key={label}
                 className={pick === i ? 'on' : ''}
-                onMouseEnter={() => !narrow && setPick(i)}
-                onFocus={() => !narrow && setPick(i)}
-                onClick={() => setPick((p) => (narrow && p === i ? -1 : i))}
+                onMouseEnter={() => setPick(i)}
+                onFocus={() => setPick(i)}
+                onClick={() => setPick(i)}
                 initial={{ opacity: 0, z: -220, rotateX: 8 }}
                 whileInView={{ opacity: 1, z: 0, rotateX: 0 }}
                 viewport={{ once: true, amount: 0.6 }}
@@ -97,31 +113,15 @@ export default function Services() {
                     transition={{ duration: 0.55, ease: EASE }}
                   />
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                    <path d={narrow ? (pick === i ? 'M5 12h14' : 'M12 5v14M5 12h14') : 'M5 12h14M13 6l6 6-6 6'} />
+                    <path d="M5 12h14M13 6l6 6-6 6" />
                   </svg>
                 </button>
 
-                {/* rozwinięcie pod pozycją — tylko na wąskim ekranie */}
-                <AnimatePresence initial={false}>
-                  {narrow && pick === i && (
-                    <motion.div
-                      className="svc-fold"
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.34, ease: EASE }}
-                    >
-                      <div className="svc-fold-in">
-                        <SvcArt pick={i} />
-                        <p className="svc-text">{services[i][1]}</p>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
               </motion.li>
             ))}
           </ul>
         </div>
+        )}
       </div>
     </section>
   )

@@ -83,6 +83,22 @@ export default function Leaf({ tone = 'paper', z = 1, children }) {
    */
   const fade = useTransform(p, [0, 0.06, 0.22, 0.78, 0.92, 1], [0, 0.28, 1, 1, 0.45, 0.1])
 
+  /**
+   * Telefon: sekcja stoi i nie blednie.
+   *
+   * Przygasanie przy krawędzi ekranu działa na komputerze, gdzie sekcja
+   * mieści się w kadrze. Na telefonie sekcja jest kilka razy wyższa niż
+   * ekran, więc czytając jej górną część, patrzyło się na tekst przy
+   * kryciu 0,45 — a dryf w pionie przesuwał go jeszcze pod palcem.
+   */
+  if (waski) {
+    return (
+      <div ref={ref} className={`leaf ${tone}`} style={{ zIndex: z }}>
+        <div className="leaf-inner">{children}</div>
+      </div>
+    )
+  }
+
   return (
     <motion.div ref={ref} className={`leaf ${tone}`} style={{ zIndex: z, y: drift }}>
       <motion.span className="leaf-seam" style={{ scaleX: seam }} />

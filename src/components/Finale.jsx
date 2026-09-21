@@ -11,11 +11,11 @@ import { useT } from '../lib/lang-ctx'
 import { grab, isOn } from '../lib/sound'
 
 const LINKS = [
-  { k: 'e-mail', v: contact.email, href: `mailto:${contact.email}` },
-  { k: 'telefon', v: contact.phone, href: `tel:${contact.phone.replace(/\s/g, '')}` },
-  { k: 'whatsapp', v: 'Najszybsza droga', href: contact.whatsapp, blank: true },
-  { k: 'instagram', v: 'Bieżące realizacje', href: contact.instagram, blank: true },
-  { k: 'github', v: 'Kod, jeśli lubisz zaglądać', href: contact.github, blank: true },
+  { k: 'e-mail', href: `mailto:${contact.email}` },
+  { k: 'telefon', href: `tel:${contact.phone.replace(/\s/g, '')}` },
+  { k: 'whatsapp', href: contact.whatsapp, blank: true },
+  { k: 'instagram', href: contact.instagram, blank: true },
+  { k: 'github', href: contact.github, blank: true },
 ]
 
 const clamp01 = (v) => Math.min(1, Math.max(0, v))
@@ -206,7 +206,7 @@ export default function Finale() {
                     target={l.blank ? '_blank' : undefined}
                     rel={l.blank ? 'noreferrer' : undefined}
                   >
-                    {l.k}
+                    {l.k === 'telefon' ? t.brief.telefon.toLowerCase() : l.k}
                   </a>
                 ))}
               </div>

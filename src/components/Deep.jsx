@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { EASE, SPRING } from '../lib/motion'
+import { useNarrow } from '../lib/useNarrow'
 
 /**
  * Wejście elementu z głębi kadru.
@@ -31,6 +32,32 @@ export default function Deep({
   children,
   ...rest
 }) {
+  /**
+   * Na telefonie bez głębi i bez odchylenia.
+   *
+   * Elementy stojące jeden pod drugim (wiersze metryczki, akapit, zdjęcia)
+   * obracały się kolejno z 7–11° do pionu i razem wyglądały jak rozkładana
+   * harmonijka — dokładnie ten „akordeon”, który na telefonie raził.
+   * Zostaje zwykłe pojawienie się z krótkim dojazdem: czyta się od razu,
+   * a nic nie mruga ani nie składa się pod palcem.
+   */
+  const waski = useNarrow(900)
+  if (waski) {
+    return (
+      <motion.div
+        className={className}
+        style={style}
+        initial={{ opacity: 0, y: 12 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 0.45, delay: Math.min(i, 3) * 0.05, ease: EASE }}
+        {...rest}
+      >
+        {children}
+      </motion.div>
+    )
+  }
+
   return (
     <motion.div
       className={className}

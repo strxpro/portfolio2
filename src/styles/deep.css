@@ -943,20 +943,32 @@
 .space-rgb.r { box-shadow: inset 0 0 0 3px rgba(255, 0, 64, 0.8), inset 0 0 14px rgba(255, 0, 64, 0.3); }
 .space-rgb.c { box-shadow: inset 0 0 0 3px rgba(0, 200, 255, 0.8), inset 0 0 14px rgba(0, 200, 255, 0.3); }
 
-/* ── usługi jako akordeon na telefonie ────────────────── */
-@media (max-width: 900px) {
-  .svc.fold { display: block; }
-  .svc.fold .svc-view { display: none; }
-  .svc.fold .svc-list { margin-top: 0; }
-}
-.svc-fold { overflow: hidden; }
-.svc-fold-in {
-  padding: 4px 0 18px 34px;
+/* ── usługi na telefonie: lista do przeczytania, nie do klikania ── */
+.svc-stack {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: grid;
-  gap: 12px;
+  gap: 26px;
 }
-.svc-fold-in .svc-art { width: min(180px, 52%); margin: 0; }
-.svc-fold-in .svc-text { margin: 0; font-size: 14.5px; line-height: 1.6; color: var(--ink-2); }
+.svc-stack li {
+  padding-top: 18px;
+  border-top: 1px solid var(--rule);
+}
+.svc-stack-t {
+  margin: 0 0 8px;
+  font-size: 19px;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.svc-stack .svc-text {
+  margin: 0;
+  font-size: 15.5px;
+  line-height: 1.62;
+  max-width: 36ch;
+  color: var(--ink-2);
+}
 
 /* ── dowody jako liczby ───────────────────────────────── */
 .proofs {

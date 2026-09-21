@@ -32,6 +32,7 @@ const ICONS = [
   [['M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z', 1], ['M9 12l2.2 2.2L15.5 10', 0.7]],
 ]
 import { EASE, SPRING } from '../lib/motion'
+import { useNarrow } from '../lib/useNarrow'
 
 
 /**
@@ -45,6 +46,7 @@ import { EASE, SPRING } from '../lib/motion'
  * Pętla chodzi wyłącznie wtedy, gdy sekcja jest na ekranie.
  */
 export default function Chain() {
+  const waski = useNarrow(900)
   const ref = useRef(null)
   const t = useT()
   const steps = t.me.chain
@@ -86,11 +88,12 @@ export default function Chain() {
           <motion.div
             className="chain-node"
             key={s}
-            initial={{ opacity: 0, z: -240, rotateX: 10 }}
-            whileInView={{ opacity: 1, z: 0, rotateX: 0 }}
-            viewport={{ once: true, amount: 0.6 }}
-            transition={{ ...SPRING.enter, delay: i * 0.09 }}
-            style={{ transformPerspective: 800 }}
+            // na telefonie bez obracania — patrz Deep.jsx
+            initial={waski ? { opacity: 0, y: 10 } : { opacity: 0, z: -240, rotateX: 10 }}
+            whileInView={waski ? { opacity: 1, y: 0 } : { opacity: 1, z: 0, rotateX: 0 }}
+            viewport={{ once: true, amount: waski ? 0.3 : 0.6 }}
+            transition={waski ? { duration: 0.4, delay: i * 0.05, ease: EASE } : { ...SPRING.enter, delay: i * 0.09 }}
+            style={waski ? undefined : { transformPerspective: 800 }}
           >
             <span className="chain-dot">
               <motion.i
@@ -150,11 +153,11 @@ export default function Chain() {
 
       <motion.p
         className="chain-sum"
-        initial={{ opacity: 0, z: -150 }}
-        whileInView={{ opacity: 1, z: 0 }}
-        viewport={{ once: true, amount: 0.8 }}
-        transition={{ ...SPRING.enter, delay: 0.2 }}
-        style={{ transformPerspective: 800 }}
+        initial={waski ? { opacity: 0 } : { opacity: 0, z: -150 }}
+        whileInView={waski ? { opacity: 1 } : { opacity: 1, z: 0 }}
+        viewport={{ once: true, amount: waski ? 0.3 : 0.8 }}
+        transition={waski ? { duration: 0.4, ease: EASE } : { ...SPRING.enter, delay: 0.2 }}
+        style={waski ? undefined : { transformPerspective: 800 }}
       >
         <b>{t.me.one}</b>
         {t.me.oneNote}
