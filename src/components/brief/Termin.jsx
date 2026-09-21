@@ -116,9 +116,9 @@ export default function Termin({ value, onChange, onDogadac }) {
           )}
 
           <div className="bk-head tr-head">
-            <button type="button" onClick={() => przesun(-1)} disabled={!mozeWstecz} aria-label="‹">‹</button>
+            <button type="button" onClick={() => przesun(-1)} disabled={!mozeWstecz} aria-label={t.booking.prev}>‹</button>
             <strong>{MIESIACE[kursor.m - 1]} {kursor.r}</strong>
-            <button type="button" onClick={() => przesun(1)} disabled={!mozeDalej} aria-label="›">›</button>
+            <button type="button" onClick={() => przesun(1)} disabled={!mozeDalej} aria-label={t.booking.next}>›</button>
           </div>
           <div className="bk-dow">{DNI.map((d) => <span key={d}>{d}</span>)}</div>
           <div className="bk-grid">

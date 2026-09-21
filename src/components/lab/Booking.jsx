@@ -49,9 +49,9 @@ export default function Booking() {
     <div className="bk">
       <div className="bk-cal">
         <div className="bk-head">
-          <button onClick={() => shift(-1)} aria-label="Poprzedni miesiąc" data-cursor="mniej">‹</button>
+          <button onClick={() => shift(-1)} aria-label={t.booking.prev} data-cursor="mniej">‹</button>
           <strong>{MONTHS[cursor.getMonth()]} {cursor.getFullYear()}</strong>
-          <button onClick={() => shift(1)} aria-label="Następny miesiąc" data-cursor="wiecej">›</button>
+          <button onClick={() => shift(1)} aria-label={t.booking.next} data-cursor="wiecej">›</button>
         </div>
 
         <div className="bk-dow">

@@ -70,9 +70,9 @@ export const work = [
   { id: 'gioielleria', name: "L'Isola del Gioiello", year: '2025', url: 'https://lisoladelgioiello.com', host: 'lisoladelgioiello.com', tint: '#EEE6CF', stack: ['Next.js', 'React', 'Supabase', 'Cheerio', 'GSAP'] },
   { id: 'cagliariclub', name: 'Cagliari Club Gigi Riva', year: '2025', url: 'https://cagliariclubgigirivasantateresagallura.com', host: 'cagliariclubgigiriva…com', tint: '#DCE3D3', stack: ['Vite', 'React', 'i18n', 'Framer Motion'] },
   { id: 'ilgirasole', name: 'Il Girasole', year: '2026', url: 'https://ristoranteilgirasole.com', host: 'ristoranteilgirasole.com', tint: '#F0E3C8', stack: ['Next.js', 'React', 'Framer Motion', 'Leaflet'] },
-  { id: 'renabianca', name: 'Rena Bianca Beach Bar', year: '2025', url: 'https://renabiancabeachbar.com', host: 'renabiancabeachbar.com', tint: '#D8E2E6', stack: ['Next.js', 'React', 'Framer Motion', 'Wideo'] },
+  { id: 'renabianca', name: 'Rena Bianca Beach Bar', year: '2025', url: 'https://renabiancabeachbar.com', host: 'renabiancabeachbar.com', tint: '#D8E2E6', stack: ['Next.js', 'React', 'Framer Motion', 'HTML5 Video'] },
   // Shopify blokuje osadzanie (frame-ancestors 'none') — zostaje szkielet
-  { id: 'antiqua', name: 'ANTIQUA', year: '2026', url: 'https://antiqua-shop.pl', host: 'antiqua-shop.pl', embed: false, tint: '#E2DDD4', stack: ['Shopify', 'Autorski motyw', 'Liquid'] },
+  { id: 'antiqua', name: 'ANTIQUA', year: '2026', url: 'https://antiqua-shop.pl', host: 'antiqua-shop.pl', embed: false, tint: '#E2DDD4', stack: ['Shopify', 'Custom theme', 'Liquid'] },
   // Za hasłem do dnia startu (sprawdzone: 401), więc bez żywej ramki.
   { id: 'oltre', name: 'Oltre', year: '2026', url: '', host: '', wip: true, tint: '#DDE3EF', stack: ['Next.js App Router', 'React', 'Tailwind CSS', 'Three.js', 'Supabase', 'Stripe', 'Make.com'] },
   // Jeszcze bez domeny — chodzi lokalnie.

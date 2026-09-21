@@ -18,6 +18,11 @@ export const langs = [
 export const dict = {
   /* ─────────────────────────── POLSKI ─────────────────────────── */
   pl: {
+    meta: {
+      title: 'STRX · strony i aplikacje, które robię sam',
+      description: 'Claudio Taras. Projektuję i koduję strony, sklepy i rezerwacje online, z panelem i automatyzacjami. Dziewięć stron online, Sardynia i Polska.',
+    },
+
     nav: { prace: 'Prace', nazywo: 'Na żywo', uslugi: 'Co robię', proces: 'Jak pracuję', kontakt: 'Kontakt' },
 
     hero: {
@@ -189,6 +194,8 @@ export const dict = {
       at: 'godz.',
       months: ['styczeń', 'luty', 'marzec', 'kwiecień', 'maj', 'czerwiec', 'lipiec', 'sierpień', 'wrzesień', 'październik', 'listopad', 'grudzień'],
       monthsOf: ['stycznia', 'lutego', 'marca', 'kwietnia', 'maja', 'czerwca', 'lipca', 'sierpnia', 'września', 'października', 'listopada', 'grudnia'],
+      prev: 'Poprzedni miesiąc',
+      next: 'Następny miesiąc',
       dow: ['pn', 'wt', 'śr', 'cz', 'pt', 'so', 'nd'],
     },
 
@@ -318,7 +325,7 @@ export const dict = {
       work: 'W ramce jest prawdziwa strona, nie zrzut ekranu.',
       lab: 'Wszystko tutaj działa naprawdę. Poklikaj.',
       services: 'Najedź na listę, a opis obok się zmieni.',
-      process: 'Przewijaj dalej, kroki jadą w bok.',
+      process: 'Kliknij etap, a zobaczysz, co wtedy dostajesz.',
     },
 
     loader: ['rozkładam gwiazdy', 'budzę Piksela', 'rozgrzewam animacje', 'gotowe'],
@@ -327,6 +334,11 @@ export const dict = {
 
   /* ─────────────────────────── ENGLISH ─────────────────────────── */
   en: {
+    meta: {
+      title: 'STRX · websites and apps I build myself',
+      description: 'Claudio Taras. I design and code websites, shops and online booking, with an owner panel and automations. Nine sites live, based in Sardinia and Poland.',
+    },
+
     nav: { prace: 'Work', nazywo: 'Live', uslugi: 'What I do', proces: 'How I work', kontakt: 'Contact' },
 
     hero: {
@@ -498,6 +510,8 @@ export const dict = {
       at: 'at',
       months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
       monthsOf: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+      prev: 'Previous month',
+      next: 'Next month',
       dow: ['mo', 'tu', 'we', 'th', 'fr', 'sa', 'su'],
     },
 
@@ -627,7 +641,7 @@ export const dict = {
       work: 'The frame shows the real site, not a screenshot.',
       lab: 'Everything here really works. Have a click.',
       services: 'Hover the list and the description next to it changes.',
-      process: 'Keep scrolling, the steps slide sideways.',
+      process: 'Tap a step to see what you get at that point.',
     },
 
     loader: ['scattering stars', 'waking Piksel up', 'warming up', 'ready'],
@@ -636,6 +650,11 @@ export const dict = {
 
   /* ─────────────────────────── ITALIANO ─────────────────────────── */
   it: {
+    meta: {
+      title: 'STRX · siti e app che faccio da solo',
+      description: 'Claudio Taras. Progetto e programmo siti, negozi e prenotazioni online, con pannello e automazioni. Nove siti online, tra Sardegna e Polonia.',
+    },
+
     nav: { prace: 'Lavori', nazywo: 'Dal vivo', uslugi: 'Cosa faccio', proces: 'Come lavoro', kontakt: 'Contatti' },
 
     hero: {
@@ -807,6 +826,8 @@ export const dict = {
       at: 'ore',
       months: ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre'],
       monthsOf: ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre'],
+      prev: 'Mese precedente',
+      next: 'Mese successivo',
       dow: ['lu', 'ma', 'me', 'gi', 've', 'sa', 'do'],
     },
 
@@ -936,7 +957,7 @@ export const dict = {
       work: 'Nella cornice c’è il sito vero, non uno screenshot.',
       lab: 'Qui funziona tutto davvero. Prova a cliccare.',
       services: 'Passa sulla lista e la descrizione accanto cambia.',
-      process: 'Continua a scorrere, i passi scorrono di lato.',
+      process: 'Tocca una fase per vedere cosa ricevi in quel momento.',
     },
 
     loader: ['sparpaglio le stelle', 'sveglio Piksel', 'scaldo le animazioni', 'pronto'],

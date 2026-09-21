@@ -60,6 +60,12 @@ export function LangProvider({ children }) {
 
   useEffect(() => {
     document.documentElement.lang = code
+    // tytuł karty i opis dla wyszukiwarki w języku strony
+    const m = dict[code]?.meta
+    if (m) {
+      document.title = m.title
+      document.querySelector('meta[name="description"]')?.setAttribute('content', m.description)
+    }
     try {
       localStorage.setItem(LANG_KEY, code)
     } catch {

@@ -333,7 +333,9 @@
 .handoff-say .btn { margin-top: 10px; }
 
 @media (max-width: 720px) {
-  .handoff { height: 260vh; }
+  /* krócej niż na komputerze: na telefonie scena i tak mieści się
+     w jednym kadrze, a zdanie ma pojawić się po jednym ruchu kciuka */
+  .handoff { height: 200vh; }
   .plate { width: 78vw; height: 38vh; margin: calc(38vh / -2) 0 0 -39vw; }
 }
 

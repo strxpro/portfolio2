@@ -4,6 +4,7 @@ import Type from './Type'
 import { useT } from '../lib/lang-ctx'
 import { goToEnd } from '../lib/scroll'
 import { EASE, SPRING } from '../lib/motion'
+import { useNarrow } from '../lib/useNarrow'
 
 /**
  * Liczba stoi, nie dolicza się od zera.
@@ -70,6 +71,7 @@ function Proof({ row, i }) {
 export default function Trust() {
   const t = useT()
   const grid = useRef(null)
+  const waski = useNarrow(900)
 
   return (
     <section className="pad trust" id="zaufanie">
@@ -80,11 +82,11 @@ export default function Trust() {
           </div>
           <motion.div
             className="trust-cta"
-            initial={{ opacity: 0, z: -170, rotateX: 6 }}
-            whileInView={{ opacity: 1, z: 0, rotateX: 0 }}
+            initial={waski ? { opacity: 0, y: 10 } : { opacity: 0, z: -170, rotateX: 6 }}
+            whileInView={waski ? { opacity: 1, y: 0 } : { opacity: 1, z: 0, rotateX: 0 }}
             viewport={{ once: true, amount: 0.5 }}
-            transition={SPRING.enter}
-            style={{ transformPerspective: 900 }}
+            transition={waski ? { duration: 0.4, ease: EASE } : SPRING.enter}
+            style={waski ? undefined : { transformPerspective: 900 }}
           >
             <motion.button
               className="btn big"

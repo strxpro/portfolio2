@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import Type from './Type'
 import { sched } from '../data/site'
 import { useT } from '../lib/lang-ctx'
 import { useGuide } from '../lib/mascot'
 import { EASE, SPRING } from '../lib/motion'
+import { useNarrow } from '../lib/useNarrow'
 
 const WEEKS = 5
 
@@ -16,6 +17,7 @@ export default function Process() {
   const t = useT()
   const steps = t.sched.steps
   const [pick, setPick] = useState(0)
+  const waski = useNarrow(900) // na telefonie bez odchylania w 3D, patrz Deep.jsx
   const [name, , text, gives] = steps[pick]
 
   const ref = useGuide({
@@ -57,11 +59,11 @@ export default function Process() {
                   onMouseEnter={() => setPick(i)}
                   onFocus={() => setPick(i)}
                   onClick={() => setPick(i)}
-                  initial={{ opacity: 0, z: -190, rotateX: 7 }}
-                  whileInView={{ opacity: 1, z: 0, rotateX: 0 }}
-                  viewport={{ once: true, amount: 0.6 }}
-                  transition={{ ...SPRING.enter, delay: i * 0.07 }}
-                  style={{ transformPerspective: 900 }}
+                  initial={waski ? { opacity: 0, y: 10 } : { opacity: 0, z: -190, rotateX: 7 }}
+                  whileInView={waski ? { opacity: 1, y: 0 } : { opacity: 1, z: 0, rotateX: 0 }}
+                  viewport={{ once: true, amount: waski ? 0.3 : 0.6 }}
+                  transition={waski ? { duration: 0.4, delay: i * 0.05, ease: EASE } : { ...SPRING.enter, delay: i * 0.07 }}
+                  style={waski ? undefined : { transformPerspective: 900 }}
                 >
                   <span className="gantt-name">{label}</span>
                   <span className="gantt-track">
@@ -81,12 +83,12 @@ export default function Process() {
           </div>
 
           <div className="gantt-detail">
-            <AnimatePresence mode="wait">
+            {/* zwykła zmiana klucza zamiast AnimatePresence mode="wait" —
+                opis nie czeka na wyjście poprzedniego (ten sam błąd co w Lab) */}
               <motion.div
                 key={pick}
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.32, ease: EASE }}
               >
                 <h3>{name}</h3>
@@ -96,7 +98,6 @@ export default function Process() {
                   {gives}
                 </p>
               </motion.div>
-            </AnimatePresence>
           </div>
         </div>
       </div>

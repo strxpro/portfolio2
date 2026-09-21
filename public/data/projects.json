@@ -16,12 +16,12 @@
       "Make.com"
     ],
     "kind": "Pizzeria · Santa Teresa Gallura",
-    "lead": "Pizza z pieca opalanego drewnem, podana jak plakat: grube retro liternictwo, „MAMMA MIA!” przez pół ekranu i maskotka, która prowadzi przez menu.",
+    "lead": "Pizza z pieca na drewno. Chciałem, żeby strona wyglądała jak plakat: duże retro litery, „MAMMA MIA!” na pół ekranu i maskotka, która prowadzi po menu.",
     "points": [
-      "Ekran „wracamy niebawem” z furtką do gotowej strony",
-      "Menu, ulubione pozycje, lokale i kontakt na jednej stronie",
-      "Sceny sterowane scrollem — ciągnąca się mozzarella, warstwy ciasta",
-      "Rezerwacja stolika podpięta pod automatyzację"
+      "Ekran „zaraz wracamy” z wejściem do gotowej strony",
+      "Menu, ulubione dania, lokale i kontakt na jednej stronie",
+      "Animacje przy przewijaniu: ciągnąca się mozzarella, warstwy ciasta",
+      "Rezerwacja stolika, która sama rozsyła powiadomienia"
     ]
   },
   {
@@ -40,13 +40,13 @@
       "Lenis",
       "Supabase"
     ],
-    "kind": "Restauracja i cocktail bar · Rena Majore",
-    "lead": "Lokal rodzinny od 1996 roku. Najcięższa technicznie robota: własny kreator koktajli, oś czasu na jedenaście odsłon i scena 3D obracana scrollem.",
+    "kind": "Restauracja i koktajl bar · Rena Majore",
+    "lead": "Rodzinny lokal od 1996 roku. Technicznie najtrudniejsza z moich stron: gość może złożyć własny koktajl, historia lokalu to oś czasu, a scena 3D obraca się przy przewijaniu.",
     "points": [
-      "Cocktail Maker — gość składa własny drink i zapisuje go na stronie",
-      "Galeria koktajli stworzonych przez klientów",
-      "Historia lokalu jako interaktywna oś czasu 1996–2026",
-      "Ekran ładowania z licznikiem i przelewającym się drinkiem"
+      "Kreator koktajli: gość składa drink i zapisuje go na stronie",
+      "Galeria koktajli wymyślonych przez gości",
+      "Historia lokalu od 1996 do 2026 na interaktywnej osi",
+      "Ekran ładowania z nalewającym się drinkiem"
     ]
   },
   {
@@ -65,12 +65,12 @@
       "Cloudflare"
     ],
     "kind": "Wyścig i wydarzenie · edycja 2026",
-    "lead": "Zjazd ręcznie budowanych pojazdów bez silnika. Strona żyje razem z wydarzeniem: odlicza czas, przyjmuje zgłoszenia i zbiera głosy publiczności.",
+    "lead": "Zjazd ręcznie budowanych wózków bez silnika. Strona odlicza czas do startu, przyjmuje zgłoszenia i zbiera głosy publiczności.",
     "points": [
       "Odliczanie do startu co do sekundy",
       "Zapisy zawodników i licznik zgłoszeń na żywo",
-      "Głosowanie publiczności na uczestnika",
-      "Podium, archiwum edycji, trasa i program"
+      "Głosowanie publiczności",
+      "Podium, poprzednie edycje, trasa i program"
     ]
   },
   {
@@ -88,12 +88,12 @@
       "AWS S3"
     ],
     "kind": "Apartament wakacyjny · Aglientu",
-    "lead": "Apartament dla czterech osób, 1,8 km od plaż Capo Testa. Ocena 9.8 na Booking.com — i strona, która tę ocenę sprzedaje, zamiast ją tylko wyświetlać.",
+    "lead": "Apartament dla czterech osób, 1,8 km od plaż Capo Testa. Na Booking.com ma 9.8, więc strona pokazuje to od razu i pozwala zarezerwować bez pośrednika.",
     "points": [
-      "Rezerwacja pobytu prosto ze strony",
-      "Galeria wnętrz, tarasu z widokiem na morze i ogrodu",
-      "Opinie gości i ocena 9.8 wciągnięte z Booking.com",
-      "Treść po polsku i włosku, opis okolicy i dojazdu"
+      "Rezerwacja prosto ze strony",
+      "Zdjęcia wnętrz, tarasu z widokiem na morze i ogrodu",
+      "Opinie gości i ocena 9.8 z Booking.com",
+      "Wersja polska i włoska, opis okolicy i dojazdu"
     ]
   },
   {
@@ -112,12 +112,12 @@
       "GSAP"
     ],
     "kind": "Jubiler · sklep internetowy",
-    "lead": "Sklep z biżuterią marek Morellato, Trussardi, Luca Barra i Lamborghini. Katalog zaciągany automatycznie, koszyk i wersje językowe pod jednym adresem.",
+    "lead": "Sklep z biżuterią Morellato, Trussardi, Luca Barra i Lamborghini. Produkty wczytują się same, a sklep działa w kilku językach pod jednym adresem.",
     "points": [
-      "Pełny koszyk i ścieżka zakupowa",
+      "Koszyk i cała ścieżka zakupu",
       "Kolekcje, bestsellery i strony marek",
-      "Katalog produktów pobierany i tłumaczony automatycznie",
-      "Wersje językowe w adresie (/it, /en)"
+      "Katalog pobierany i tłumaczony automatycznie",
+      "Języki w adresie strony (/it, /en)"
     ]
   },
   {
@@ -135,12 +135,12 @@
       "Framer Motion"
     ],
     "kind": "Oficjalny fanklub · Santa Teresa Gallura",
-    "lead": "Fanklub Cagliari Calcio i hołd dla Gigi Rivy. Sześć wersji językowych z jednego źródła treści.",
+    "lead": "Fanklub Cagliari Calcio i pamięć o Gigim Rivie. Strona w sześciu językach, wszystkie z jednego źródła tekstów.",
     "points": [
-      "Sześć języków przełączanych jednym kliknięciem",
-      "Sylwetki postaci klubu i historia od podstaw",
+      "Sześć języków, zmiana jednym kliknięciem",
+      "Ludzie klubu i jego historia",
       "Galeria i strefa kibica „Area Cagliari”",
-      "Sekcja pamięci Gigi Rivy (1944–2024)"
+      "Sekcja pamięci Gigiego Rivy (1944–2024)"
     ]
   },
   {
@@ -158,12 +158,12 @@
       "Leaflet"
     ],
     "kind": "Restauracja i pizzeria · Santa Teresa Gallura",
-    "lead": "Kuchnia sardyńska i pizza z tarasem przy głównym placu. Ciepła, bardzo szybka strona z kartą dań, opiniami gości i rezerwacją stolika.",
+    "lead": "Kuchnia sardyńska i pizza, taras przy głównym placu. Szybka strona z kartą dań, opiniami gości i rezerwacją stolika.",
     "points": [
-      "Karta dań restauracji i bar koktajlowy w jednym miejscu",
-      "Opinie gości wciągnięte na stronę",
+      "Karta restauracji i bar koktajlowy w jednym miejscu",
+      "Opinie gości na stronie",
       "Rezerwacja stolika i mapa dojazdu",
-      "Treść po włosku, przygotowana pod lokalne SEO"
+      "Teksty po włosku, pisane pod wyszukiwanie w okolicy"
     ]
   },
   {
@@ -178,13 +178,13 @@
       "Next.js",
       "React",
       "Framer Motion",
-      "Wideo"
+      "HTML5 Video"
     ],
     "kind": "Bar przy plaży · Santa Teresa Gallura",
-    "lead": "Śniadania, obiady i aperitivo z widokiem na plażę Rena Bianca. Wideo w tle, panorama zatoki i pełne menu sezonu.",
+    "lead": "Śniadania, obiady i aperitivo z widokiem na plażę Rena Bianca. Na stronie jest wideo, panorama zatoki i całe menu na sezon.",
     "points": [
-      "Wideo w tle i sekcja panoramy",
-      "Menu 2025 w sześciu kategoriach, od kawy po pizzellę",
+      "Wideo w tle i panorama zatoki",
+      "Menu 2025 w sześciu działach, od kawy po pizzellę",
       "Galeria „nasze chwile” i opinie gości",
       "Rezerwacja stolika prosto ze strony"
     ]
@@ -199,16 +199,16 @@
     "embed": false,
     "stack": [
       "Shopify",
-      "Autorski motyw",
+      "Custom theme",
       "Liquid"
     ],
     "kind": "Fotoceramika nagrobkowa · sklep",
-    "lead": "Pracownia zdjęć na nagrobki: ceramika i szkło. Sklep na Shopify z autorskim motywem i kreatorem, w którym klient sam składa zamówienie.",
+    "lead": "Pracownia, która robi zdjęcia na nagrobki, na ceramice i szkle. Sklep stoi na Shopify, ale motyw napisałem od zera, razem z kreatorem, w którym klient sam składa zamówienie.",
     "points": [
-      "Kreator zamówienia — kształt, materiał i retusz",
-      "Łączenie dwóch zdjęć w jedno przed produkcją",
-      "Cennik, FAQ i tryb ciemny",
-      "Sklep na Shopify z motywem pisanym od zera"
+      "Kreator zamówienia: kształt, materiał, retusz",
+      "Połączenie dwóch zdjęć w jedno przed produkcją",
+      "Cennik, pytania i odpowiedzi, tryb ciemny",
+      "Motyw Shopify napisany od zera"
     ]
   },
   {
@@ -229,13 +229,13 @@
       "Stripe",
       "Make.com"
     ],
-    "kind": "Doradztwo edukacyjne i relokacja · platforma",
-    "lead": "Doradztwo w sprawie studiów, wiz i przeprowadzki, w sześciu językach. Największa robota na zapleczu: katalog usług zależny od obywatelstwa, panel do prowadzenia spraw i poczta pod automatyzacją.",
+    "kind": "Studia i przeprowadzka za granicę · platforma",
+    "lead": "Firma pomaga w studiach, wizach i przeprowadzce. Strona jest w sześciu językach, a najwięcej pracy siedzi w tle: usługi zmieniają się zależnie od obywatelstwa, a sprawy klientów prowadzi się w panelu.",
     "points": [
-      "Sześć wersji językowych z jednego źródła treści",
-      "Glob 3D z obrotem i przybliżaniem, obsługiwany też palcem",
-      "Wybór obywatelstwa filtruje usługi i wymagane dokumenty",
-      "Panel: zapytania, terminy, eksport do CSV, kolejka powiadomień"
+      "Sześć języków z jednego źródła tekstów",
+      "Globus 3D, który obracasz i przybliżasz, także palcem",
+      "Po wyborze obywatelstwa widać tylko pasujące usługi i dokumenty",
+      "Panel: zapytania, terminy, eksport do CSV, powiadomienia"
     ]
   },
   {
@@ -255,13 +255,13 @@
       "Lenis",
       "Framer Motion"
     ],
-    "kind": "Pizzeria z zamówieniami · projekt lokalny",
-    "lead": "Zamówienia od koszyka po widok dla kuchni. Do tego mapa dojazdu, naklejki z prawdziwą fizyką i panel, w którym właściciel sam zmienia kartę.",
+    "kind": "Pizzeria z zamówieniami · jeszcze nie online",
+    "lead": "Cała droga zamówienia: od koszyka do ekranu w kuchni. Do tego mapa dostaw i panel, w którym właściciel sam zmienia kartę.",
     "points": [
-      "Koszyk, potwierdzenie e-mailem i ekran „moje zamówienia”",
-      "Osobny widok dla kuchni z kolejką zamówień",
-      "Mapa dojazdu i szacowany czas dostawy",
-      "Naklejki na pudełku liczone silnikiem fizycznym"
+      "Koszyk, potwierdzenie mailem i lista „moje zamówienia”",
+      "Osobny ekran dla kuchni z kolejką zamówień",
+      "Mapa dostaw z szacowanym czasem",
+      "Naklejki na pudełku, które spadają jak prawdziwe"
     ]
   }
 ]

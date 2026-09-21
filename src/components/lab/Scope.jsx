@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useT } from '../../lib/lang-ctx'
 import { goToEnd } from '../../lib/scroll'
 import { SPRING, EASE } from '../../lib/motion'
+import { useNarrow } from '../../lib/useNarrow'
 
 
 /**
@@ -13,6 +14,7 @@ import { SPRING, EASE } from '../../lib/motion'
  * rozmowy i podaje ją dalej do formularza.
  */
 export default function Scope() {
+  const waski = useNarrow(900)
   const t = useT()
   const [type, setType] = useState(0)
   const [feats, setFeats] = useState([])
@@ -110,11 +112,11 @@ export default function Scope() {
             <motion.div
               className="scope-tech-col"
               key={group}
-              initial={{ opacity: 0, z: -230, rotateX: 9 }}
-              whileInView={{ opacity: 1, z: 0, rotateX: 0 }}
-              viewport={{ once: true, amount: 0.4 }}
-              transition={{ ...SPRING.enter, delay: gi * 0.07 }}
-              style={{ transformPerspective: 900 }}
+              initial={waski ? { opacity: 0, y: 10 } : { opacity: 0, z: -230, rotateX: 9 }}
+              whileInView={waski ? { opacity: 1, y: 0 } : { opacity: 1, z: 0, rotateX: 0 }}
+              viewport={{ once: true, amount: waski ? 0.2 : 0.4 }}
+              transition={waski ? { duration: 0.4, ease: EASE } : { ...SPRING.enter, delay: gi * 0.07 }}
+              style={waski ? undefined : { transformPerspective: 900 }}
             >
               <h4>{group}</h4>
               <ul>
