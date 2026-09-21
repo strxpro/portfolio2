@@ -319,12 +319,26 @@ export const dict = {
       mailAbout: 'Co mnie interesuje',
     },
 
+    story: {
+      kicker: 'Jak powstaje strona',
+      chapters: [
+        ['Rozmowa', 'dzień 1–2', 'Najpierw pytam.', 'Zanim cokolwiek narysuję, chcę wiedzieć, kto wejdzie na Twoją stronę i po co. Z tej rozmowy wychodzi wycena i termin, na piśmie.', ['Wycena jedną kwotą', 'Termin na piśmie']],
+        ['Szkic', 'tydzień 1', 'Potem szkicuję.', 'Układ, kroje pisma i kolory pod Twoją firmę, bez gotowego motywu. Pokazuję jeden gotowy ekran. Kod piszę, gdy Ci się spodoba.', ['Projekt od zera', 'Jeden ekran do akceptacji']],
+        ['Kod', 'tydzień 2–3', 'Buduję warstwa po warstwie.', 'Sekcja po sekcji, z animacjami i 3D tam, gdzie coś dają. Postęp widzisz codziennie na podglądzie, także w telefonie.', ['Animacje przy przewijaniu', '3D w przeglądarce', 'Podgląd codziennie']],
+        ['Podpięcia', 'tydzień 4', 'Podpinam to, co pracuje w tle.', 'Panel, w którym sam zmieniasz menu i ceny. Rezerwacje, maile, SMS-y i kalendarz, które działają same, także w nocy.', ['Panel dla właściciela', 'Automatyzacje', 'Kilka języków']],
+        ['Start', 'tydzień 5', 'I puszczam ją w świat.', 'Domena, statystyki, Google i krótkie szkolenie z panelu. Potem dalej jestem pod telefonem. Tak powstało dziewięć stron, które zaraz zobaczysz.', ['Domena i Google', 'Szkolenie', 'Opieka po starcie']],
+      ],
+      bubbles: ['Cześć! Potrzebuję strony dla restauracji.', 'Z rezerwacjami, po polsku i po włosku.', 'Jasne. Kto najczęściej do Was przychodzi?'],
+      plytki: ['Panel', 'E-mail', 'SMS', 'Kalendarz'],
+    },
+
     guide: {
       hero: 'Cześć, jestem Piksel. Pokażę Ci, co tu jest. Przewijaj spokojnie.',
       about: 'Tu jest trochę o Claudiu.',
       work: 'W ramce jest prawdziwa strona, nie zrzut ekranu.',
       lab: 'Wszystko tutaj działa naprawdę. Poklikaj.',
       services: 'Najedź na listę, a opis obok się zmieni.',
+      story: 'Przewijaj powoli. Zobaczysz, jak powstaje strona.',
       process: 'Kliknij etap, a zobaczysz, co wtedy dostajesz.',
     },
 
@@ -635,12 +649,26 @@ export const dict = {
       mailAbout: 'What I’m interested in',
     },
 
+    story: {
+      kicker: 'How a site gets made',
+      chapters: [
+        ['Chat', 'day 1–2', 'First, I ask.', 'Before I draw anything, I want to know who’ll visit your site and why. That chat gives you a quote and a date, in writing.', ['One-number quote', 'Date in writing']],
+        ['Sketch', 'week 1', 'Then I sketch.', 'Layout, fonts and colours made for your business, no ready-made theme. I show you one finished screen and only start coding once you like it.', ['Designed from scratch', 'One screen to approve']],
+        ['Code', 'week 2–3', 'I build it layer by layer.', 'Section by section, with animation and 3D where they actually help. You see progress on a preview every day, on your phone too.', ['Scroll animations', '3D in the browser', 'Daily preview']],
+        ['Hook-up', 'week 4', 'I wire up what runs behind it.', 'A panel where you change the menu and prices yourself. Bookings, emails, texts and a calendar that run on their own, at night too.', ['Owner panel', 'Automations', 'Several languages']],
+        ['Launch', 'week 5', 'And send it out into the world.', 'Domain, analytics, Google and a short walkthrough of the panel. After that I’m still a call away. That’s how the nine sites you’re about to see were made.', ['Domain and Google', 'Walkthrough', 'Care after launch']],
+      ],
+      bubbles: ['Hi! I need a website for my restaurant.', 'With bookings, in English and Italian.', 'Sure. Who comes to you most often?'],
+      plytki: ['Panel', 'Email', 'Text', 'Calendar'],
+    },
+
     guide: {
       hero: 'Hi, I’m Piksel. I’ll show you around. Scroll at your own pace.',
       about: 'Here’s a bit about Claudio.',
       work: 'The frame shows the real site, not a screenshot.',
       lab: 'Everything here really works. Have a click.',
       services: 'Hover the list and the description next to it changes.',
+      story: 'Scroll slowly and watch a site being built.',
       process: 'Tap a step to see what you get at that point.',
     },
 
@@ -951,12 +979,26 @@ export const dict = {
       mailAbout: 'Cosa mi interessa',
     },
 
+    story: {
+      kicker: 'Come nasce un sito',
+      chapters: [
+        ['Chiacchierata', 'giorno 1–2', 'Prima di tutto, chiedo.', 'Prima di disegnare qualsiasi cosa voglio sapere chi entrerà nel tuo sito e perché. Da questa chiacchierata escono preventivo e data, per iscritto.', ['Preventivo con una cifra', 'Data per iscritto']],
+        ['Bozza', 'settimana 1', 'Poi faccio la bozza.', 'Impaginazione, caratteri e colori pensati per la tua attività, niente temi pronti. Ti mostro una schermata finita e programmo solo quando ti piace.', ['Progetto da zero', 'Una schermata da approvare']],
+        ['Codice', 'settimana 2–3', 'Lo costruisco strato per strato.', 'Una sezione alla volta, con animazioni e 3D dove servono davvero. I progressi li vedi ogni giorno su un’anteprima, anche dal telefono.', ['Animazioni allo scroll', '3D nel browser', 'Anteprima ogni giorno']],
+        ['Collegamenti', 'settimana 4', 'Collego quello che lavora dietro.', 'Un pannello dove cambi menù e prezzi da solo. Prenotazioni, mail, SMS e calendario che vanno da soli, anche di notte.', ['Pannello per il titolare', 'Automazioni', 'Più lingue']],
+        ['Lancio', 'settimana 5', 'E lo lascio andare nel mondo.', 'Dominio, statistiche, Google e una breve spiegazione del pannello. Dopo resto sempre raggiungibile. Così sono nati i nove siti che vedrai tra poco.', ['Dominio e Google', 'Spiegazione del pannello', 'Assistenza dopo il lancio']],
+      ],
+      bubbles: ['Ciao! Mi serve un sito per il ristorante.', 'Con le prenotazioni, in italiano e in inglese.', 'Certo. Chi viene da voi più spesso?'],
+      plytki: ['Pannello', 'Email', 'SMS', 'Calendario'],
+    },
+
     guide: {
       hero: 'Ciao, sono Piksel. Ti faccio fare un giro. Scorri con calma.',
       about: 'Qui c’è qualcosa su Claudio.',
       work: 'Nella cornice c’è il sito vero, non uno screenshot.',
       lab: 'Qui funziona tutto davvero. Prova a cliccare.',
       services: 'Passa sulla lista e la descrizione accanto cambia.',
+      story: 'Scorri piano e guarda come nasce un sito.',
       process: 'Tocca una fase per vedere cosa ricevi in quel momento.',
     },
 

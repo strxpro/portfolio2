@@ -82,7 +82,7 @@ export const work = [
 export const nav = [
   { id: 'prace', key: 'prace' },
   { id: 'na-zywo', key: 'nazywo' },
-  { id: 'uslugi', key: 'uslugi' },
+  { id: 'opowiesc', key: 'uslugi' },
   { id: 'proces', key: 'proces' },
 ]
 

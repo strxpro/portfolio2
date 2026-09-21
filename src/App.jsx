@@ -7,10 +7,8 @@ import Topbar from './components/Topbar'
 import Hero from './components/Hero'
 import Me from './components/Me'
 import Space from './components/Space'
-import Giant from './components/Giant'
-import Handoff from './components/Handoff'
+import Story from './components/Story'
 import Lab from './components/Lab'
-import Services from './components/Services'
 import Process from './components/Process'
 import Trust from './components/Trust'
 import StickyCta from './components/StickyCta'
@@ -124,13 +122,17 @@ export default function App() {
           * przewija się palcem w poziomie, a gest pionowy zostaje dla
           * strony.
           */}
+        {/**
+          * Opowieść: budowa jednej strony od rozmowy do startu. Na końcu
+          * strona odlatuje w kosmos — prosto do przestrzeni z pracami,
+          * która stoi zaraz pod nią. Usługi i przebieg współpracy są
+          * rozdziałami tej budowy, a nie osobnymi listami.
+          */}
+        <Story />
         <Space />
-        <Giant />
-        <Handoff />
         <Leaf tone="white" z={6}><Lab /></Leaf>
-        <Leaf tone="paper" z={7}><Services /></Leaf>
-        <Leaf tone="white" z={8}><Process /></Leaf>
-        <Leaf tone="paper" z={9}><Trust /></Leaf>
+        <Leaf tone="paper" z={7}><Process /></Leaf>
+        <Leaf tone="white" z={8}><Trust /></Leaf>
       </main>
 
       <Finale />

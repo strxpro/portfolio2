@@ -1,0 +1,198 @@
+/* ═════════════════════════════════════════════════════════
+   Opowieść: budowa jednej strony (Story.jsx + three/budowa.js).
+
+   Sekcja jest wysoka, scena przyklejona do ekranu — przewijanie prowadzi
+   budowę rozdział po rozdziale. Tło jest przezroczyste: pod spodem leży
+   ten sam kosmos co w pracach, więc na końcu strona odlatuje dokładnie
+   tam, gdzie za chwilę czekają prawdziwe realizacje.
+   ═════════════════════════════════════════════════════════ */
+
+.story {
+  position: relative;
+  z-index: 2;
+  height: 620vh;
+  margin-left: calc(var(--float) * -1);
+  margin-right: calc(var(--float) * -1);
+  color: #f3efe6;
+}
+.story.bez-3d { height: 520vh; }
+
+.story-stick {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+}
+
+.story-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* tekst rozdziału: lewa kolumna na komputerze */
+.story-copy {
+  position: absolute;
+  left: clamp(24px, 7vw, 120px);
+  top: 50%;
+  transform: translateY(-50%);
+  width: min(40ch, 38vw);
+  z-index: 2;
+}
+.story-kicker {
+  margin: 0 0 clamp(20px, 4vh, 40px);
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(243, 239, 230, 0.5);
+}
+.story-num {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin: 0 0 14px;
+  font-family: var(--f-mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(243, 239, 230, 0.62);
+}
+.story-num b { color: #9fb4ff; font-weight: 600; }
+.story-num em {
+  margin-left: auto;
+  font-style: normal;
+  color: rgba(243, 239, 230, 0.42);
+}
+.story-title {
+  margin: 0 0 16px;
+  font-family: var(--f-serif);
+  font-weight: 800;
+  font-size: clamp(34px, 4.6vw, 64px);
+  line-height: 1;
+  letter-spacing: -0.035em;
+  color: #f3efe6;
+  text-wrap: balance;
+}
+.story-lead {
+  margin: 0;
+  font-size: clamp(15.5px, 1.25vw, 18px);
+  line-height: 1.62;
+  color: rgba(243, 239, 230, 0.76);
+}
+.story-points {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 22px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.story-points li {
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #f3efe6;
+  background: rgba(243, 239, 230, 0.07);
+  box-shadow: inset 0 0 0 1px rgba(243, 239, 230, 0.16);
+}
+
+/* linijka rozdziałów przy prawej krawędzi */
+.story-ruler {
+  position: absolute;
+  right: clamp(18px, 3vw, 44px);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  display: grid;
+  gap: 18px;
+  margin: 0;
+  padding: 0 0 0 16px;
+  list-style: none;
+  border-left: 1px solid rgba(243, 239, 230, 0.16);
+}
+.story-fill {
+  position: absolute;
+  left: -1px;
+  top: 0;
+  width: 1px;
+  height: 100%;
+  background: #9fb4ff;
+  transform-origin: top center;
+}
+.story-ruler li {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(243, 239, 230, 0.34);
+  transition: color 0.3s var(--ease);
+}
+.story-ruler li.za { color: rgba(243, 239, 230, 0.55); }
+.story-ruler li.on { color: #f3efe6; }
+.story-ruler li.on i { color: #9fb4ff; }
+.story-ruler i { font-style: normal; }
+
+/* bez WebGL-a: sam tekst na środku kadru */
+.story.bez-3d .story-copy {
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(44ch, 86vw);
+}
+
+/* ── telefon: budowa u góry, tekst pod nią, linijka jako kreski ── */
+@media (max-width: 900px) {
+  .story { height: 560vh; }
+  .story-copy {
+    left: 20px;
+    right: 20px;
+    top: auto;
+    bottom: max(28px, env(safe-area-inset-bottom));
+    transform: none;
+    width: auto;
+    max-width: 44ch;
+  }
+  .story-kicker { display: none; }
+  .story-title { font-size: clamp(28px, 8.4vw, 38px); margin-bottom: 10px; }
+  .story-lead { font-size: 15px; line-height: 1.58; }
+  .story-points { margin-top: 14px; }
+  .story-points li { font-size: 12.5px; padding: 6px 10px; }
+
+  .story-ruler {
+    top: 64px;
+    right: 20px;
+    left: 20px;
+    transform: none;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    gap: 6px;
+    padding: 12px 0 0;
+    border-left: 0;
+    border-top: 1px solid rgba(243, 239, 230, 0.16);
+  }
+  .story-fill {
+    top: -1px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    /* na telefonie linijka leży poziomo — skala idzie w bok (Story.jsx) */
+    transform-origin: left center;
+  }
+  .story-ruler li { font-size: 10.5px; letter-spacing: 0.06em; }
+  .story-ruler li span { display: none; }
+  .story.bez-3d .story-copy { left: 20px; transform: none; width: auto; }
+}
+
+/* ── styki z sąsiadami ──
+   Płachta przed opowieścią kończy się na swojej treści (jak przed pracami),
+   a płachta po pracach nie wjeżdża na ich dół — tam stoi licznik kart. */
+main > .leaf:has(+ .story) { padding-bottom: clamp(30px, 4vw, 60px); }
+@media (min-width: 901px) {
+  main > .space + .leaf { margin-top: 0; }
+}

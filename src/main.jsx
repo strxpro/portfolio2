@@ -12,6 +12,7 @@ import './styles/me.css'
 import './styles/deep.css'
 // kosmos na koncu: nadpisuje tla sekcji, wiec musi wygrac kaskade
 import './styles/cosmos.css'
+import './styles/story.css'
 import 'lenis/dist/lenis.css'
 
 /**

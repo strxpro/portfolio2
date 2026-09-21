@@ -1,5 +1,4 @@
 import { motion } from 'framer-motion'
-import Chain from './Chain'
 import Deep from './Deep'
 import Photo from './Photo'
 import Type from './Type'
@@ -70,7 +69,14 @@ export default function Me() {
               </p>
             </Deep>
 
-            <Chain />
+            {/* Etapy pracy opowiada sekcja niżej (Story) — tu zostaje samo zdanie,
+                bez listy tych samych pięciu kroków tuż nad ich pełną wersją. */}
+            <Deep from={150} tilt={6} amount={0.5}>
+              <p className="chain-sum me-sam">
+                <b>{t.me.one}</b>
+                {t.me.oneNote}
+              </p>
+            </Deep>
 
             <dl className="me-creds">
               {t.me.creds.map(([k, v], i) => (
